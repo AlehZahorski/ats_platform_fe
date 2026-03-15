@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "jobs": "Jobs",
+    "applications": "Applications",
+    "forms": "Form Templates",
+    "pipeline": "Pipeline",
+    "tags": "Tags",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": "Sign in",
+    "signup": "Create account",
+    "email": "Email address",
+    "password": "Password",
+    "companyName": "Company name",
+    "loginWithGoogle": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "verifyEmailSent": "Check your email to verify your account"
+  },
+  "jobs": {
+    "title": "Jobs",
+    "new": "New Job",
+    "edit": "Edit Job",
+    "delete": "Delete Job",
+    "status": {
+      "draft": "Draft",
+      "open": "Open",
+      "closed": "Closed"
+    }
+  },
+  "applications": {
+    "title": "Applications",
+    "apply": "Apply Now",
+    "track": "Track Application",
+    "stage": "Current Stage",
+    "noApplications": "No applications yet"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "search": "Search...",
+    "noResults": "No results found"
+  }
+}

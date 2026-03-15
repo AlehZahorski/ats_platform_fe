@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "dashboard": "Panel",
+    "jobs": "Oferty pracy",
+    "applications": "Aplikacje",
+    "forms": "Szablony formularzy",
+    "pipeline": "Pipeline",
+    "tags": "Tagi",
+    "settings": "Ustawienia"
+  },
+  "auth": {
+    "login": "Zaloguj się",
+    "signup": "Utwórz konto",
+    "email": "Adres email",
+    "password": "Hasło",
+    "companyName": "Nazwa firmy",
+    "loginWithGoogle": "Kontynuuj z Google",
+    "noAccount": "Nie masz konta?",
+    "hasAccount": "Masz już konto?",
+    "verifyEmailSent": "Sprawdź email, aby zweryfikować konto"
+  },
+  "jobs": {
+    "title": "Oferty pracy",
+    "new": "Nowa oferta",
+    "edit": "Edytuj ofertę",
+    "delete": "Usuń ofertę",
+    "status": {
+      "draft": "Szkic",
+      "open": "Otwarta",
+      "closed": "Zamknięta"
+    }
+  },
+  "applications": {
+    "title": "Aplikacje",
+    "apply": "Aplikuj",
+    "track": "Śledź aplikację",
+    "stage": "Aktualny etap",
+    "noApplications": "Brak aplikacji"
+  },
+  "common": {
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "loading": "Ładowanie...",
+    "error": "Coś poszło nie tak",
+    "search": "Szukaj...",
+    "noResults": "Brak wyników"
+  }
+}

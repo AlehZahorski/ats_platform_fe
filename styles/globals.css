@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 16% 96%;
+    --foreground: 220 20% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 10%;
+    --border: 220 14% 88%;
+    --input: 220 14% 88%;
+    --ring: 43 96% 56%;
+    --primary: 43 96% 56%;
+    --primary-foreground: 220 20% 10%;
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 220 20% 20%;
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 10% 46%;
+    --accent: 43 96% 56%;
+    --accent-foreground: 220 20% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --sidebar: 220 20% 12%;
+    --sidebar-foreground: 220 14% 88%;
+    --sidebar-border: 220 16% 20%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 220 20% 8%;
+    --foreground: 220 14% 92%;
+    --card: 220 18% 11%;
+    --card-foreground: 220 14% 92%;
+    --border: 220 16% 18%;
+    --input: 220 16% 18%;
+    --ring: 43 96% 56%;
+    --primary: 43 96% 56%;
+    --primary-foreground: 220 20% 10%;
+    --secondary: 220 16% 16%;
+    --secondary-foreground: 220 14% 80%;
+    --muted: 220 16% 16%;
+    --muted-foreground: 220 10% 50%;
+    --accent: 43 96% 56%;
+    --accent-foreground: 220 20% 10%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --sidebar: 220 22% 7%;
+    --sidebar-foreground: 220 14% 80%;
+    --sidebar-border: 220 16% 14%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1, h2, h3 { @apply font-display; }
+}
+
+@layer utilities {
+  .animate-fade-in { animation: fade-in 0.3s ease-out both; }
+  .animate-fade-in-delay-1 { animation: fade-in 0.3s ease-out 0.1s both; }
+  .animate-fade-in-delay-2 { animation: fade-in 0.3s ease-out 0.2s both; }
+  .animate-fade-in-delay-3 { animation: fade-in 0.3s ease-out 0.3s both; }
+}
