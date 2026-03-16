@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+// Use relative URL so requests go through Next.js proxy (same origin = cookies work)
+const API_URL = "/api/v1";
 
 export const apiClient = axios.create({
   baseURL: API_URL,
@@ -11,20 +12,24 @@ export const apiClient = axios.create({
 // Track if we're already refreshing to prevent loops
 let isRefreshing = false;
 
+// Endpoints that should never trigger a redirect to login on 401
+const PUBLIC_ENDPOINTS = ["/auth/", "/applications/apply/", "/applications/track/"];
+
 apiClient.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
+    const url = originalRequest.url ?? "";
 
-    // Only try refresh once, and only for non-auth endpoints
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/")
-    ) {
+    const isPublicEndpoint = PUBLIC_ENDPOINTS.some((e) => url.includes(e));
+
+    // For public endpoints or already retried — just reject, don't redirect
+    if (isPublicEndpoint || originalRequest._retry) {
+      return Promise.reject(error);
+    }
+
+    if (error.response?.status === 401) {
       if (isRefreshing) {
-        // Already refreshing — redirect to login
-        if (typeof window !== "undefined") window.location.href = "/login";
         return Promise.reject(error);
       }
 
@@ -37,7 +42,14 @@ apiClient.interceptors.response.use(
         return apiClient.request(originalRequest);
       } catch {
         isRefreshing = false;
-        if (typeof window !== "undefined") window.location.href = "/login";
+        // Only redirect if we're in the browser and not already on login page
+        if (
+          typeof window !== "undefined" &&
+          !window.location.pathname.includes("/login") &&
+          !window.location.pathname.includes("/signup")
+        ) {
+          window.location.href = "/login";
+        }
         return Promise.reject(error);
       }
     }
