@@ -104,7 +104,9 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ ap
               <div className="space-y-4">
                 {(app.answers ?? []).map((ans) => (
                   <div key={ans.id} className="border-b border-border pb-3 last:border-0">
-                    <p className="text-xs text-muted-foreground mb-1">Field {ans.field_id.slice(0, 8)}</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">
+                      {ans.field_label ?? `Field ${ans.field_id.slice(0, 8)}`}
+                    </p>
                     <p className="text-sm text-foreground">{String(ans.value)}</p>
                   </div>
                 ))}

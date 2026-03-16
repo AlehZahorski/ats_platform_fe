@@ -60,6 +60,8 @@ export interface ApplicationList {
 export interface AnswerRead {
   id: string;
   field_id: string;
+  field_label: string | null;
+  field_type: string | null;
   value: unknown;
 }
 
