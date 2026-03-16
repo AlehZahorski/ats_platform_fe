@@ -25,6 +25,7 @@ export interface Job {
   department: string | null;
   location: string | null;
   status: JobStatus;
+  template_id: string | null;
   created_at: string;
 }
 

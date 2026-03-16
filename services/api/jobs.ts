@@ -13,4 +13,7 @@ export const jobsApi = {
     apiClient.patch<Job>(`/jobs/${id}`, data),
 
   delete: (id: string) => apiClient.delete(`/jobs/${id}`),
+
+  assignTemplate: (id: string, template_id: string | null) =>
+    apiClient.put<Job>(`/jobs/${id}/template`, { template_id }),
 };

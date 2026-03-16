@@ -2,17 +2,20 @@
 
 import { use, useState } from "react";
 import { Topbar } from "@/components/layout/Topbar";
-import { useJob, useUpdateJob, useApplications } from "@/services/queries";
+import { useJob, useUpdateJob, useApplications, useAssignTemplate } from "@/services/queries";
+import { useFormTemplates } from "@/services/queries";
 import { formatRelative } from "@/lib/utils";
 import { toast } from "sonner";
 import Link from "next/link";
-import { ChevronRight, ExternalLink } from "lucide-react";
+import { ChevronRight, ExternalLink, FileText } from "lucide-react";
 
 export default function JobDetailPage({ params }: { params: Promise<{ jobId: string }> }) {
   const { jobId } = use(params);
   const { data: job, isLoading } = useJob(jobId);
   const { data: apps } = useApplications({ job_id: jobId });
+  const { data: templates } = useFormTemplates();
   const updateJob = useUpdateJob();
+  const assignTemplate = useAssignTemplate();
 
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ title: "", department: "", location: "", status: "" });
@@ -31,8 +34,20 @@ export default function JobDetailPage({ params }: { params: Promise<{ jobId: str
     } catch { toast.error("Failed to update job"); }
   };
 
+  const handleTemplateChange = async (templateId: string) => {
+    try {
+      await assignTemplate.mutateAsync({
+        id: jobId,
+        template_id: templateId === "none" ? null : templateId,
+      });
+      toast.success(templateId === "none" ? "Template removed" : "Template assigned");
+    } catch { toast.error("Failed to update template"); }
+  };
+
   if (isLoading) return <div className="p-6"><div className="h-64 bg-card border border-border rounded-xl animate-pulse" /></div>;
   if (!job) return <div className="p-6 text-muted-foreground">Job not found</div>;
+
+  const assignedTemplate = templates?.find((t) => t.id === job.template_id);
 
   return (
     <div>
@@ -140,8 +155,54 @@ export default function JobDetailPage({ params }: { params: Promise<{ jobId: str
           )}
         </div>
 
-        {/* Applications for this job */}
+        {/* Form template assignment */}
         <div className="bg-card border border-border rounded-xl p-6 animate-fade-in-delay-1">
+          <div className="flex items-center gap-2 mb-4">
+            <FileText className="w-4 h-4 text-primary" />
+            <h3 className="font-semibold text-foreground">Application Form</h3>
+          </div>
+
+          {assignedTemplate ? (
+            <div className="flex items-center justify-between p-3 bg-primary/5 border border-primary/20 rounded-lg mb-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">{assignedTemplate.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{assignedTemplate.fields?.length ?? 0} fields</p>
+              </div>
+              <Link href="/dashboard/forms" className="text-xs text-primary hover:underline font-medium">
+                Edit template
+              </Link>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground mb-3">No form template assigned — candidates will only submit basic info.</p>
+          )}
+
+          <div className="flex items-center gap-3">
+            <select
+              value={job.template_id ?? "none"}
+              onChange={(e) => handleTemplateChange(e.target.value)}
+              disabled={assignTemplate.isPending}
+              className="flex-1 px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+            >
+              <option value="none">No template</option>
+              {templates?.map((t) => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+            {assignTemplate.isPending && (
+              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            )}
+          </div>
+
+          {!templates?.length && (
+            <p className="text-xs text-muted-foreground mt-2">
+              No templates yet.{" "}
+              <Link href="/dashboard/forms" className="text-primary hover:underline">Create one</Link>
+            </p>
+          )}
+        </div>
+
+        {/* Applications for this job */}
+        <div className="bg-card border border-border rounded-xl p-6 animate-fade-in-delay-2">
           <h3 className="font-semibold text-foreground mb-4">
             Applications <span className="text-muted-foreground text-sm font-normal ml-1">({apps?.total ?? 0})</span>
           </h3>

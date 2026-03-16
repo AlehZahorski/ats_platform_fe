@@ -50,3 +50,15 @@ export function useDeleteJob() {
     onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
   });
 }
+
+export function useAssignTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, template_id }: { id: string; template_id: string | null }) =>
+      jobsApi.assignTemplate(id, template_id).then((r) => r.data),
+    onSuccess: (_, { id }) => {
+      qc.invalidateQueries({ queryKey: jobKeys.all });
+      qc.invalidateQueries({ queryKey: jobKeys.detail(id) });
+    },
+  });
+}
