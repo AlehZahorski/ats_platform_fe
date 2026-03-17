@@ -142,4 +142,10 @@ export interface ApplicationTracking {
   stage: PipelineStage | null;
   stage_history: StageHistory[];
   created_at: string;
+  job: {
+    id: string;
+    title: string;
+    department: string | null;
+    location: string | null;
+  } | null;
 }
