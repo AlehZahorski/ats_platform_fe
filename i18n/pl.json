@@ -10,7 +10,9 @@
     "reports": "Raporty",
     "settings": "Ustawienia",
     "automations": "Automatyzacje",
-    "emailTemplates": "Szablony e-mail"
+    "emailTemplates": "Szablony e-mail",
+    "logout": "Wyloguj się",
+    "gdpr": "RODO"
   },
   "auth": {
     "login": "Zaloguj się",

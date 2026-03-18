@@ -3,3 +3,7 @@ export * from "./jobs.queries";
 export * from "./applications.queries";
 export * from "./pipeline.queries";
 export * from "./forms.queries";
+export * from "./email-automation.queries";
+export * from "./interviews.queries";
+export * from "./tasks-reports.queries";
+export * from "./gdpr.queries";

@@ -75,3 +75,12 @@ export function useScoreApplication(applicationId: string) {
     onSuccess: () => qc.invalidateQueries({ queryKey: appKeys.detail(applicationId) }),
   });
 }
+
+export function useBulkAction() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import("@/services/api/applications").BulkActionPayload) =>
+      applicationsApi.bulk(data).then((r) => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: appKeys.all }),
+  });
+}

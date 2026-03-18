@@ -10,7 +10,9 @@
     "reports": "Reports",
     "settings": "Settings",
     "automations": "Automations",
-    "emailTemplates": "Email Templates"
+    "emailTemplates": "Email Templates",
+    "logout": "Sign out",
+    "gdpr": "GDPR"
   },
   "auth": {
     "login": "Sign in",

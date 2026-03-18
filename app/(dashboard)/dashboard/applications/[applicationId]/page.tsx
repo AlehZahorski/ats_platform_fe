@@ -1,12 +1,13 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import { Topbar } from "@/components/layout/Topbar";
 import { useApplication, useNotes, useAddNote, usePipelineStages, useUpdateStage, useScoreApplication } from "@/services/queries";
 import { formatDate, formatRelative } from "@/lib/utils";
 import { FileText, Mail, Phone, Send, Download, Star } from "lucide-react";
-import { useState } from "react";
 import { toast } from "sonner";
+import { InterviewsSection } from "@/components/interviews/InterviewsSection";
+import { GdprSection } from "@/components/gdpr/GdprSection";
 
 export default function ApplicationDetailPage({ params }: { params: Promise<{ applicationId: string }> }) {
   const { applicationId } = use(params);
@@ -197,6 +198,12 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ ap
               </div>
             </div>
           )}
+
+          {/* Interviews */}
+          <InterviewsSection applicationId={app.id} />
+
+          {/* GDPR */}
+          <GdprSection applicationId={app.id} />
         </div>
       </div>
     </div>

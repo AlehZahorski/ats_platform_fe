@@ -1,6 +1,18 @@
 import apiClient from "./client";
 import type { Application, ApplicationList, ApplicationTracking, CandidateScore, Note, Tag } from "@/types";
 
+export interface BulkActionPayload {
+  application_ids: string[];
+  action: "stage_change" | "reject" | "tag";
+  payload: Record<string, string>;
+}
+
+export interface BulkResult {
+  updated: number;
+  failed: number;
+  action: string;
+}
+
 export const applicationsApi = {
   list: (params?: { job_id?: string; stage_id?: string; search?: string; skip?: number; limit?: number }) =>
     apiClient.get<ApplicationList>("/applications", { params }),
@@ -35,4 +47,7 @@ export const applicationsApi = {
 
   removeTag: (id: string, tag_id: string) =>
     apiClient.delete(`/tags/applications/${id}/tags/${tag_id}`),
+
+  bulk: (data: BulkActionPayload) =>
+    apiClient.post<BulkResult>("/applications/bulk", data),
 };
