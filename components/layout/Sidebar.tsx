@@ -67,7 +67,7 @@ export function Sidebar() {
           <ChevronRight className="w-5 h-5 text-primary-foreground" strokeWidth={3} />
         </div>
         <span className="font-display font-bold text-lg text-sidebar-foreground tracking-tight">
-          TalentFlow
+          TalentMatch
         </span>
       </div>
 

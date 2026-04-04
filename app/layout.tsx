@@ -5,8 +5,8 @@ import { Providers } from "@/components/layout/Providers";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "ATS Platform",
-  description: "Modern Applicant Tracking System",
+  title: "TalentMatch",
+  description: "TalentMatch Applicant Tracking System",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

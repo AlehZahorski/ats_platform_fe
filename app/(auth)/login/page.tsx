@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useLogin } from "@/services/queries";
 
@@ -16,6 +17,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const t = useTranslations("auth");
   const login = useLogin();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -26,7 +28,7 @@ export default function LoginPage() {
       await login.mutateAsync(data);
       router.push("/dashboard");
     } catch {
-      toast.error("Invalid email or password");
+      toast.error(t("invalidCredentials"));
     }
   };
 
@@ -35,14 +37,14 @@ export default function LoginPage() {
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="font-display text-3xl font-bold text-foreground">TalentFlow</h1>
-          <p className="text-muted-foreground mt-2 text-sm">Sign in to your workspace</p>
+          <h1 className="font-display text-3xl font-bold text-foreground">TalentMatch</h1>
+          <p className="text-muted-foreground mt-2 text-sm">{t("signInToWorkspace")}</p>
         </div>
 
         <div className="bg-card border border-border rounded-xl p-8 shadow-lg">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("email")}</label>
               <input
                 {...register("email")}
                 type="email"
@@ -53,7 +55,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("password")}</label>
               <input
                 {...register("password")}
                 type="password"
@@ -68,7 +70,7 @@ export default function LoginPage() {
               disabled={isSubmitting}
               className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all disabled:opacity-50"
             >
-              {isSubmitting ? "Signing in..." : "Sign in"}
+              {isSubmitting ? t("signingIn") : t("login")}
             </button>
           </form>
 
@@ -77,7 +79,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs text-muted-foreground">
-              <span className="bg-card px-2">or</span>
+              <span className="bg-card px-2">{t("or")}</span>
             </div>
           </div>
 
@@ -88,12 +90,12 @@ export default function LoginPage() {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Continue with Google
+            {t("loginWithGoogle")}
           </button>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-primary font-medium hover:underline">Create one</Link>
+            {t("noAccount")}{" "}
+            <Link href="/signup" className="text-primary font-medium hover:underline">{t("createOne")}</Link>
           </p>
         </div>
       </div>

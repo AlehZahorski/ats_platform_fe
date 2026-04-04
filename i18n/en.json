@@ -19,6 +19,7 @@
     "signup": "Create account",
     "logout": "Sign out",
     "email": "Email address",
+    "workEmail": "Work email",
     "password": "Password",
     "companyName": "Company name",
     "loginWithGoogle": "Continue with Google",
@@ -26,7 +27,15 @@
     "hasAccount": "Already have an account?",
     "verifyEmailSent": "Check your email to verify your account",
     "invalidCredentials": "Invalid email or password",
-    "createWorkspace": "Create workspace"
+    "createWorkspace": "Create workspace",
+    "signInToWorkspace": "Sign in to your workspace",
+    "setUpWorkspace": "Set up your recruitment workspace",
+    "signingIn": "Signing in...",
+    "creatingWorkspace": "Creating workspace...",
+    "passwordHint": "Min. 8 characters",
+    "or": "or",
+    "createOne": "Create one",
+    "accountCreatedCheckEmail": "Account created! Check your email to verify."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -97,7 +106,12 @@
       "reject": "Reject",
       "addTag": "Add Tag",
       "confirm": "Are you sure you want to apply this action to {count} candidates?"
-    }
+    },
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "noTags": "No tags yet",
+    "bulkUpdated": "Updated {updated} candidates",
+    "bulkUpdatedWithFailed": "Updated {updated} candidates, {failed} failed"
   },
   "pipeline": {
     "title": "Pipeline",
@@ -312,7 +326,13 @@
     "trackApplication": "Track my application",
     "notAvailable": "Position Not Available",
     "notAvailableDesc": "This job posting is no longer accepting applications.",
-    "privacyNote": "Your data is processed securely and will only be used for recruitment purposes."
+    "privacyNote": "Your data is processed securely and will only be used for recruitment purposes.",
+    "formTitle": "Application Form",
+    "requiredHint": "Fields marked with * are required",
+    "requiredField": "\"{field}\" is required",
+    "submitFailed": "Failed to submit application. Please try again.",
+    "thanksForApplying": "Thank you for applying for {jobTitle}.",
+    "selectOption": "Select an option..."
   },
   "track": {
     "title": "Application Status",
@@ -324,7 +344,8 @@
     "notFound": "Application Not Found",
     "notFoundDesc": "This tracking link may be invalid or expired.",
     "congratulations": "Congratulations! Welcome to the team.",
-    "rejectedNote": "Thank you for your interest. We'll keep your profile for future opportunities."
+    "rejectedNote": "Thank you for your interest. We'll keep your profile for future opportunities.",
+    "underReview": "Under Review"
   },
   "common": {
     "save": "Save",
@@ -349,6 +370,17 @@
     "date": "Date",
     "name": "Name",
     "type": "Type",
+    "required": "Required",
+    "noDepartment": "No department",
+    "stageNames": {
+      "applied": "Applied",
+      "screening": "Screening",
+      "interview": "Interview",
+      "offer": "Offer",
+      "hired": "Hired",
+      "rejected": "Rejected",
+      "under_review": "Under Review"
+    },
     "language": {
       "en": "English",
       "pl": "Polish"

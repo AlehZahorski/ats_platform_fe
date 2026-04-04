@@ -19,6 +19,7 @@
     "signup": "Utwórz konto",
     "logout": "Wyloguj się",
     "email": "Adres e-mail",
+    "workEmail": "Służbowy e-mail",
     "password": "Hasło",
     "companyName": "Nazwa firmy",
     "loginWithGoogle": "Kontynuuj z Google",
@@ -26,7 +27,15 @@
     "hasAccount": "Masz już konto?",
     "verifyEmailSent": "Sprawdź e-mail, aby zweryfikować konto",
     "invalidCredentials": "Nieprawidłowy e-mail lub hasło",
-    "createWorkspace": "Utwórz przestrzeń roboczą"
+    "createWorkspace": "Utwórz przestrzeń roboczą",
+    "signInToWorkspace": "Zaloguj się do swojej przestrzeni roboczej",
+    "setUpWorkspace": "Skonfiguruj swoją przestrzeń rekrutacyjną",
+    "signingIn": "Logowanie...",
+    "creatingWorkspace": "Tworzenie przestrzeni roboczej...",
+    "passwordHint": "Min. 8 znaków",
+    "or": "lub",
+    "createOne": "Utwórz konto",
+    "accountCreatedCheckEmail": "Konto utworzone! Sprawdź e-mail, aby je zweryfikować."
   },
   "dashboard": {
     "title": "Panel",
@@ -97,7 +106,12 @@
       "reject": "Odrzuć",
       "addTag": "Dodaj tag",
       "confirm": "Czy na pewno chcesz zastosować tę akcję do {count} kandydatów?"
-    }
+    },
+    "selectAll": "Zaznacz wszystko",
+    "deselectAll": "Odznacz wszystko",
+    "noTags": "Brak tagów",
+    "bulkUpdated": "Zaktualizowano {updated} kandydatów",
+    "bulkUpdatedWithFailed": "Zaktualizowano {updated} kandydatów, {failed} nie powiodło się"
   },
   "pipeline": {
     "title": "Pipeline",
@@ -312,7 +326,13 @@
     "trackApplication": "Śledź moją aplikację",
     "notAvailable": "Stanowisko niedostępne",
     "notAvailableDesc": "To ogłoszenie nie przyjmuje już aplikacji.",
-    "privacyNote": "Twoje dane są przetwarzane bezpiecznie i będą wykorzystywane wyłącznie w celach rekrutacyjnych."
+    "privacyNote": "Twoje dane są przetwarzane bezpiecznie i będą wykorzystywane wyłącznie w celach rekrutacyjnych.",
+    "formTitle": "Formularz aplikacyjny",
+    "requiredHint": "Pola oznaczone * są wymagane",
+    "requiredField": "\"{field}\" jest wymagane",
+    "submitFailed": "Nie udało się wysłać aplikacji. Spróbuj ponownie.",
+    "thanksForApplying": "Dziękujemy za aplikację na stanowisko {jobTitle}.",
+    "selectOption": "Wybierz opcję..."
   },
   "track": {
     "title": "Status aplikacji",
@@ -324,7 +344,8 @@
     "notFound": "Nie znaleziono aplikacji",
     "notFoundDesc": "Ten link śledzenia może być nieprawidłowy lub wygasły.",
     "congratulations": "Gratulacje! Witaj w zespole.",
-    "rejectedNote": "Dziękujemy za zainteresowanie. Zachowamy Twój profil na przyszłość."
+    "rejectedNote": "Dziękujemy za zainteresowanie. Zachowamy Twój profil na przyszłość.",
+    "underReview": "W trakcie oceny"
   },
   "common": {
     "save": "Zapisz",
@@ -349,6 +370,17 @@
     "date": "Data",
     "name": "Nazwa",
     "type": "Typ",
+    "required": "Wymagane",
+    "noDepartment": "Brak działu",
+    "stageNames": {
+      "applied": "Aplikacja złożona",
+      "screening": "Selekcja wstępna",
+      "interview": "Rozmowa",
+      "offer": "Oferta",
+      "hired": "Zatrudniony",
+      "rejected": "Odrzucony",
+      "under_review": "W trakcie oceny"
+    },
     "language": {
       "en": "Angielski",
       "pl": "Polski"
