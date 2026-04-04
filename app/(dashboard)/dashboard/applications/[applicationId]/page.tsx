@@ -1,6 +1,8 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+import { StageNotificationModal } from "@/components/applications/StageNotificationModal";
 import { Topbar } from "@/components/layout/Topbar";
 import { useApplication, useNotes, useAddNote, usePipelineStages, useUpdateStage, useScoreApplication } from "@/services/queries";
 import { formatDate, formatRelative } from "@/lib/utils";
@@ -11,6 +13,10 @@ import { GdprSection } from "@/components/gdpr/GdprSection";
 
 export default function ApplicationDetailPage({ params }: { params: Promise<{ applicationId: string }> }) {
   const { applicationId } = use(params);
+  const t = useTranslations("applications");
+  const tn = useTranslations("notes");
+  const ts = useTranslations("scores");
+  const te = useTranslations("errors");
   const { data: app, isLoading } = useApplication(applicationId);
   const { data: notes } = useNotes(applicationId);
   const { data: stages } = usePipelineStages();
@@ -20,6 +26,7 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ ap
 
   const [noteContent, setNoteContent] = useState("");
   const [scores, setScores] = useState({ communication: 3, technical: 3, culture_fit: 3 });
+  const [pendingStageId, setPendingStageId] = useState<string | null>(null);
 
   // Initialize scores from existing data when app loads
   useEffect(() => {
@@ -38,22 +45,23 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ ap
     try {
       await addNote.mutateAsync({ content: noteContent, visible_to_candidate: false });
       setNoteContent("");
-      toast.success("Note added");
-    } catch { toast.error("Failed to add note"); }
+      toast.success(tn("added"));
+    } catch { toast.error(tn("failed")); }
   };
 
-  const handleStageChange = async (stage_id: string) => {
+  const handleStageChange = async (stage_id: string, notifyCandidate: boolean) => {
     try {
-      await updateStage.mutateAsync({ id: applicationId, stage_id });
-      toast.success("Stage updated");
-    } catch { toast.error("Failed to update stage"); }
+      await updateStage.mutateAsync({ id: applicationId, stage_id, notify_candidate: notifyCandidate });
+      toast.success(t("stageUpdated"));
+      setPendingStageId(null);
+    } catch { toast.error(t("stageUpdateFailed")); }
   };
 
   const handleScore = async () => {
     try {
       await scoreApp.mutateAsync(scores);
-      toast.success("Score saved");
-    } catch { toast.error("Failed to save score"); }
+      toast.success(ts("saved"));
+    } catch { toast.error(te("generic")); }
   };
 
   if (isLoading) return <div className="p-6"><div className="h-64 bg-card border border-border rounded-xl animate-pulse" /></div>;
@@ -147,7 +155,7 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ ap
             <div className="space-y-2">
               {stages?.map((stage) => (
                 <button key={stage.id}
-                  onClick={() => handleStageChange(stage.id)}
+                  onClick={() => setPendingStageId(stage.id)}
                   className={`w-full text-left px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     app.stage?.id === stage.id
                       ? "bg-primary text-primary-foreground"
@@ -206,6 +214,15 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ ap
           <GdprSection applicationId={app.id} />
         </div>
       </div>
+
+      {pendingStageId && (
+        <StageNotificationModal
+          isPending={updateStage.isPending}
+          onClose={() => setPendingStageId(null)}
+          onSendEmail={() => handleStageChange(pendingStageId, true)}
+          onSkipEmail={() => handleStageChange(pendingStageId, false)}
+        />
+      )}
     </div>
   );
 }

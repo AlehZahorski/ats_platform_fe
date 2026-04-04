@@ -98,8 +98,16 @@
     "applicationAnswers": "Application Answers",
     "noAnswers": "No form answers",
     "stageUpdated": "Stage updated",
+    "stageUpdateFailed": "Failed to update stage",
     "scoreSaved": "Score saved",
     "notFound": "Application not found",
+    "notifyCandidatePrompt": "Send email notification to the candidate about this stage change?",
+    "notificationModal": {
+      "title": "Send candidate notification?",
+      "description": "Do you want to email {count, plural, one {the candidate} other {the selected candidates}} about this stage change?",
+      "sendEmail": "Send email",
+      "withoutEmail": "Change without email"
+    },
     "bulkActions": {
       "selected": "{count} selected",
       "changeStage": "Change Stage",
@@ -117,7 +125,23 @@
     "title": "Pipeline",
     "noCandidates": "No candidates",
     "stageUpdated": "Stage updated",
-    "dragToMove": "Drag cards to move candidates"
+    "dragToMove": "Drag cards to move candidates",
+    "manageStages": "Manage stages",
+    "newStagePlaceholder": "New stage name",
+    "addStage": "Add stage",
+    "rename": "Rename",
+    "delete": "Delete stage",
+    "moveLeft": "Move left",
+    "moveRight": "Move right",
+    "renamePrompt": "Enter a new stage name",
+    "stageCreated": "Stage created",
+    "stageRenamed": "Stage renamed",
+    "stageDeleted": "Stage deleted",
+    "stageReordered": "Stage order updated",
+    "stageDeleteBlocked": "This stage cannot be deleted because it is already used",
+    "stageUpdateFailed": "Failed to update stage",
+    "stageCreateFailed": "Failed to create stage",
+    "stageDeleteFailed": "Failed to delete stage"
   },
   "forms": {
     "title": "Form Templates",

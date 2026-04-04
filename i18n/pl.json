@@ -98,8 +98,16 @@
     "applicationAnswers": "Odpowiedzi z formularza",
     "noAnswers": "Brak odpowiedzi",
     "stageUpdated": "Etap zaktualizowany",
+    "stageUpdateFailed": "Nie udało się zaktualizować etapu",
     "scoreSaved": "Ocena zapisana",
     "notFound": "Nie znaleziono aplikacji",
+    "notifyCandidatePrompt": "Wysłać kandydatowi powiadomienie e-mail o zmianie etapu?",
+    "notificationModal": {
+      "title": "Wysłać powiadomienie do kandydata?",
+      "description": "Czy chcesz wysłać e-mail {count, plural, one {do kandydata} other {do zaznaczonych kandydatów}} o tej zmianie etapu?",
+      "sendEmail": "Wyślij e-mail",
+      "withoutEmail": "Zmień bez e-maila"
+    },
     "bulkActions": {
       "selected": "{count} zaznaczonych",
       "changeStage": "Zmień etap",
@@ -117,7 +125,23 @@
     "title": "Pipeline",
     "noCandidates": "Brak kandydatów",
     "stageUpdated": "Etap zaktualizowany",
-    "dragToMove": "Przeciągnij karty, aby przenosić kandydatów"
+    "dragToMove": "Przeciągnij karty, aby przenosić kandydatów",
+    "manageStages": "Zarządzaj etapami",
+    "newStagePlaceholder": "Nazwa nowego etapu",
+    "addStage": "Dodaj etap",
+    "rename": "Zmień nazwę",
+    "delete": "Usuń etap",
+    "moveLeft": "Przesuń w lewo",
+    "moveRight": "Przesuń w prawo",
+    "renamePrompt": "Wpisz nową nazwę etapu",
+    "stageCreated": "Etap utworzony",
+    "stageRenamed": "Nazwa etapu została zmieniona",
+    "stageDeleted": "Etap usunięty",
+    "stageReordered": "Kolejność etapów została zaktualizowana",
+    "stageDeleteBlocked": "Nie można usunąć tego etapu, ponieważ jest już używany",
+    "stageUpdateFailed": "Nie udało się zaktualizować etapu",
+    "stageCreateFailed": "Nie udało się utworzyć etapu",
+    "stageDeleteFailed": "Nie udało się usunąć etapu"
   },
   "forms": {
     "title": "Szablony formularzy",

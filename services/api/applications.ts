@@ -4,7 +4,7 @@ import type { Application, ApplicationList, ApplicationTracking, CandidateScore,
 export interface BulkActionPayload {
   application_ids: string[];
   action: "stage_change" | "reject" | "tag";
-  payload: Record<string, string>;
+  payload: Record<string, string | boolean>;
 }
 
 export interface BulkResult {

@@ -41,6 +41,10 @@ export interface PipelineStage {
   order_index: number;
 }
 
+export interface PipelineStageMutation {
+  name: string;
+}
+
 // ─── Applications ────────────────────────────────────────────────────────────
 export interface ApplicationListItem {
   id: string;

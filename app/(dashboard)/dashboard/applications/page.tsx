@@ -17,6 +17,7 @@ import {
   Tag,
   XCircle,
 } from "lucide-react";
+import { StageNotificationModal } from "@/components/applications/StageNotificationModal";
 import { Topbar } from "@/components/layout/Topbar";
 import { tagsApi } from "@/services/api/tags";
 import { useApplications, useBulkAction, usePipelineStages } from "@/services/queries";
@@ -35,10 +36,14 @@ function BulkToolbar({
   selectedIds,
   onClear,
   onAction,
+  onRequestStageNotification,
+  onRequestRejectNotification,
 }: {
   selectedIds: string[];
   onClear: () => void;
-  onAction: (action: "stage_change" | "reject" | "tag", payload: Record<string, string>) => void;
+  onAction: (action: "stage_change" | "reject" | "tag", payload: Record<string, string | boolean>) => void;
+  onRequestStageNotification: (stageId: string) => void;
+  onRequestRejectNotification: () => void;
 }) {
   const t = useTranslations("applications.bulkActions");
   const tApplications = useTranslations("applications");
@@ -90,9 +95,7 @@ function BulkToolbar({
                   key={stage.id}
                   onClick={() => {
                     setShowStages(false);
-                    if (confirm(t("confirm", { count: selectedIds.length }))) {
-                      onAction("stage_change", { stage_id: stage.id });
-                    }
+                    onRequestStageNotification(stage.id);
                   }}
                   className="w-full text-left px-3.5 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
                 >
@@ -124,9 +127,7 @@ function BulkToolbar({
                   key={tag.id}
                   onClick={() => {
                     setShowTags(false);
-                    if (confirm(t("confirm", { count: selectedIds.length }))) {
-                      onAction("tag", { tag_id: tag.id });
-                    }
+                    onAction("tag", { tag_id: tag.id });
                   }}
                   className="w-full text-left px-3.5 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
                 >
@@ -139,9 +140,7 @@ function BulkToolbar({
 
         <button
           onClick={() => {
-            if (confirm(t("confirm", { count: selectedIds.length }))) {
-              onAction("reject", {});
-            }
+            onRequestRejectNotification();
           }}
           className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-all"
         >
@@ -168,6 +167,10 @@ export default function ApplicationsPage() {
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [pendingNotificationAction, setPendingNotificationAction] = useState<{
+    action: "stage_change" | "reject";
+    payload: Record<string, string | boolean>;
+  } | null>(null);
 
   const { data: stages } = usePipelineStages();
   const { data, isLoading } = useApplications({
@@ -208,7 +211,7 @@ export default function ApplicationsPage() {
 
   const handleBulkAction = async (
     action: "stage_change" | "reject" | "tag",
-    payload: Record<string, string>
+    payload: Record<string, string | boolean>
   ) => {
     try {
       const result = await bulkMutation.mutateAsync({
@@ -225,6 +228,8 @@ export default function ApplicationsPage() {
       setSelectedIds(new Set());
     } catch {
       toast.error(tc("error"));
+    } finally {
+      setPendingNotificationAction(null);
     }
   };
 
@@ -357,6 +362,32 @@ export default function ApplicationsPage() {
           selectedIds={Array.from(selectedIds)}
           onClear={() => setSelectedIds(new Set())}
           onAction={handleBulkAction}
+          onRequestStageNotification={(stageId) =>
+            setPendingNotificationAction({ action: "stage_change", payload: { stage_id: stageId } })
+          }
+          onRequestRejectNotification={() =>
+            setPendingNotificationAction({ action: "reject", payload: {} })
+          }
+        />
+      )}
+
+      {pendingNotificationAction && (
+        <StageNotificationModal
+          count={selectedIds.size}
+          isPending={bulkMutation.isPending}
+          onClose={() => setPendingNotificationAction(null)}
+          onSendEmail={() =>
+            handleBulkAction(pendingNotificationAction.action, {
+              ...pendingNotificationAction.payload,
+              notify_candidate: true,
+            })
+          }
+          onSkipEmail={() =>
+            handleBulkAction(pendingNotificationAction.action, {
+              ...pendingNotificationAction.payload,
+              notify_candidate: false,
+            })
+          }
         />
       )}
     </div>
