@@ -54,6 +54,20 @@
     "new": "Nowa oferta",
     "edit": "Edytuj ofertę",
     "delete": "Usuń ofertę",
+    "created": "Oferta została utworzona",
+    "deleted": "Oferta została usunięta",
+    "saved": "Oferta została zapisana",
+    "createDraft": "Utwórz szkic",
+    "saveOffer": "Zapisz ofertę",
+    "createFailed": "Nie udało się utworzyć oferty",
+    "deleteFailed": "Nie udało się usunąć oferty",
+    "updateFailed": "Nie udało się zaktualizować oferty",
+    "templateUpdateFailed": "Nie udało się zaktualizować szablonu",
+    "notFound": "Nie znaleziono oferty",
+    "createdAt": "Utworzono {value}",
+    "applicationsTitle": "Aplikacje",
+    "noAssignedTemplate": "Nie przypisano jeszcze szablonu formularza aplikacyjnego.",
+    "fieldsCount": "{count} pól",
     "deleteConfirm": "Usunąć tę ofertę pracy?",
     "noJobs": "Brak ofert pracy",
     "noJobsDesc": "Utwórz pierwsze ogłoszenie, aby zacząć",
@@ -79,7 +93,163 @@
     "applyLink": "Link do aplikacji",
     "noApplications": "Brak aplikacji",
     "assignTemplate": "Szablon przypisany",
-    "templateRemoved": "Szablon usunięty"
+    "templateRemoved": "Szablon usunięty",
+    "publish": {
+      "ready": "Gotowe do publikacji",
+      "gaps": "{count} braków",
+      "readyTitle": "Oferta gotowa do publikacji",
+      "needsWorkTitle": "Oferta wymaga uzupełnienia",
+      "readyDescription": "Ta oferta zawiera kluczowe informacje, których kandydaci oczekują przed aplikacją.",
+      "needsWorkDescription": "Oferta może zostać otwarta dopiero wtedy, gdy jej podstawowe elementy są kompletne i jasne."
+    },
+    "sections": {
+      "roleClarity": {
+        "title": "Jasność roli",
+        "description": "Spraw, aby rola była zrozumiała w kilka sekund i wyjaśnij, po co istnieje."
+      },
+      "expectations": {
+        "title": "Obowiązki i oczekiwania",
+        "description": "Opisz realną pracę, oczekiwane rezultaty i to, jak będzie oceniany sukces."
+      },
+      "candidateFit": {
+        "title": "Dopasowanie kandydata",
+        "description": "Ustal jasne oczekiwania, aby właściwi kandydaci aplikowali, a niewłaściwi sami rezygnowali."
+      },
+      "techContext": {
+        "title": "Kontekst technologiczny i domenowy",
+        "description": "Pokaż stack, produkt i domenę, aby kandydaci szybko ocenili trafność oferty."
+      },
+      "teamContext": {
+        "title": "Kontekst zespołu i organizacji",
+        "description": "Daj kandydatom szerszy obraz tego, gdzie ta rola znajduje się w firmie."
+      },
+      "transparency": {
+        "title": "Transparentność i wartość dla kandydata",
+        "description": "Jasno pokaż wynagrodzenie, typ współpracy, tryb pracy i powody, dla których warto dołączyć."
+      },
+      "hiringProcess": {
+        "title": "Proces rekrutacji i konfiguracja aplikacji",
+        "description": "Zmniejsz niepewność kandydatów i spraw, aby oferta była gotowa do użycia w każdym kanale."
+      }
+    },
+    "fields": {
+      "roleSummary": {
+        "label": "Podsumowanie roli",
+        "placeholder": "Wyjaśnij, czym jest ta rola, co ta osoba będzie robić i dlaczego to ma znaczenie."
+      },
+      "rolePurpose": {
+        "label": "Cel roli",
+        "placeholder": "Opisz, dlaczego ta rola istnieje i jaki problem biznesowy rozwiązuje."
+      },
+      "description": {
+        "label": "Dodatkowy opis",
+        "placeholder": "Opcjonalny dłuższy opis z dodatkowym kontekstem o firmie lub roli."
+      },
+      "responsibilities": {
+        "label": "Obowiązki",
+        "placeholder": "Jeden obowiązek w każdej linii"
+      },
+      "successProfile": {
+        "label": "Jak wygląda sukces w pierwszych 3-6 miesiącach",
+        "placeholder": "Opisz wyniki, cele i kamienie milowe oczekiwane od osoby na tym stanowisku."
+      },
+      "seniority": {
+        "label": "Seniority",
+        "placeholder": "Wybierz poziom"
+      },
+      "experienceMin": {
+        "label": "Minimalne doświadczenie (lata)"
+      },
+      "experienceMax": {
+        "label": "Maksymalne doświadczenie (lata)"
+      },
+      "mustHaves": {
+        "label": "Wymagania obowiązkowe",
+        "placeholder": "Jedno wymaganie obowiązkowe w każdej linii"
+      },
+      "niceToHaves": {
+        "label": "Mile widziane",
+        "placeholder": "Jedna pozycja mile widziana w każdej linii"
+      },
+      "techStack": {
+        "label": "Stack technologiczny",
+        "placeholder": "Jedna technologia w każdej linii"
+      },
+      "domainContext": {
+        "label": "Kontekst produktu / domeny / branży",
+        "placeholder": "Wyjaśnij produkt, domenę i kontekst rynkowy, w którym działa ta rola."
+      },
+      "teamContext": {
+        "label": "Kontekst zespołu",
+        "placeholder": "Opisz zespół, jego misję i miejsce tej roli."
+      },
+      "reportingTo": {
+        "label": "Raportuje do",
+        "placeholder": "np. Engineering Manager"
+      },
+      "salaryMin": {
+        "label": "Widełki od"
+      },
+      "salaryMax": {
+        "label": "Widełki do"
+      },
+      "salaryCurrency": {
+        "label": "Waluta"
+      },
+      "salaryPeriod": {
+        "label": "Okres wynagrodzenia",
+        "placeholder": "Wybierz okres"
+      },
+      "workMode": {
+        "label": "Tryb pracy",
+        "placeholder": "Wybierz tryb"
+      },
+      "contractType": {
+        "label": "Typ współpracy",
+        "placeholder": "Wybierz typ współpracy"
+      },
+      "remoteConstraints": {
+        "label": "Ograniczenia pracy zdalnej / dostępność",
+        "placeholder": "Wyjaśnij wymagania stref czasowych, ograniczenia krajowe, oczekiwania dotyczące podróży lub zasady pracy zdalnej."
+      },
+      "valueProposition": {
+        "label": "Dlaczego warto dołączyć?",
+        "placeholder": "Opisz wpływ, rozwój, autonomię, misję i sensowne powody, by dołączyć."
+      },
+      "benefits": {
+        "label": "Benefity",
+        "placeholder": "Jeden benefit w każdej linii"
+      },
+      "hiringProcess": {
+        "label": "Proces rekrutacji",
+        "placeholder": "Jeden etap procesu w każdej linii"
+      }
+    },
+    "options": {
+      "seniority": {
+        "junior": "Junior",
+        "mid": "Mid",
+        "senior": "Senior",
+        "lead": "Lead"
+      },
+      "salaryPeriod": {
+        "hour": "Godzina",
+        "month": "Miesiąc",
+        "year": "Rok"
+      },
+      "workMode": {
+        "remote": "Zdalnie",
+        "hybrid": "Hybrydowo",
+        "onsite": "Stacjonarnie"
+      },
+      "contractType": {
+        "employment": "Umowa o pracę",
+        "b2b": "B2B",
+        "contract": "Umowa",
+        "internship": "Staż",
+        "temporary": "Praca tymczasowa"
+      }
+    }
   },
   "applications": {
     "title": "Aplikacje",
@@ -266,6 +436,40 @@
     "candidates": "kandydatów",
     "conversion": "Współczynnik konwersji"
   },
+  "reviews": {
+    "title": "Oceny Hiring Managera",
+    "assigned": "Ocena została przypisana",
+    "submitted": "Scorecard został wysłany",
+    "assign": "Przypisz ocenę",
+    "selectReviewer": "Wybierz hiring managera",
+    "selectTemplate": "Wybierz szablon scorecard",
+    "noAssignments": "Brak przypisanych ocen hiring managera",
+    "fillScorecard": "Wypełnij scorecard",
+    "editReview": "Edytuj ocenę",
+    "criterionComment": "Dodaj feedback do tego kryterium",
+    "overallComment": "Ogólny feedback hiring managera",
+    "submit": "Wyślij scorecard",
+    "dueDateLabel": "Termin review",
+    "dueAt": "Termin {date}",
+    "submittedAt": "Wysłano {date}",
+    "averageScore": "Średnia ocena {score}",
+    "status": {
+      "pending": "Oczekuje",
+      "submitted": "Wysłano"
+    },
+    "summary": {
+      "total": "{count} przypisanych",
+      "pending": "{count} oczekujących",
+      "submitted": "{count} wysłanych",
+      "average": "Śr. {score}"
+    },
+    "recommendations": {
+      "strong_yes": "Zdecydowanie tak",
+      "yes": "Tak",
+      "no": "Nie",
+      "strong_no": "Zdecydowanie nie"
+    }
+  },
   "emailTemplates": {
     "title": "Szablony e-mail",
     "new": "Nowy szablon",
@@ -355,8 +559,113 @@
     "requiredHint": "Pola oznaczone * są wymagane",
     "requiredField": "\"{field}\" jest wymagane",
     "submitFailed": "Nie udało się wysłać aplikacji. Spróbuj ponownie.",
+    "cvSelected": "Wybrany plik: {name}",
     "thanksForApplying": "Dziękujemy za aplikację na stanowisko {jobTitle}.",
-    "selectOption": "Wybierz opcję..."
+    "selectOption": "Wybierz opcję...",
+    "jobOffer": {
+      "sections": {
+        "roleSummary": "Podsumowanie roli",
+        "rolePurpose": "Dlaczego ta rola istnieje",
+        "responsibilities": "Obowiązki",
+        "mustHaves": "Wymagania obowiązkowe",
+        "niceToHaves": "Mile widziane",
+        "techStack": "Stack technologiczny",
+        "benefits": "Benefity",
+        "hiringProcess": "Proces rekrutacji",
+        "domainContext": "Kontekst produktu / domeny",
+        "teamContext": "Kontekst zespołu",
+        "successProfile": "Jak wygląda sukces",
+        "valueProposition": "Dlaczego warto dołączyć"
+      },
+      "cards": {
+        "salary": "Wynagrodzenie",
+        "workMode": "Tryb pracy",
+        "contract": "Typ współpracy",
+        "experienceLevel": "Poziom doświadczenia"
+      },
+      "values": {
+        "roleFallback": "Rola",
+        "years": "lat",
+        "salaryPeriod": {
+          "hour": "godzina",
+          "month": "miesiąc",
+          "year": "rok"
+        },
+        "workMode": {
+          "remote": "Zdalnie",
+          "hybrid": "Hybrydowo",
+          "onsite": "Stacjonarnie"
+        },
+        "contractType": {
+          "employment": "Umowa o pracę",
+          "b2b": "B2B",
+          "contract": "Umowa",
+          "internship": "Staż",
+          "temporary": "Praca tymczasowa"
+        },
+        "seniority": {
+          "junior": "Junior",
+          "mid": "Mid",
+          "senior": "Senior",
+          "lead": "Lead"
+        }
+      }
+    },
+    "jobBoard": {
+      "eyebrow": "Oferty TalentMatch",
+      "title": "Znajdź swoją kolejną rolę",
+      "description": "Przeglądaj otwarte role, wyszukuj najlepiej dopasowane oferty i przejdź do aplikacji w kilka minut.",
+      "searchPlaceholder": "Szukaj po stanowisku, zespole lub lokalizacji...",
+      "results": "{count} otwartych ofert",
+      "emptyTitle": "Brak pasujących ofert",
+      "emptyDescription": "Spróbuj innej frazy albo wróć później po nowe ogłoszenia.",
+      "viewOffer": "Zobacz ofertę",
+      "filters": {
+        "title": "Filtry",
+        "clear": "Wyczyść",
+        "location": "Lokalizacja",
+        "locationPlaceholder": "Miasto, kraj lub region pracy zdalnej",
+        "workMode": "Tryb pracy",
+        "anyWorkMode": "Dowolny tryb pracy",
+        "contractType": "Typ współpracy",
+        "anyContractType": "Dowolny typ współpracy",
+        "salary": "Wynagrodzenie",
+        "salaryMin": "Od",
+        "salaryMax": "Do"
+      },
+      "values": {
+        "salaryPeriod": {
+          "hour": "godzina",
+          "month": "miesiąc",
+          "year": "rok"
+        },
+        "workMode": {
+          "remote": "Zdalnie",
+          "hybrid": "Hybrydowo",
+          "onsite": "Stacjonarnie"
+        },
+        "contractType": {
+          "employment": "Umowa o pracę",
+          "b2b": "B2B",
+          "contract": "Umowa",
+          "internship": "Staż",
+          "temporary": "Praca tymczasowa"
+        }
+      }
+    },
+    "duplicateModal": {
+      "title": "Wykryto możliwego duplikata kandydata",
+      "description": "Znaleźliśmy istniejącą aplikację z tym samym adresem e-mail lub numerem telefonu. Możesz użyć istniejącej aplikacji albo kontynuować mimo ostrzeżenia.",
+      "continue": "Kontynuuj mimo to",
+      "reuse": "Użyj istniejącej",
+      "unknownJob": "Istniejąca aplikacja",
+      "createdAt": "Utworzono {date}",
+      "stage": "Etap: {stage}",
+      "reasons": {
+        "email": "Dopasowanie po e-mailu",
+        "phone": "Dopasowanie po telefonie"
+      }
+    }
   },
   "track": {
     "title": "Status aplikacji",

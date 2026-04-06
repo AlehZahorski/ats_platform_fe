@@ -14,5 +14,7 @@ export const authApi = {
 
   me: () => apiClient.get<User>("/auth/me"),
 
+  listUsers: (params?: { role?: string }) => apiClient.get<User[]>("/users", { params }),
+
   googleLogin: () => apiClient.get<{ url: string; state: string }>("/auth/google"),
 };

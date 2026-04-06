@@ -6,6 +6,7 @@ export const jobKeys = {
   all: ["jobs"] as const,
   list: (params?: object) => ["jobs", "list", params] as const,
   detail: (id: string) => ["jobs", "detail", id] as const,
+  publicList: (params?: object) => ["jobs", "public-list", params] as const,
 };
 
 export function useJobs(params?: { status?: string }) {
@@ -23,10 +24,17 @@ export function useJob(id: string) {
   });
 }
 
+export function usePublicJobs(params?: { q?: string }) {
+  return useQuery({
+    queryKey: jobKeys.publicList(params),
+    queryFn: () => jobsApi.listPublic(params).then((r) => r.data),
+  });
+}
+
 export function useCreateJob() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: Partial<Job>) => jobsApi.create(data).then((r) => r.data),
+    mutationFn: (data: import("@/services/api/jobs").JobPayload) => jobsApi.create(data).then((r) => r.data),
     onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
   });
 }
@@ -34,7 +42,7 @@ export function useCreateJob() {
 export function useUpdateJob() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<Job> }) =>
+    mutationFn: ({ id, data }: { id: string; data: Partial<import("@/services/api/jobs").JobPayload> }) =>
       jobsApi.update(id, data).then((r) => r.data),
     onSuccess: (_, { id }) => {
       qc.invalidateQueries({ queryKey: jobKeys.all });

@@ -1,18 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Topbar } from "@/components/layout/Topbar";
 import { useJobs, useCreateJob, useDeleteJob } from "@/services/queries";
 import { formatRelative } from "@/lib/utils";
 import { Plus, Briefcase, MapPin, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function JobsPage() {
+  const t = useTranslations("jobs");
+  const tc = useTranslations("common");
+  const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
   const [title, setTitle] = useState("");
   const [department, setDepartment] = useState("");
-  const [location, setLocation] = useState("");
 
   const { data, isLoading } = useJobs();
   const createJob = useCreateJob();
@@ -21,66 +25,62 @@ export default function JobsPage() {
   const handleCreate = async () => {
     if (!title.trim()) return;
     try {
-      await createJob.mutateAsync({ title, department, location, status: "draft" });
-      toast.success("Job created");
-      setTitle(""); setDepartment(""); setLocation("");
+      const job = await createJob.mutateAsync({ title, department, status: "draft" });
+      toast.success(t("created"));
+      setTitle(""); setDepartment("");
       setShowCreate(false);
+      router.push(`/dashboard/jobs/${job.id}`);
     } catch {
-      toast.error("Failed to create job");
+      toast.error(t("createFailed"));
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this job?")) return;
+    if (!confirm(t("deleteConfirm"))) return;
     try {
       await deleteJob.mutateAsync(id);
-      toast.success("Job deleted");
+      toast.success(t("deleted"));
     } catch {
-      toast.error("Failed to delete job");
+      toast.error(t("deleteFailed"));
     }
   };
 
   return (
     <div>
-      <Topbar title="Jobs" />
+      <Topbar title={t("title")} />
       <div className="p-6 space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">{data?.total ?? 0} total jobs</p>
+          <p className="text-muted-foreground text-sm">{t("total", { count: data?.total ?? 0 })}</p>
           <button
             onClick={() => setShowCreate(true)}
             className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all"
           >
-            <Plus className="w-4 h-4" /> New Job
+            <Plus className="w-4 h-4" /> {t("new")}
           </button>
         </div>
 
-        {/* Create form */}
         {showCreate && (
           <div className="bg-card border border-border rounded-xl p-6 animate-fade-in">
-            <h3 className="font-display font-semibold text-foreground mb-4">New Job Posting</h3>
+            <h3 className="font-display font-semibold text-foreground mb-4">{t("form.title")}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
               <input value={title} onChange={(e) => setTitle(e.target.value)}
-                placeholder="Job title *" className="px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                placeholder={`${t("jobTitle")} *`} className="px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
               <input value={department} onChange={(e) => setDepartment(e.target.value)}
-                placeholder="Department" className="px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-              <input value={location} onChange={(e) => setLocation(e.target.value)}
-                placeholder="Location" className="px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                placeholder={t("department")} className="px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
             <div className="flex gap-3">
               <button onClick={handleCreate} disabled={!title.trim() || createJob.isPending}
                 className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 transition-all">
-                {createJob.isPending ? "Creating..." : "Create Job"}
+                {createJob.isPending ? tc("creating") : t("createDraft")}
               </button>
               <button onClick={() => setShowCreate(false)}
                 className="px-4 py-2 border border-border text-foreground rounded-lg text-sm hover:bg-muted transition-all">
-                Cancel
+                {tc("cancel")}
               </button>
             </div>
           </div>
         )}
 
-        {/* Jobs list */}
         {isLoading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
@@ -90,8 +90,8 @@ export default function JobsPage() {
         ) : data?.items.length === 0 ? (
           <div className="text-center py-16 bg-card border border-border rounded-xl">
             <Briefcase className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-            <p className="text-foreground font-medium">No jobs yet</p>
-            <p className="text-muted-foreground text-sm mt-1">Create your first job posting to get started</p>
+            <p className="text-foreground font-medium">{t("noJobs")}</p>
+            <p className="text-muted-foreground text-sm mt-1">{t("noJobsDesc")}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -109,12 +109,20 @@ export default function JobsPage() {
                       job.status === "open" ? "bg-green-500/10 text-green-600 dark:text-green-400" :
                       job.status === "draft" ? "bg-muted text-muted-foreground" :
                       "bg-destructive/10 text-destructive"}`}>
-                      {job.status}
+                      {t(`status.${job.status}` as "status.draft" | "status.open" | "status.closed")}
                     </span>
                   </div>
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    {job.department && <span>{job.department}</span>}
-                    {job.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{job.location}</span>}
+                    <span>{job.department || tc("noDepartment")}</span>
+                    {(job.location || job.remote_constraints) && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {job.location ?? job.remote_constraints}
+                      </span>
+                    )}
+                    <span className={job.publish_ready ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}>
+                      {job.publish_ready ? t("publish.ready") : t("publish.gaps", { count: job.publish_issues.length })}
+                    </span>
                     <span>{formatRelative(job.created_at)}</span>
                   </div>
                 </div>

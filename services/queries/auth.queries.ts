@@ -13,6 +13,13 @@ export function useMe() {
   });
 }
 
+export function useUsers(params?: { role?: string }) {
+  return useQuery({
+    queryKey: ["users", params],
+    queryFn: () => authApi.listUsers(params).then((r) => r.data),
+  });
+}
+
 export function useLogin() {
   const qc = useQueryClient();
   return useMutation({

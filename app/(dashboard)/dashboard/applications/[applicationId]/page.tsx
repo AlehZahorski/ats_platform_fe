@@ -10,6 +10,14 @@ import { FileText, Mail, Phone, Send, Download, Star } from "lucide-react";
 import { toast } from "sonner";
 import { InterviewsSection } from "@/components/interviews/InterviewsSection";
 import { GdprSection } from "@/components/gdpr/GdprSection";
+import { HiringManagerReviewSection } from "@/components/reviews/HiringManagerReviewSection";
+
+function getApiErrorMessage(error: unknown): string | null {
+  const detail = (
+    error as { response?: { data?: { detail?: string } } }
+  )?.response?.data?.detail;
+  return typeof detail === "string" ? detail : null;
+}
 
 export default function ApplicationDetailPage({ params }: { params: Promise<{ applicationId: string }> }) {
   const { applicationId } = use(params);
@@ -54,7 +62,7 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ ap
       await updateStage.mutateAsync({ id: applicationId, stage_id, notify_candidate: notifyCandidate });
       toast.success(t("stageUpdated"));
       setPendingStageId(null);
-    } catch { toast.error(t("stageUpdateFailed")); }
+    } catch (error: unknown) { toast.error(getApiErrorMessage(error) ?? t("stageUpdateFailed")); }
   };
 
   const handleScore = async () => {
@@ -209,6 +217,9 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ ap
 
           {/* Interviews */}
           <InterviewsSection applicationId={app.id} />
+
+          {/* Hiring Manager Reviews */}
+          <HiringManagerReviewSection applicationId={app.id} />
 
           {/* GDPR */}
           <GdprSection applicationId={app.id} />

@@ -54,10 +54,14 @@ function InterviewForm({
       toast.error(t("scheduledAt") + " is required");
       return;
     }
+    if (!form.meeting_url.trim()) {
+      toast.error(t("meetingUrl") + " is required");
+      return;
+    }
     const payload = {
       scheduled_at: new Date(form.scheduled_at).toISOString(),
       duration_minutes: form.duration_minutes,
-      meeting_url: form.meeting_url || undefined,
+      meeting_url: form.meeting_url,
       notes: form.notes || undefined,
       status: form.status,
     };
@@ -135,7 +139,12 @@ function InterviewForm({
           <label className="block text-xs font-medium text-foreground mb-1">{tc("status")}</label>
           <select
             value={form.status}
-            onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                status: e.target.value as "scheduled" | "completed" | "cancelled",
+              }))
+            }
             className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="scheduled">{t("status.scheduled")}</option>

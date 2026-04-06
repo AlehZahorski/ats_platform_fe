@@ -54,6 +54,20 @@
     "new": "New Job",
     "edit": "Edit Job",
     "delete": "Delete Job",
+    "created": "Job created",
+    "deleted": "Job deleted",
+    "saved": "Job offer saved",
+    "createDraft": "Create draft",
+    "saveOffer": "Save offer",
+    "createFailed": "Failed to create job",
+    "deleteFailed": "Failed to delete job",
+    "updateFailed": "Failed to update job",
+    "templateUpdateFailed": "Failed to update template",
+    "notFound": "Job not found",
+    "createdAt": "Created {value}",
+    "applicationsTitle": "Applications",
+    "noAssignedTemplate": "No application form template assigned yet.",
+    "fieldsCount": "{count} fields",
     "deleteConfirm": "Delete this job?",
     "noJobs": "No jobs yet",
     "noJobsDesc": "Create your first job posting to get started",
@@ -79,7 +93,163 @@
     "applyLink": "Apply link",
     "noApplications": "No applications yet",
     "assignTemplate": "Template assigned",
-    "templateRemoved": "Template removed"
+    "templateRemoved": "Template removed",
+    "publish": {
+      "ready": "Ready to publish",
+      "gaps": "{count} gaps",
+      "readyTitle": "Publish-ready offer",
+      "needsWorkTitle": "Needs work before publish",
+      "readyDescription": "This job offer includes the key information candidates expect before applying.",
+      "needsWorkDescription": "A job can only be opened when the core offer is complete and clear."
+    },
+    "sections": {
+      "roleClarity": {
+        "title": "Role clarity",
+        "description": "Make the role understandable in seconds and explain why it exists."
+      },
+      "expectations": {
+        "title": "Responsibilities and expectations",
+        "description": "Describe the real work, expected outcomes, and how success will be judged."
+      },
+      "candidateFit": {
+        "title": "Candidate fit",
+        "description": "Set clear expectations so the right candidates apply and the wrong ones self-reject."
+      },
+      "techContext": {
+        "title": "Tech and domain context",
+        "description": "Show the stack, product, and domain so candidates can understand relevance fast."
+      },
+      "teamContext": {
+        "title": "Team and organizational context",
+        "description": "Give candidates the bigger picture of where the role sits in the company."
+      },
+      "transparency": {
+        "title": "Transparency and candidate value",
+        "description": "Be explicit about salary, contract, work mode, and why someone should join."
+      },
+      "hiringProcess": {
+        "title": "Hiring process and application setup",
+        "description": "Reduce uncertainty for candidates and make the offer reusable everywhere."
+      }
+    },
+    "fields": {
+      "roleSummary": {
+        "label": "Role summary",
+        "placeholder": "Explain what the role is, what this person will do, and why it matters."
+      },
+      "rolePurpose": {
+        "label": "Role purpose",
+        "placeholder": "Describe why this role exists and what business problem it solves."
+      },
+      "description": {
+        "label": "Additional overview",
+        "placeholder": "Optional longer overview for extra company or role context."
+      },
+      "responsibilities": {
+        "label": "Responsibilities",
+        "placeholder": "One responsibility per line"
+      },
+      "successProfile": {
+        "label": "What success looks like in the first 3-6 months",
+        "placeholder": "Describe the outcomes, goals, and milestones expected from the person in this role."
+      },
+      "seniority": {
+        "label": "Seniority",
+        "placeholder": "Select seniority"
+      },
+      "experienceMin": {
+        "label": "Experience min (years)"
+      },
+      "experienceMax": {
+        "label": "Experience max (years)"
+      },
+      "mustHaves": {
+        "label": "Must-have requirements",
+        "placeholder": "One must-have requirement per line"
+      },
+      "niceToHaves": {
+        "label": "Nice-to-have requirements",
+        "placeholder": "One nice-to-have requirement per line"
+      },
+      "techStack": {
+        "label": "Tech stack",
+        "placeholder": "One technology per line"
+      },
+      "domainContext": {
+        "label": "Product / domain / industry context",
+        "placeholder": "Explain the product, domain, and market context this role operates in."
+      },
+      "teamContext": {
+        "label": "Team context",
+        "placeholder": "Describe the team, mission, and where this role fits."
+      },
+      "reportingTo": {
+        "label": "Reporting to",
+        "placeholder": "e.g. Engineering Manager"
+      },
+      "salaryMin": {
+        "label": "Salary min"
+      },
+      "salaryMax": {
+        "label": "Salary max"
+      },
+      "salaryCurrency": {
+        "label": "Currency"
+      },
+      "salaryPeriod": {
+        "label": "Salary period",
+        "placeholder": "Select period"
+      },
+      "workMode": {
+        "label": "Work mode",
+        "placeholder": "Select mode"
+      },
+      "contractType": {
+        "label": "Contract type",
+        "placeholder": "Select contract type"
+      },
+      "remoteConstraints": {
+        "label": "Remote constraints / accessibility",
+        "placeholder": "Explain timezone requirements, country restrictions, travel expectations, or remote rules."
+      },
+      "valueProposition": {
+        "label": "Why should someone join?",
+        "placeholder": "Describe impact, growth, autonomy, mission, and meaningful reasons to join."
+      },
+      "benefits": {
+        "label": "Benefits",
+        "placeholder": "One benefit per line"
+      },
+      "hiringProcess": {
+        "label": "Hiring process",
+        "placeholder": "One hiring step per line"
+      }
+    },
+    "options": {
+      "seniority": {
+        "junior": "Junior",
+        "mid": "Mid",
+        "senior": "Senior",
+        "lead": "Lead"
+      },
+      "salaryPeriod": {
+        "hour": "Hour",
+        "month": "Month",
+        "year": "Year"
+      },
+      "workMode": {
+        "remote": "Remote",
+        "hybrid": "Hybrid",
+        "onsite": "On-site"
+      },
+      "contractType": {
+        "employment": "Employment",
+        "b2b": "B2B",
+        "contract": "Contract",
+        "internship": "Internship",
+        "temporary": "Temporary"
+      }
+    }
   },
   "applications": {
     "title": "Applications",
@@ -266,6 +436,40 @@
     "candidates": "candidates",
     "conversion": "Conversion rate"
   },
+  "reviews": {
+    "title": "Hiring Manager Reviews",
+    "assigned": "Review assigned",
+    "submitted": "Scorecard submitted",
+    "assign": "Assign review",
+    "selectReviewer": "Select hiring manager",
+    "selectTemplate": "Select scorecard template",
+    "noAssignments": "No hiring manager reviews yet",
+    "fillScorecard": "Fill scorecard",
+    "editReview": "Edit review",
+    "criterionComment": "Add feedback for this criterion",
+    "overallComment": "Overall hiring manager feedback",
+    "submit": "Submit scorecard",
+    "dueDateLabel": "Review due date",
+    "dueAt": "Due {date}",
+    "submittedAt": "Submitted {date}",
+    "averageScore": "Avg score {score}",
+    "status": {
+      "pending": "Pending",
+      "submitted": "Submitted"
+    },
+    "summary": {
+      "total": "{count} assigned",
+      "pending": "{count} pending",
+      "submitted": "{count} submitted",
+      "average": "Avg {score}"
+    },
+    "recommendations": {
+      "strong_yes": "Strong yes",
+      "yes": "Yes",
+      "no": "No",
+      "strong_no": "Strong no"
+    }
+  },
   "emailTemplates": {
     "title": "Email Templates",
     "new": "New Template",
@@ -355,8 +559,113 @@
     "requiredHint": "Fields marked with * are required",
     "requiredField": "\"{field}\" is required",
     "submitFailed": "Failed to submit application. Please try again.",
+    "cvSelected": "Selected file: {name}",
     "thanksForApplying": "Thank you for applying for {jobTitle}.",
-    "selectOption": "Select an option..."
+    "selectOption": "Select an option...",
+    "jobOffer": {
+      "sections": {
+        "roleSummary": "Role summary",
+        "rolePurpose": "Why this role exists",
+        "responsibilities": "Responsibilities",
+        "mustHaves": "Must-have requirements",
+        "niceToHaves": "Nice-to-have requirements",
+        "techStack": "Tech stack",
+        "benefits": "Benefits",
+        "hiringProcess": "Hiring process",
+        "domainContext": "Product / domain context",
+        "teamContext": "Team context",
+        "successProfile": "What success looks like",
+        "valueProposition": "Why join"
+      },
+      "cards": {
+        "salary": "Salary",
+        "workMode": "Work mode",
+        "contract": "Contract",
+        "experienceLevel": "Experience level"
+      },
+      "values": {
+        "roleFallback": "Role",
+        "years": "years",
+        "salaryPeriod": {
+          "hour": "hour",
+          "month": "month",
+          "year": "year"
+        },
+        "workMode": {
+          "remote": "Remote",
+          "hybrid": "Hybrid",
+          "onsite": "On-site"
+        },
+        "contractType": {
+          "employment": "Employment",
+          "b2b": "B2B",
+          "contract": "Contract",
+          "internship": "Internship",
+          "temporary": "Temporary"
+        },
+        "seniority": {
+          "junior": "Junior",
+          "mid": "Mid",
+          "senior": "Senior",
+          "lead": "Lead"
+        }
+      }
+    },
+    "jobBoard": {
+      "eyebrow": "TalentMatch Jobs",
+      "title": "Find your next opportunity",
+      "description": "Browse open roles, search what fits you best, and open any offer to apply in a few minutes.",
+      "searchPlaceholder": "Search by title, team or location...",
+      "results": "{count} open roles",
+      "emptyTitle": "No matching jobs",
+      "emptyDescription": "Try a different search phrase or come back later for new openings.",
+      "viewOffer": "View offer",
+      "filters": {
+        "title": "Filters",
+        "clear": "Clear",
+        "location": "Location",
+        "locationPlaceholder": "City, country or remote region",
+        "workMode": "Work mode",
+        "anyWorkMode": "Any work mode",
+        "contractType": "Contract type",
+        "anyContractType": "Any contract type",
+        "salary": "Salary",
+        "salaryMin": "Min",
+        "salaryMax": "Max"
+      },
+      "values": {
+        "salaryPeriod": {
+          "hour": "hour",
+          "month": "month",
+          "year": "year"
+        },
+        "workMode": {
+          "remote": "Remote",
+          "hybrid": "Hybrid",
+          "onsite": "On-site"
+        },
+        "contractType": {
+          "employment": "Employment",
+          "b2b": "B2B",
+          "contract": "Contract",
+          "internship": "Internship",
+          "temporary": "Temporary"
+        }
+      }
+    },
+    "duplicateModal": {
+      "title": "Potential duplicate candidate found",
+      "description": "We found an existing application with the same email or phone number. You can reuse the existing application or continue anyway.",
+      "continue": "Continue anyway",
+      "reuse": "Reuse existing",
+      "unknownJob": "Existing application",
+      "createdAt": "Created on {date}",
+      "stage": "Stage: {stage}",
+      "reasons": {
+        "email": "Matched by email",
+        "phone": "Matched by phone"
+      }
+    }
   },
   "track": {
     "title": "Application Status",

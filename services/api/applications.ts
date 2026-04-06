@@ -1,5 +1,13 @@
 import apiClient from "./client";
-import type { Application, ApplicationList, ApplicationTracking, CandidateScore, Note, Tag } from "@/types";
+import type {
+  Application,
+  ApplicationList,
+  ApplicationTracking,
+  CandidateScore,
+  DuplicateCheckResponse,
+  Note,
+  Tag,
+} from "@/types";
 
 export interface BulkActionPayload {
   application_ids: string[];
@@ -11,6 +19,12 @@ export interface BulkResult {
   updated: number;
   failed: number;
   action: string;
+}
+
+export interface DuplicateCheckPayload {
+  job_id: string;
+  email: string;
+  phone?: string;
 }
 
 export const applicationsApi = {
@@ -26,6 +40,9 @@ export const applicationsApi = {
     apiClient.post<Application>(`/applications/apply/${jobId}`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+
+  duplicateCheck: (data: DuplicateCheckPayload) =>
+    apiClient.post<DuplicateCheckResponse>("/applications/duplicate-check", data),
 
   updateStage: (id: string, data: { stage_id: string; notify_candidate?: boolean }) =>
     apiClient.patch(`/pipeline/applications/${id}/stage`, data),

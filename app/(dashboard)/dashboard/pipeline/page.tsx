@@ -19,6 +19,13 @@ import {
 import { formatRelative } from "@/lib/utils";
 import type { ApplicationListItem, PipelineStage } from "@/types";
 
+function getApiErrorMessage(error: unknown): string | null {
+  const detail = (
+    error as { response?: { data?: { detail?: string } } }
+  )?.response?.data?.detail;
+  return typeof detail === "string" ? detail : null;
+}
+
 function CandidateCard({ application }: { application: ApplicationListItem }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: application.id,
@@ -165,8 +172,8 @@ export default function PipelinePage() {
     try {
       await updateStage.mutateAsync({ id: applicationId, stage_id: targetStageId });
       toast.success(t("stageUpdated"));
-    } catch {
-      toast.error(t("stageUpdateFailed"));
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error) ?? t("stageUpdateFailed"));
     }
   };
 
