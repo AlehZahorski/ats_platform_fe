@@ -1,9 +1,13 @@
 import apiClient from "./client";
 import type {
   Application,
+  CVParseJob,
   ApplicationList,
   ApplicationTracking,
   CandidateScore,
+  ParsedEducation,
+  ParsedExperience,
+  ParsedSkill,
   DuplicateCheckResponse,
   Note,
   Tag,
@@ -27,6 +31,18 @@ export interface DuplicateCheckPayload {
   phone?: string;
 }
 
+export interface CVParseConfirmPayload {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string | null;
+  headline?: string | null;
+  summary?: string | null;
+  skills: ParsedSkill[];
+  experience: ParsedExperience[];
+  education: ParsedEducation[];
+}
+
 export const applicationsApi = {
   list: (params?: { job_id?: string; stage_id?: string; search?: string; skip?: number; limit?: number }) =>
     apiClient.get<ApplicationList>("/applications", { params }),
@@ -43,6 +59,15 @@ export const applicationsApi = {
 
   duplicateCheck: (data: DuplicateCheckPayload) =>
     apiClient.post<DuplicateCheckResponse>("/applications/duplicate-check", data),
+
+  getCvParseStatus: (id: string) =>
+    apiClient.get<CVParseJob | null>(`/applications/${id}/cv-parse`),
+
+  retryCvParse: (id: string) =>
+    apiClient.post<CVParseJob>(`/applications/${id}/cv-parse/retry`),
+
+  confirmCvParse: (id: string, data: CVParseConfirmPayload) =>
+    apiClient.post<Application>(`/applications/${id}/cv-parse/confirm`, data),
 
   updateStage: (id: string, data: { stage_id: string; notify_candidate?: boolean }) =>
     apiClient.patch(`/pipeline/applications/${id}/stage`, data),

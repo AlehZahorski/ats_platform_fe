@@ -470,6 +470,40 @@
       "strong_no": "Strong no"
     }
   },
+  "cvParsing": {
+    "title": "CV Parsing",
+    "retry": "Retry parse",
+    "inProgress": "TalentMatch is extracting candidate data from the CV.",
+    "failed": "CV parsing failed",
+    "reviewTitle": "Review parsed candidate profile",
+    "reviewDescription": "Check the extracted data, correct anything needed, and confirm before saving it into the candidate profile.",
+    "confirm": "Confirm parsed data",
+    "confirmed": "Parsed candidate profile saved",
+    "retryStarted": "CV parsing restarted",
+    "steps": {
+      "queued": "Queued",
+      "extracting": "Extracting text",
+      "parsing": "Parsing profile",
+      "review_required": "Ready for review",
+      "completed": "Saved"
+    },
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "headline": "Headline",
+      "summary": "Summary",
+      "skills": "Skills",
+      "experience": "Experience",
+      "education": "Education"
+    },
+    "placeholders": {
+      "skills": "One skill per line",
+      "experience": "One entry per line: Title | Company | Dates | Description",
+      "education": "One entry per line: School | Degree | Dates | Description"
+    }
+  },
   "emailTemplates": {
     "title": "Email Templates",
     "new": "New Template",

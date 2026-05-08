@@ -8,6 +8,7 @@ export const appKeys = {
   notes: (id: string) => ["applications", "notes", id] as const,
   tags: (id: string) => ["applications", "tags", id] as const,
   track: (token: string) => ["applications", "track", token] as const,
+  cvParse: (id: string) => ["applications", "cv-parse", id] as const,
 };
 
 export function useApplications(params?: object) {
@@ -22,6 +23,18 @@ export function useApplication(id: string) {
     queryKey: appKeys.detail(id),
     queryFn: () => applicationsApi.get(id).then((r) => r.data),
     enabled: !!id,
+  });
+}
+
+export function useCvParseStatus(applicationId: string, enabled = true) {
+  return useQuery({
+    queryKey: appKeys.cvParse(applicationId),
+    queryFn: () => applicationsApi.getCvParseStatus(applicationId).then((r) => r.data),
+    enabled: !!applicationId && enabled,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      return status && ["queued", "extracting", "parsing"].includes(status) ? 2000 : false;
+    },
   });
 }
 
@@ -73,6 +86,29 @@ export function useScoreApplication(applicationId: string) {
     mutationFn: (data: { communication: number; technical: number; culture_fit: number }) =>
       applicationsApi.score(applicationId, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: appKeys.detail(applicationId) }),
+  });
+}
+
+export function useRetryCvParse(applicationId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => applicationsApi.retryCvParse(applicationId).then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: appKeys.cvParse(applicationId) });
+      qc.invalidateQueries({ queryKey: appKeys.detail(applicationId) });
+    },
+  });
+}
+
+export function useConfirmCvParse(applicationId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import("@/services/api/applications").CVParseConfirmPayload) =>
+      applicationsApi.confirmCvParse(applicationId, data).then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: appKeys.cvParse(applicationId) });
+      qc.invalidateQueries({ queryKey: appKeys.detail(applicationId) });
+    },
   });
 }
 

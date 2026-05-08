@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { StageNotificationModal } from "@/components/applications/StageNotificationModal";
+import { CvParsingSection } from "@/components/applications/CvParsingSection";
 import { Topbar } from "@/components/layout/Topbar";
 import { useApplication, useNotes, useAddNote, usePipelineStages, useUpdateStage, useScoreApplication } from "@/services/queries";
 import { formatDate, formatRelative } from "@/lib/utils";
@@ -130,6 +131,8 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ ap
               </div>
             </div>
           )}
+
+          <CvParsingSection application={app} />
 
           {/* Notes */}
           <div className="bg-card border border-border rounded-xl p-6 animate-fade-in-delay-2">

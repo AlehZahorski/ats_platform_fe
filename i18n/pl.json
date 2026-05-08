@@ -470,6 +470,40 @@
       "strong_no": "Zdecydowanie nie"
     }
   },
+  "cvParsing": {
+    "title": "Parsowanie CV",
+    "retry": "Ponów parsowanie",
+    "inProgress": "TalentMatch wyciąga dane kandydata z przesłanego CV.",
+    "failed": "Parsowanie CV nie powiodło się",
+    "reviewTitle": "Sprawdź sparsowany profil kandydata",
+    "reviewDescription": "Zweryfikuj wyciągnięte dane, popraw je w razie potrzeby i potwierdź przed zapisaniem do profilu kandydata.",
+    "confirm": "Potwierdź dane z CV",
+    "confirmed": "Sparsowany profil kandydata został zapisany",
+    "retryStarted": "Ponownie uruchomiono parsowanie CV",
+    "steps": {
+      "queued": "W kolejce",
+      "extracting": "Ekstrakcja tekstu",
+      "parsing": "Analiza profilu",
+      "review_required": "Gotowe do sprawdzenia",
+      "completed": "Zapisane"
+    },
+    "fields": {
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "email": "E-mail",
+      "phone": "Telefon",
+      "headline": "Nagłówek",
+      "summary": "Podsumowanie",
+      "skills": "Umiejętności",
+      "experience": "Doświadczenie",
+      "education": "Edukacja"
+    },
+    "placeholders": {
+      "skills": "Jedna umiejętność w każdej linii",
+      "experience": "Jeden wpis w każdej linii: Stanowisko | Firma | Daty | Opis",
+      "education": "Jeden wpis w każdej linii: Szkoła | Kierunek | Daty | Opis"
+    }
+  },
   "emailTemplates": {
     "title": "Szablony e-mail",
     "new": "Nowy szablon",
