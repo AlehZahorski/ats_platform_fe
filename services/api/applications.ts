@@ -1,6 +1,7 @@
 import apiClient from "./client";
 import type {
   Application,
+  CandidateJobMatch,
   CVParseJob,
   ApplicationList,
   ApplicationTracking,
@@ -89,6 +90,9 @@ export const applicationsApi = {
 
   removeTag: (id: string, tag_id: string) =>
     apiClient.delete(`/tags/applications/${id}/tags/${tag_id}`),
+
+  getJobMatches: (id: string) =>
+    apiClient.get<CandidateJobMatch[]>(`/applications/${id}/matches`),
 
   bulk: (data: BulkActionPayload) =>
     apiClient.post<BulkResult>("/applications/bulk", data),

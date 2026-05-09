@@ -70,3 +70,15 @@ export function useAssignTemplate() {
     },
   });
 }
+
+export function useAnalyzeJob() {
+  return useMutation({
+    mutationFn: (id: string) => jobsApi.analyze(id).then((r) => r.data),
+  });
+}
+
+export function useJobSuggest() {
+  return useMutation({
+    mutationFn: (id: string) => jobsApi.suggest(id).then((r) => r.data),
+  });
+}

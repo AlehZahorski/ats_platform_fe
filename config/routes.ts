@@ -1,0 +1,25 @@
+export const ROUTES = {
+  login: "/login",
+  signup: "/signup",
+  dashboard: "/dashboard",
+  jobs: "/dashboard/jobs",
+  jobCreate: "/dashboard/jobs/create",
+  job: (id: string) => `/dashboard/jobs/${id}`,
+  applications: "/dashboard/applications",
+  application: (id: string) => `/dashboard/applications/${id}`,
+  forms: "/dashboard/forms",
+  pipeline: "/dashboard/pipeline",
+  tags: "/dashboard/tags",
+  tasks: "/dashboard/tasks",
+  reports: "/dashboard/reports",
+  settings: {
+    emailTemplates: "/dashboard/settings/email-templates",
+    automations: "/dashboard/settings/automations",
+    gdpr: "/dashboard/settings/gdpr",
+  },
+  public: {
+    jobs: "/jobs",
+    apply: (jobId: string) => `/apply/${jobId}`,
+    track: (token: string) => `/track/${token}`,
+  },
+} as const;

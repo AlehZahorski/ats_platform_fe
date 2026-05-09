@@ -1,0 +1,32 @@
+import type { ContractType, SalaryPeriod, Seniority, WorkMode } from "@/entities/job";
+
+export type JobFormState = {
+  title: string;
+  department: string;
+  location: string;
+  status: "draft" | "open" | "closed";
+  role_summary: string;
+  role_purpose: string;
+  responsibilities: string;
+  must_haves: string;
+  nice_to_haves: string;
+  tech_stack: string;
+  domain_context: string;
+  seniority: Seniority | "";
+  experience_min_years: string;
+  experience_max_years: string;
+  work_mode: WorkMode | "";
+  remote_constraints: string;
+  success_profile: string;
+  team_context: string;
+  reporting_to: string;
+  value_proposition: string;
+  benefits: string;
+  hiring_process: string;
+  salary_min: string;
+  salary_max: string;
+  salary_currency: string;
+  salary_period: SalaryPeriod | "";
+  contract_type: ContractType | "";
+  description: string;
+};

@@ -67,3 +67,23 @@
   .animate-fade-in-delay-2 { animation: fade-in 0.3s ease-out 0.2s both; }
   .animate-fade-in-delay-3 { animation: fade-in 0.3s ease-out 0.3s both; }
 }
+
+/* Tiptap / ProseMirror editor reset */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  @apply text-muted-foreground;
+  float: left;
+  pointer-events: none;
+  height: 0;
+}
+.ProseMirror {
+  @apply outline-none;
+}
+.ProseMirror ul, .ProseMirror ol {
+  @apply pl-5 space-y-1;
+}
+.ProseMirror ul { @apply list-disc; }
+.ProseMirror ol { @apply list-decimal; }
+.ProseMirror p { @apply leading-relaxed; }
+.ProseMirror strong { @apply font-semibold; }
+.ProseMirror em { @apply italic; }

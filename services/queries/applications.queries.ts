@@ -9,6 +9,7 @@ export const appKeys = {
   tags: (id: string) => ["applications", "tags", id] as const,
   track: (token: string) => ["applications", "track", token] as const,
   cvParse: (id: string) => ["applications", "cv-parse", id] as const,
+  jobMatches: (id: string) => ["applications", "matches", id] as const,
 };
 
 export function useApplications(params?: object) {
@@ -108,6 +109,19 @@ export function useConfirmCvParse(applicationId: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: appKeys.cvParse(applicationId) });
       qc.invalidateQueries({ queryKey: appKeys.detail(applicationId) });
+    },
+  });
+}
+
+export function useJobMatches(applicationId: string, pollUntilReady = false) {
+  return useQuery({
+    queryKey: appKeys.jobMatches(applicationId),
+    queryFn: () => applicationsApi.getJobMatches(applicationId).then((r) => r.data),
+    enabled: !!applicationId,
+    refetchInterval: (query) => {
+      if (!pollUntilReady) return false;
+      const data = query.state.data;
+      return data && data.length > 0 ? false : 3000;
     },
   });
 }

@@ -8,3 +8,5 @@ export * from "./interviews.queries";
 export * from "./tasks-reports.queries";
 export * from "./gdpr.queries";
 export * from "./reviews.queries";
+export * from "./tags.queries";
+export * from "./public-jobs.queries";

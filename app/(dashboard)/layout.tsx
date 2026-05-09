@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { Sidebar } from "@/shared/layout/Sidebar";
+import { ROUTES } from "@/config/routes";
 import { useMe } from "@/services/queries";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -11,7 +12,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (!isLoading && (error || !user)) {
-      router.replace("/login");
+      router.replace(ROUTES.login);
     }
   }, [user, isLoading, error, router]);
 

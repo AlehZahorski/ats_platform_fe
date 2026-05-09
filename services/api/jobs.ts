@@ -1,5 +1,5 @@
 import apiClient from "./client";
-import type { ContractType, Job, JobList, JobStatus, PublicJobList, SalaryPeriod, Seniority, WorkMode } from "@/types";
+import type { ContractType, Job, JobList, JobOfferAnalysis, JobSuggest, JobStatus, PublicJobList, SalaryPeriod, Seniority, WorkMode } from "@/types";
 
 export interface JobPayload {
   title: string;
@@ -9,10 +9,10 @@ export interface JobPayload {
   status?: JobStatus;
   role_summary?: string | null;
   role_purpose?: string | null;
-  responsibilities?: string[];
-  must_haves?: string[];
-  nice_to_haves?: string[];
-  tech_stack?: string[];
+  responsibilities?: string | null;
+  must_haves?: string | null;
+  nice_to_haves?: string | null;
+  tech_stack?: string | null;
   domain_context?: string | null;
   seniority?: Seniority | null;
   experience_min_years?: number | null;
@@ -23,8 +23,8 @@ export interface JobPayload {
   team_context?: string | null;
   reporting_to?: string | null;
   value_proposition?: string | null;
-  benefits?: string[];
-  hiring_process?: string[];
+  benefits?: string | null;
+  hiring_process?: string | null;
   salary_min?: number | null;
   salary_max?: number | null;
   salary_currency?: string | null;
@@ -51,4 +51,10 @@ export const jobsApi = {
 
   assignTemplate: (id: string, template_id: string | null) =>
     apiClient.put<Job>(`/jobs/${id}/template`, { template_id }),
+
+  analyze: (id: string) =>
+    apiClient.post<JobOfferAnalysis>(`/jobs/${id}/analyze`),
+
+  suggest: (id: string) =>
+    apiClient.post<JobSuggest>(`/jobs/${id}/suggest`),
 };
