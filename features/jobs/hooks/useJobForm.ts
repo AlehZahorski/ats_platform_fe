@@ -28,7 +28,12 @@ export function useJobForm(jobId: string, job: Job | undefined) {
       await updateJob.mutateAsync({ id: jobId, data: fromForm(form) as never });
       toast.success(t("saved"));
     } catch (error) {
-      toast.error(getApiErrorMessage(error) ?? t("updateFailed"));
+      const detail = (error as any)?.response?.data?.detail;
+      if (detail && Array.isArray(detail.issues) && detail.issues.length > 0) {
+        detail.issues.forEach((issue: string) => toast.error(issue));
+      } else {
+        toast.error(getApiErrorMessage(error) ?? t("updateFailed"));
+      }
     }
   };
 

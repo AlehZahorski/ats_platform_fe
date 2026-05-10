@@ -473,7 +473,7 @@
   "cvParsing": {
     "title": "Parsowanie CV",
     "retry": "Ponów parsowanie",
-    "inProgress": "TalentMatch wyciąga dane kandydata z przesłanego CV.",
+    "inProgress": "wakanta.pl wyciąga dane kandydata z przesłanego CV.",
     "failed": "Parsowanie CV nie powiodło się",
     "reviewTitle": "Sprawdź sparsowany profil kandydata",
     "reviewDescription": "Zweryfikuj wyciągnięte dane, popraw je w razie potrzeby i potwierdź przed zapisaniem do profilu kandydata.",
@@ -646,7 +646,7 @@
       }
     },
     "jobBoard": {
-      "eyebrow": "Oferty TalentMatch",
+      "eyebrow": "Oferty wakanta.pl",
       "title": "Znajdź swoją kolejną rolę",
       "description": "Przeglądaj otwarte role, wyszukuj najlepiej dopasowane oferty i przejdź do aplikacji w kilka minut.",
       "searchPlaceholder": "Szukaj po stanowisku, zespole lub lokalizacji...",

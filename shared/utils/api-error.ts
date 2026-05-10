@@ -18,7 +18,7 @@ export function getApiErrorMessage(error: unknown): string | null {
 
   if (detail && typeof detail === "object") {
     if (Array.isArray(detail.issues) && detail.issues.length > 0) {
-      return detail.issues[0];
+      return detail.issues.join("\n");
     }
     if (typeof detail.message === "string") return detail.message;
   }

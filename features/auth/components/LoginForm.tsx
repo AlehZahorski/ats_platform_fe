@@ -34,7 +34,7 @@ export function LoginForm() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
-          <h1 className="font-display text-3xl font-bold text-foreground">TalentMatch</h1>
+          <img src="/logo-wakanta.png" alt="wakanta.pl" className="h-20 w-auto object-contain mx-auto" />
           <p className="text-muted-foreground mt-2 text-sm">{t("signInToWorkspace")}</p>
         </div>
 

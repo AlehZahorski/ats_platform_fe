@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   LayoutDashboard, Briefcase, Users, FileText,
-  GitBranch, Tag, LogOut, ChevronRight,
+  GitBranch, Tag, LogOut,
   CheckSquare, BarChart2, Mail, Zap, Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -63,13 +63,8 @@ export function Sidebar() {
   return (
     <aside className="flex flex-col w-64 min-h-screen bg-sidebar border-r border-sidebar-border">
       {/* Logo */}
-      <div className="flex items-center gap-2 px-6 py-5 border-b border-sidebar-border">
-        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-          <ChevronRight className="w-5 h-5 text-primary-foreground" strokeWidth={3} />
-        </div>
-        <span className="font-display font-bold text-lg text-sidebar-foreground tracking-tight">
-          TalentMatch
-        </span>
+      <div className="flex items-center px-4 py-4 border-b border-sidebar-border">
+        <img src="/logo-wakanta.png" alt="wakanta.pl" className="h-11 w-auto object-contain" />
       </div>
 
       {/* Nav */}

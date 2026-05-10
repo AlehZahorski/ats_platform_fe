@@ -473,7 +473,7 @@
   "cvParsing": {
     "title": "CV Parsing",
     "retry": "Retry parse",
-    "inProgress": "TalentMatch is extracting candidate data from the CV.",
+    "inProgress": "wakanta.pl is extracting candidate data from the CV.",
     "failed": "CV parsing failed",
     "reviewTitle": "Review parsed candidate profile",
     "reviewDescription": "Check the extracted data, correct anything needed, and confirm before saving it into the candidate profile.",
@@ -646,7 +646,7 @@
       }
     },
     "jobBoard": {
-      "eyebrow": "TalentMatch Jobs",
+      "eyebrow": "wakanta.pl Jobs",
       "title": "Find your next opportunity",
       "description": "Browse open roles, search what fits you best, and open any offer to apply in a few minutes.",
       "searchPlaceholder": "Search by title, team or location...",

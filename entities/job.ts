@@ -38,6 +38,14 @@ export interface Job {
   template_id: string | null;
   publish_ready: boolean;
   publish_issues: string[];
+  analysis_score: number | null;
+  analysis_market_position: "above_market" | "at_market" | "below_market" | null;
+  analysis_summary: string | null;
+  analysis_strengths: string[];
+  analysis_improvements: string[];
+  analysis_candidate_impact: string | null;
+  analysis_urgency_message: string | null;
+  analysis_at: string | null;
   created_at: string;
 }
 

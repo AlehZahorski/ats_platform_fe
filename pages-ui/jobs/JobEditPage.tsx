@@ -7,6 +7,7 @@ import { useApplications, useFormTemplates, useJob } from "@/services/queries";
 import { Topbar } from "@/shared/layout/Topbar";
 import { formatRelative } from "@/shared/utils/format";
 import { JobForm } from "@/features/jobs/components/JobForm";
+import { JobAnalysisCard } from "@/features/jobs/components/JobAnalysisCard";
 import { ROUTES } from "@/config/routes";
 import { useJobForm } from "@/features/jobs/hooks/useJobForm";
 
@@ -60,6 +61,8 @@ export function JobEditPage({ jobId }: JobEditPageProps) {
           isSaving={isSaving}
           isAssigning={isAssigning}
         />
+
+        <JobAnalysisCard jobId={jobId} job={job} />
 
         <div className="rounded-xl border border-border bg-card p-6">
           <h3 className="mb-4 text-sm font-semibold text-foreground">
