@@ -1,6 +1,6 @@
 "use client";
 
-import { Upload } from "lucide-react";
+import { Upload, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { PublicJobDetail } from "@/entities/job";
 import type { DuplicateCheckMatch } from "@/entities/application";
@@ -15,6 +15,8 @@ interface ApplyFormProps {
   onCvFileChange: (file: File | null) => void;
   answers: Record<string, string>;
   onAnswerChange: (fieldId: string, value: string) => void;
+  aiProfilingConsent: boolean;
+  onAiProfilingConsentChange: (value: boolean) => void;
   isSubmitting: boolean;
   duplicateMatches: DuplicateCheckMatch[];
   onSubmit: (event: React.FormEvent) => void;
@@ -34,6 +36,8 @@ export function ApplyForm({
   onCvFileChange,
   answers,
   onAnswerChange,
+  aiProfilingConsent,
+  onAiProfilingConsentChange,
   isSubmitting,
   duplicateMatches,
   onSubmit,
@@ -118,6 +122,36 @@ export function ApplyForm({
               />
               {cvFile && <p className="mt-1 text-xs text-green-500">{t("cvSelected", { name: cvFile.name })}</p>}
               <p className="mt-1 text-xs text-muted-foreground">{t("cvDesc")}</p>
+            </div>
+
+            {/* F-01 (audit_ai_ethics): EU AI Act art. 26(11) + RODO art. 13(2)(f)
+                require the candidate to know that an AI system is used. The
+                checkbox below is opt-in — when unchecked the backend redacts PII
+                before any Anthropic call and skips the candidate↔job match. */}
+            <div className="border-t border-border pt-5 space-y-3">
+              <div className="rounded-lg border border-primary/15 bg-primary/5 p-4 text-xs leading-relaxed text-foreground">
+                <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
+                  <Sparkles className="h-4 w-4" />
+                  {t("aiNotice.title")}
+                </p>
+                <p className="text-muted-foreground">{t("aiNotice.body")}</p>
+                <p className="mt-2">
+                  <a href="/ai-info" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+                    {t("aiNotice.learnMore")}
+                  </a>
+                </p>
+              </div>
+
+              <label className="flex items-start gap-2 text-sm text-foreground cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={aiProfilingConsent}
+                  onChange={(e) => onAiProfilingConsentChange(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-ring"
+                />
+                <span className="leading-relaxed">{t("aiNotice.consentLabel")}</span>
+              </label>
+              <p className="text-xs text-muted-foreground pl-6">{t("aiNotice.optOutHint")}</p>
             </div>
 
             <button

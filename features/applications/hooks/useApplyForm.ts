@@ -26,6 +26,10 @@ export function useApplyForm(jobId: string, job: PublicJobDetail | undefined) {
   const [coreForm, setCoreForm] = useState<CoreForm>({ first_name: "", last_name: "", email: "", phone: "" });
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  // F-01 (audit_ai_ethics): explicit, opt-in consent for AI profiling. NULL by
+  // default — the backend will redact PII and skip the matcher unless the
+  // candidate ticks the box. Bound to `ai_profiling_consent` on POST /apply.
+  const [aiProfilingConsent, setAiProfilingConsent] = useState(false);
 
   useEffect(() => {
     if (!job) return;
@@ -56,6 +60,7 @@ export function useApplyForm(jobId: string, job: PublicJobDetail | undefined) {
         .map(([field_id, value]) => ({ field_id, value }));
       formData.append("answers", JSON.stringify(answersPayload));
       if (ignoreDuplicateWarning) formData.append("ignore_duplicate_warning", "true");
+      formData.append("ai_profiling_consent", aiProfilingConsent ? "true" : "false");
 
       const response = await applicationsApi.apply(jobId, formData);
       setToken(response.data.public_token);
@@ -102,6 +107,8 @@ export function useApplyForm(jobId: string, job: PublicJobDetail | undefined) {
     setCvFile,
     answers,
     setAnswers,
+    aiProfilingConsent,
+    setAiProfilingConsent,
     handleSubmit,
     handleReuse,
     handleContinue,

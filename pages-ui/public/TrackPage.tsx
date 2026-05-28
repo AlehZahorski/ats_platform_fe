@@ -145,6 +145,34 @@ export function TrackPage({ token }: TrackPageProps) {
           </div>
         </div>
 
+        {/* F-11 (audit_ai_ethics): EU AI Act art. 86 — the candidate has the
+            right to a clear, meaningful explanation of the role AI played in
+            the decision-making procedure, plus an actionable channel for both
+            withdrawal of consent and discrimination complaints (F-13). */}
+        <div className="bg-card border border-border rounded-xl p-5 mt-5 text-sm space-y-3 animate-fade-in-delay-2">
+          <p className="font-semibold text-foreground flex items-center gap-1.5">
+            <span className="text-primary">✦</span> {t("aiExplanation.title")}
+          </p>
+          <p className="text-muted-foreground leading-relaxed">{t("aiExplanation.body")}</p>
+          <div className="flex flex-wrap gap-3 pt-1 text-xs">
+            <a href="/ai-info" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+              {t("aiExplanation.learnMore")}
+            </a>
+            <a
+              href={`mailto:dpo@wakanta.pl?subject=${encodeURIComponent("AI processing - withdraw consent")}&body=${encodeURIComponent(`Application token: ${token}\n\nI would like to withdraw my consent to AI processing.`)}`}
+              className="underline hover:text-primary"
+            >
+              {t("aiExplanation.withdrawConsent")}
+            </a>
+            <a
+              href={`mailto:dpo@wakanta.pl?subject=${encodeURIComponent("Possible discrimination concern")}&body=${encodeURIComponent(`Application token: ${token}\n\nI would like to report a concern about how this application was handled.`)}`}
+              className="underline hover:text-primary"
+            >
+              {t("aiExplanation.reportConcern")}
+            </a>
+          </div>
+        </div>
+
         <p className="text-center text-xs text-muted-foreground mt-6">{t("bookmarkNote")}</p>
       </div>
     </div>

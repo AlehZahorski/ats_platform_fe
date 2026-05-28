@@ -88,6 +88,10 @@ function ScoreRing({ score, label, color }: { score: number; label: string; colo
 
 // ─── Recommendation badge ─────────────────────────────────────────────────────
 
+// F-03 (audit_ai_ethics): EU AI Act art. 14 requires human oversight to be
+// designed in — the recruiter must see this as a *suggestion*, not a verdict.
+// The badge therefore prefixes the label with "AI suggestion" and uses a
+// neutral title attribute reminding the user to verify before acting.
 function RecommendationBadge({ recommendation }: { recommendation: CandidateJobMatch["recommendation"] }) {
   const t = useTranslations("cvParsing");
   if (!recommendation) return null;
@@ -98,8 +102,12 @@ function RecommendationBadge({ recommendation }: { recommendation: CandidateJobM
   };
   const { icon: Icon, className } = config[recommendation];
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold border ${className}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold border ${className}`}
+      title={t("matching.aiSuggestionTooltip")}
+    >
       <Icon className="w-4 h-4" />
+      <span className="opacity-70 text-xs font-normal">{t("matching.aiSuggestionPrefix")}</span>
       {t(`matching.recommendation.${recommendation}` as never)}
     </span>
   );
@@ -107,13 +115,19 @@ function RecommendationBadge({ recommendation }: { recommendation: CandidateJobM
 
 // ─── Candidate portrait (cultural) ───────────────────────────────────────────
 
+// F-09/F-10 (audit_ai_ethics): `personality_signals` and `red_flags` are no
+// longer rendered. Inferring traits like leadership/communication style from
+// CV text is unreliable and a proxy for protected attributes (age, ethnicity,
+// neurodivergence). `red_flags` was a free-text channel where the model could
+// surface anti-patterns like "unexplained gap" that map directly to RODO-
+// protected categories (parental leave, illness). Columns kept on the model
+// for backwards compatibility but never shown to recruiters via this UI.
 function CandidatePortrait({ profile }: { profile: CandidateProfile }) {
   const t = useTranslations("cvParsing");
   const hasContent =
     profile.executive_summary ||
     (profile.hobbies && profile.hobbies.length > 0) ||
-    profile.culture_fit_notes ||
-    profile.personality_signals;
+    profile.culture_fit_notes;
 
   if (!hasContent) return null;
 
@@ -136,29 +150,6 @@ function CandidatePortrait({ profile }: { profile: CandidateProfile }) {
               <span key={i} className="px-2 py-0.5 rounded-full text-xs bg-blue-500/10 text-blue-600 border border-blue-500/20">{h}</span>
             ))}
           </div>
-        </div>
-      )}
-
-      {profile.personality_signals && (
-        <div className="grid gap-2 sm:grid-cols-2 text-xs">
-          {profile.personality_signals.communication_style && (
-            <div className="rounded-lg bg-muted/40 px-3 py-2">
-              <span className="text-muted-foreground">{t("matching.commStyle")} </span>
-              <span className="text-foreground font-medium">{profile.personality_signals.communication_style}</span>
-            </div>
-          )}
-          {profile.personality_signals.leadership_indicators && (
-            <div className="rounded-lg bg-muted/40 px-3 py-2">
-              <span className="text-muted-foreground">{t("matching.leadership")} </span>
-              <span className="text-foreground font-medium">{profile.personality_signals.leadership_indicators}</span>
-            </div>
-          )}
-          {profile.personality_signals.growth_mindset && (
-            <div className="rounded-lg bg-muted/40 px-3 py-2 sm:col-span-2">
-              <span className="text-muted-foreground">{t("matching.growthMindset")} </span>
-              <span className="text-foreground font-medium">{profile.personality_signals.growth_mindset}</span>
-            </div>
-          )}
         </div>
       )}
 
@@ -270,10 +261,19 @@ export function JobMatchSection({ applicationId, candidateProfile }: JobMatchSec
           <Heart className="w-4 h-4 text-primary" />
           {t("matching.title")}
         </h3>
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 shrink-0">
+        {/* F-22 (audit_ai_ethics): badge becomes a link to the AI info page so
+            recruiters can see which model is used, what bias controls apply
+            and how to override the suggestion. */}
+        <a
+          href="/ai-info"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 shrink-0 hover:bg-primary/20"
+          title={t("matching.aiBadgeTooltip")}
+        >
           <span>✦</span>
-          Powered by AI
-        </span>
+          {t("matching.aiBadge")}
+        </a>
       </div>
 
       {activeStep === "failed" ? (
@@ -285,9 +285,23 @@ export function JobMatchSection({ applicationId, candidateProfile }: JobMatchSec
         <PipelineProgress activeStep={activeStep} />
       ) : (
         <div className="space-y-3">
-          {matches!.map((match) => (
-            <MatchCard key={match.id} match={match} profile={candidateProfile ?? null} />
-          ))}
+          {matches!.map((match) =>
+            // F-08 (audit_ai_ethics): explicitly show why a match has no scores
+            // — the recruiter must not confuse "AI was off" with "AI rejected
+            // the candidate".
+            match.match_status === "llm_disabled" || match.match_status === "llm_failed" ? (
+              <div
+                key={match.id}
+                className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-sm text-amber-700"
+              >
+                {match.match_status === "llm_disabled"
+                  ? t("matching.statusDisabled")
+                  : t("matching.statusFailed")}
+              </div>
+            ) : (
+              <MatchCard key={match.id} match={match} profile={candidateProfile ?? null} />
+            ),
+          )}
         </div>
       )}
     </div>

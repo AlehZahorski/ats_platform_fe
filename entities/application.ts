@@ -171,6 +171,9 @@ export interface CandidateJobMatch {
   strengths_match: string[] | null;
   gaps: string[] | null;
   recommendation: "top_candidate" | "consider" | "not_a_match" | null;
+  // F-08 (audit_ai_ethics): distinguishes "AI ran" from "AI never produced a
+  // result". Treat anything other than "completed" as a non-AI verdict in the UI.
+  match_status: "completed" | "pending" | "llm_disabled" | "llm_failed";
   llm_model: string | null;
   created_at: string;
 }

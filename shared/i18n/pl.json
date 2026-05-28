@@ -1148,7 +1148,13 @@
       "technical": "Techniczne",
       "cultural": "Kulturowe",
       "strengths": "Co pasuje",
-      "gaps": "Braki"
+      "gaps": "Braki",
+      "aiBadge": "Wspierane przez AI",
+      "aiBadgeTooltip": "Sekcja wygenerowana przez Claude (Anthropic). Kliknij, aby zobaczyć szczegóły modelu, mechanizmy ograniczania uprzedzeń i sposób nadpisania sugestii.",
+      "aiSuggestionPrefix": "Sugestia AI:",
+      "aiSuggestionTooltip": "Sugestia wygenerowana przez AI — zweryfikuj przed podjęciem decyzji. Ostateczna decyzja rekrutacyjna należy do człowieka (EU AI Act art. 14).",
+      "statusDisabled": "Dopasowanie AI jest obecnie wyłączone dla tego konta. Kandydat nie został oceniony przez AI — przejrzyj CV ręcznie.",
+      "statusFailed": "Wywołanie dopasowania AI nie zakończyło się sukcesem. Nie wygenerowano oceny — to nie jest odrzucenie; przejrzyj CV ręcznie."
     }
   },
   "emailTemplates": {
@@ -1274,7 +1280,15 @@
     "trackApplication": "Śledź moją aplikację",
     "notAvailable": "Stanowisko niedostępne",
     "notAvailableDesc": "To ogłoszenie nie przyjmuje już aplikacji.",
-    "privacyNote": "Twoje dane są przetwarzane bezpiecznie i będą wykorzystywane wyłącznie w celach rekrutacyjnych.",
+    "privacyNote": "Twoje dane są przetwarzane bezpiecznie i wyłącznie w celach rekrutacyjnych. Po wyrażeniu zgody poniżej dane osobowe mogą być przekazywane do Anthropic (USA) w oparciu o EU-US Data Privacy Framework.",
+    "dpoContact": "Inspektor Ochrony Danych: dpo@wakanta.pl — w każdej chwili możesz zażądać dostępu, sprostowania, usunięcia lub ograniczenia przetwarzania.",
+    "aiNotice": {
+      "title": "Wykorzystanie AI w tej rekrutacji",
+      "body": "Po wyrażeniu zgody Twoje CV zostanie przeanalizowane przez Claude (Anthropic, USA) w celu wyodrębnienia ustrukturyzowanego profilu i wygenerowania oceny dopasowania kandydat-oferta. Rekomendacje mają charakter wyłącznie pomocniczy — decyzję rekrutacyjną zawsze podejmuje człowiek. Podstawa prawna: wyraźna zgoda (RODO art. 6(1)(a) + 22(2)(c)). Transfer do USA: EU-US Data Privacy Framework. Możesz wycofać zgodę w dowolnej chwili ze strony śledzenia aplikacji — wycofanie wstrzyma dalsze przetwarzanie przez AI.",
+      "consentLabel": "Wyrażam zgodę na przetwarzanie mojego CV przez AI (Claude / Anthropic) w celu wzbogacenia profilu i dopasowania do oferty. To jest opcjonalne — mogę zaaplikować również bez tej zgody.",
+      "optOutHint": "Bez zaznaczenia zgody CV zostanie przetworzone tylko lokalnym parserem regexowym. Żadne dane nie zostaną przesłane do Anthropic.",
+      "learnMore": "Dowiedz się więcej o AI w tym procesie rekrutacyjnym →"
+    },
     "previewDisabledNote": "Podgląd — wysyłka wyłączona.",
     "formTitle": "Formularz aplikacyjny",
     "requiredHint": "Pola oznaczone * są wymagane",
@@ -1399,7 +1413,14 @@
     "notFoundDesc": "Ten link śledzenia może być nieprawidłowy lub wygasły.",
     "congratulations": "Gratulacje! Witaj w zespole.",
     "rejectedNote": "Dziękujemy za zainteresowanie. Zachowamy Twój profil na przyszłość.",
-    "underReview": "W trakcie oceny"
+    "underReview": "W trakcie oceny",
+    "aiExplanation": {
+      "title": "AI w tej rekrutacji",
+      "body": "Jeśli wyraziłeś/-aś zgodę przy składaniu aplikacji, Twoje CV zostało przeanalizowane przez Claude (Anthropic) w celu wygenerowania ustrukturyzowanego profilu i oceny dopasowania kandydat-oferta. Decyzję rekrutacyjną zawsze podejmuje człowiek — wyniki AI mają charakter wyłącznie pomocniczy. W każdej chwili możesz wycofać zgodę lub zgłosić problem korzystając z linków poniżej.",
+      "learnMore": "Dowiedz się więcej",
+      "withdrawConsent": "Wycofaj zgodę na AI",
+      "reportConcern": "Zgłoś podejrzenie dyskryminacji"
+    }
   },
   "common": {
     "save": "Zapisz",

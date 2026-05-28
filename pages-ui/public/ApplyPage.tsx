@@ -173,6 +173,7 @@ export function ApplyPage({ jobId }: ApplyPageProps) {
   const {
     submitted, token, isSubmitting, duplicateMatches,
     coreForm, setCoreForm, cvFile, setCvFile, answers, setAnswers,
+    aiProfilingConsent, setAiProfilingConsent,
     handleSubmit, handleReuse, handleContinue, handleCloseDuplicate,
   } = useApplyForm(jobId, job);
 
@@ -256,6 +257,8 @@ export function ApplyPage({ jobId }: ApplyPageProps) {
             onCvFileChange={setCvFile}
             answers={answers}
             onAnswerChange={(fieldId, value) => setAnswers((prev) => ({ ...prev, [fieldId]: value }))}
+            aiProfilingConsent={aiProfilingConsent}
+            onAiProfilingConsentChange={setAiProfilingConsent}
             isSubmitting={isSubmitting}
             duplicateMatches={duplicateMatches}
             onSubmit={handleSubmit}
@@ -265,7 +268,12 @@ export function ApplyPage({ jobId }: ApplyPageProps) {
           />
         </div>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">{t("privacyNote")}</p>
+        {/* F-24 (audit_ai_ethics): DPO contact + privacy note. Required by RODO
+            art. 37-39 for profiling on a large scale. */}
+        <div className="mt-6 text-center text-xs text-muted-foreground space-y-1">
+          <p>{t("privacyNote")}</p>
+          <p>{t("dpoContact")}</p>
+        </div>
       </div>
     </div>
   );
