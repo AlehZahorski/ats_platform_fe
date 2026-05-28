@@ -129,7 +129,7 @@ function PreviewModal({ template, onClose }: { template: EmailTemplate; onClose:
           ) : previewData ? (
             <>
               <div className="mb-4 p-3 bg-muted/40 rounded-lg">
-                <p className="text-xs text-muted-foreground mb-1">Subject</p>
+                <p className="text-xs text-muted-foreground mb-1">{t("subjectLabel")}</p>
                 <p className="text-sm font-medium text-foreground">{previewData.subject}</p>
               </div>
               <div className="p-4 bg-background border border-border rounded-lg">
@@ -137,7 +137,7 @@ function PreviewModal({ template, onClose }: { template: EmailTemplate; onClose:
               </div>
             </>
           ) : (
-            <p className="text-sm text-muted-foreground">No preview available.</p>
+            <p className="text-sm text-muted-foreground">{t("noPreview")}</p>
           )}
         </div>
       </div>
@@ -175,11 +175,11 @@ export function EmailTemplatesPage() {
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
           <div className="flex gap-2">
             <select value={filterLang} onChange={(e) => setFilterLang(e.target.value)} className="px-3 py-2 rounded-lg border border-input bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-              <option value="">All languages</option>
+              <option value="">{t("allLanguages")}</option>
               {LANGUAGES.map((l) => <option key={l} value={l}>{l.toUpperCase()}</option>)}
             </select>
             <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="px-3 py-2 rounded-lg border border-input bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-              <option value="">All types</option>
+              <option value="">{t("allTypes")}</option>
               {TEMPLATE_TYPES.map((type) => <option key={type} value={type}>{t(`types.${type}` as never)}</option>)}
             </select>
           </div>

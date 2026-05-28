@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export function GdprSection({ applicationId }: { applicationId: string }) {
+  const t = useTranslations("gdpr");
   const tc = useTranslations("common");
   const router = useRouter();
   const { data: consents, isLoading } = useApplicationConsents(applicationId);
@@ -21,7 +22,7 @@ export function GdprSection({ applicationId }: { applicationId: string }) {
   const [showDanger, setShowDanger] = useState(false);
 
   const handleAnonymize = async () => {
-    if (!confirm("This will permanently remove all personal data (name, email, phone, CV, answers, notes) and replace it with anonymized values. This cannot be undone. Continue?")) return;
+    if (!confirm(t("anonymizeConfirm"))) return;
     try {
       const result = await anonymizeMutation.mutateAsync(applicationId);
       toast.success(result.message);
@@ -30,12 +31,12 @@ export function GdprSection({ applicationId }: { applicationId: string }) {
   };
 
   const handleDelete = async () => {
-    if (!confirm("This will PERMANENTLY DELETE the entire application record and all associated data. This cannot be undone. Type DELETE to confirm.")) return;
-    const confirm2 = window.prompt('Type "DELETE" to confirm permanent deletion:');
-    if (confirm2 !== "DELETE") { toast.error("Deletion cancelled"); return; }
+    if (!confirm(t("deleteConfirm"))) return;
+    const confirm2 = window.prompt(t("deletePrompt"));
+    if (confirm2 !== "DELETE") { toast.error(t("deleteCancelled")); return; }
     try {
       await deleteMutation.mutateAsync(applicationId);
-      toast.success("Application permanently deleted");
+      toast.success(t("deleted"));
       router.push(ROUTES.applications);
     } catch { toast.error(tc("error")); }
   };
@@ -44,14 +45,13 @@ export function GdprSection({ applicationId }: { applicationId: string }) {
     <div className="bg-card border border-border rounded-xl p-6 animate-fade-in-delay-3">
       <div className="flex items-center gap-2 mb-4">
         <Shield className="w-4 h-4 text-primary" />
-        <h3 className="font-semibold text-foreground">GDPR / Data Privacy</h3>
+        <h3 className="font-semibold text-foreground">{t("title")}</h3>
       </div>
 
-      {/* Consent records */}
       {!isLoading && consents && consents.length > 0 && (
         <div className="mb-5">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-            Consent Records
+            {t("consentRecords")}
           </p>
           <div className="space-y-2">
             {consents.map((record) => (
@@ -62,7 +62,7 @@ export function GdprSection({ applicationId }: { applicationId: string }) {
                 }
                 <span className="text-foreground">{record.consent?.name ?? "Consent"}</span>
                 <span className={`ml-auto text-xs font-medium ${record.accepted ? "text-green-500" : "text-destructive"}`}>
-                  {record.accepted ? "Accepted" : "Declined"}
+                  {record.accepted ? t("accepted") : t("declined")}
                 </span>
               </div>
             ))}
@@ -70,25 +70,23 @@ export function GdprSection({ applicationId }: { applicationId: string }) {
         </div>
       )}
 
-      {/* Danger zone toggle */}
       <button
         onClick={() => setShowDanger(!showDanger)}
         className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors"
       >
         <AlertTriangle className="w-3.5 h-3.5" />
-        {showDanger ? "Hide" : "Show"} Danger Zone
+        {showDanger ? t("hideDangerZone") : t("showDangerZone")}
       </button>
 
       {showDanger && (
         <div className="mt-4 space-y-3 border border-destructive/30 rounded-xl p-4 bg-destructive/5 animate-fade-in">
-          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">Danger Zone</p>
+          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">{t("dangerZone")}</p>
 
-          {/* Anonymize */}
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-medium text-foreground">Anonymize Data</p>
+              <p className="text-sm font-medium text-foreground">{t("anonymizeTitle")}</p>
               <p className="text-xs text-muted-foreground">
-                Replace personal data with anonymized values. Pipeline data is preserved.
+                {t("anonymizeDesc")}
               </p>
             </div>
             <button
@@ -97,16 +95,15 @@ export function GdprSection({ applicationId }: { applicationId: string }) {
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded-lg hover:bg-amber-500/10 disabled:opacity-50 transition-all shrink-0"
             >
               <UserX className="w-3.5 h-3.5" />
-              {anonymizeMutation.isPending ? "Processing..." : "Anonymize"}
+              {anonymizeMutation.isPending ? t("anonymizing") : t("anonymize")}
             </button>
           </div>
 
-          {/* Hard delete */}
           <div className="flex items-center justify-between gap-4 pt-3 border-t border-destructive/20">
             <div>
-              <p className="text-sm font-medium text-destructive">Delete All Data</p>
+              <p className="text-sm font-medium text-destructive">{t("deleteTitle")}</p>
               <p className="text-xs text-muted-foreground">
-                Permanently delete this application and all associated records.
+                {t("deleteDesc")}
               </p>
             </div>
             <button
@@ -115,7 +112,7 @@ export function GdprSection({ applicationId }: { applicationId: string }) {
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-destructive border border-destructive/30 rounded-lg hover:bg-destructive/10 disabled:opacity-50 transition-all shrink-0"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteMutation.isPending ? t("deleting") : t("delete")}
             </button>
           </div>
         </div>

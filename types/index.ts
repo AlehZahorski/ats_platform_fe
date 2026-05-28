@@ -5,3 +5,4 @@ export type * from "../entities/pipeline";
 export type * from "../entities/application";
 export type * from "../entities/forms";
 export type * from "../entities/reviews";
+export type * from "../entities/candidate";

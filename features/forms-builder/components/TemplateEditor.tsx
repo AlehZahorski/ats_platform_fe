@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Plus, ChevronRight, FileText, Type } from "lucide-react";
 import { toast } from "sonner";
 import { useFormTemplate, useUpdateTemplate } from "@/services/queries";
@@ -16,6 +17,8 @@ interface TemplateEditorProps {
 }
 
 export function TemplateEditor({ templateId, onBack }: TemplateEditorProps) {
+  const t = useTranslations("forms");
+  const tc = useTranslations("common");
   const { data: template, isLoading } = useFormTemplate(templateId);
   const updateTemplate = useUpdateTemplate(templateId);
   const [showAddField, setShowAddField] = useState(false);
@@ -26,10 +29,10 @@ export function TemplateEditor({ templateId, onBack }: TemplateEditorProps) {
     if (!nameInput.trim()) return;
     try {
       await updateTemplate.mutateAsync({ name: nameInput.trim() });
-      toast.success("Template renamed");
+      toast.success(t("templateRenamed"));
       setEditingName(false);
     } catch {
-      toast.error("Failed to rename");
+      toast.error(t("failedRename"));
     }
   };
 
@@ -69,8 +72,8 @@ export function TemplateEditor({ templateId, onBack }: TemplateEditorProps) {
                 autoFocus
                 className="font-display text-xl font-bold bg-transparent border-b-2 border-primary rounded-none px-0"
               />
-              <button onClick={handleRename} className="text-xs text-primary font-medium">Save</button>
-              <button onClick={() => setEditingName(false)} className="text-xs text-muted-foreground">Cancel</button>
+              <button onClick={handleRename} className="text-xs text-primary font-medium">{tc("save")}</button>
+              <button onClick={() => setEditingName(false)} className="text-xs text-muted-foreground">{tc("cancel")}</button>
             </div>
           ) : (
             <button
@@ -80,19 +83,19 @@ export function TemplateEditor({ templateId, onBack }: TemplateEditorProps) {
               {template.name}
             </button>
           )}
-          <p className="text-sm text-muted-foreground mt-0.5">{fields.length} fields</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{fields.length} {t("fields", { count: fields.length }).split(" ")[1] ?? t("addField").toLowerCase()}</p>
         </div>
         <Button onClick={() => setShowAddField(true)} className="gap-2">
-          <Plus className="w-4 h-4" /> Add Field
+          <Plus className="w-4 h-4" /> {t("addField")}
         </Button>
       </div>
 
       {fields.length === 0 ? (
         <div className="text-center py-16 border-2 border-dashed border-border rounded-xl">
           <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-          <p className="text-foreground font-medium">No fields yet</p>
-          <p className="text-muted-foreground text-sm mt-1 mb-4">Add your first field to build the form</p>
-          <Button onClick={() => setShowAddField(true)}>Add first field</Button>
+          <p className="text-foreground font-medium">{t("noFields")}</p>
+          <p className="text-muted-foreground text-sm mt-1 mb-4">{t("addFirstFieldDesc")}</p>
+          <Button onClick={() => setShowAddField(true)}>{t("addFirstField")}</Button>
         </div>
       ) : (
         <div className="space-y-2">
@@ -104,7 +107,7 @@ export function TemplateEditor({ templateId, onBack }: TemplateEditorProps) {
 
       {fields.length > 0 && (
         <div className="bg-card border border-border rounded-xl p-4">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Field Types Used</p>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t("fieldTypesUsed")}</p>
           <div className="flex flex-wrap gap-2">
             {[...new Set(fields.map((f) => f.field_type))].map((type) => {
               const config = FIELD_TYPES.find((t) => t.type === type);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { FileText, Plus, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { useFormTemplates, useCreateTemplate } from "@/services/queries";
@@ -11,6 +12,8 @@ import { FIELD_TYPE_COLORS } from "@/features/forms-builder/config/field-types";
 import { TemplateEditor } from "@/features/forms-builder/components/TemplateEditor";
 
 export function FormsPage() {
+  const t = useTranslations("forms");
+  const tc = useTranslations("common");
   const { data: templates, isLoading } = useFormTemplates();
   const createTemplate = useCreateTemplate();
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -21,19 +24,19 @@ export function FormsPage() {
     if (!newName.trim()) return;
     try {
       const template = await createTemplate.mutateAsync({ name: newName.trim() });
-      toast.success("Template created");
+      toast.success(t("templateCreated"));
       setNewName("");
       setShowCreate(false);
       setSelectedId(template.id);
     } catch {
-      toast.error("Failed to create template");
+      toast.error(t("failedCreate"));
     }
   };
 
   if (selectedId) {
     return (
       <div>
-        <Topbar title="Form Builder" />
+        <Topbar title={t("builderTitle")} />
         <div className="p-6">
           <TemplateEditor templateId={selectedId} onBack={() => setSelectedId(null)} />
         </div>
@@ -43,24 +46,24 @@ export function FormsPage() {
 
   return (
     <div>
-      <Topbar title="Form Templates" />
+      <Topbar title={t("title")} />
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">{templates?.length ?? 0} templates</p>
+          <p className="text-muted-foreground text-sm">{t("count", { count: templates?.length ?? 0 })}</p>
           <Button onClick={() => setShowCreate(true)} className="gap-2">
-            <Plus className="w-4 h-4" /> New Template
+            <Plus className="w-4 h-4" /> {t("new")}
           </Button>
         </div>
 
         {showCreate && (
           <div className="bg-card border border-border rounded-xl p-5 animate-fade-in">
-            <h3 className="font-semibold text-foreground mb-3">New Form Template</h3>
+            <h3 className="font-semibold text-foreground mb-3">{t("new")}</h3>
             <div className="flex gap-3">
               <Input
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-                placeholder="e.g. Engineering Application Form"
+                placeholder={t("newTemplatePlaceholder")}
                 autoFocus
                 className="flex-1"
               />
@@ -68,9 +71,9 @@ export function FormsPage() {
                 onClick={handleCreate}
                 disabled={!newName.trim() || createTemplate.isPending}
               >
-                {createTemplate.isPending ? "Creating..." : "Create"}
+                {createTemplate.isPending ? tc("creating") : tc("create")}
               </Button>
-              <Button variant="outline" onClick={() => setShowCreate(false)}>Cancel</Button>
+              <Button variant="outline" onClick={() => setShowCreate(false)}>{tc("cancel")}</Button>
             </div>
           </div>
         )}
@@ -84,11 +87,11 @@ export function FormsPage() {
         ) : templates?.length === 0 ? (
           <div className="text-center py-16 bg-card border border-border rounded-xl">
             <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-            <p className="text-foreground font-medium">No form templates yet</p>
+            <p className="text-foreground font-medium">{t("noTemplates")}</p>
             <p className="text-muted-foreground text-sm mt-1 mb-4">
-              Create a template to start collecting structured candidate data
+              {t("noTemplatesDesc")}
             </p>
-            <Button onClick={() => setShowCreate(true)}>Create first template</Button>
+            <Button onClick={() => setShowCreate(true)}>{t("createFirst")}</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -106,7 +109,7 @@ export function FormsPage() {
                   <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
                 </div>
                 <h3 className="font-semibold text-foreground text-sm mb-1 truncate">{template.name}</h3>
-                <p className="text-xs text-muted-foreground">{template.fields?.length ?? 0} fields</p>
+                <p className="text-xs text-muted-foreground">{t("fields", { count: template.fields?.length ?? 0 })}</p>
 
                 {template.fields && template.fields.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-3">

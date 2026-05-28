@@ -51,11 +51,11 @@ function InterviewForm({
 
   const handleSubmit = async () => {
     if (!form.scheduled_at) {
-      toast.error(t("scheduledAt") + " is required");
+      toast.error(t("scheduledAtRequired"));
       return;
     }
     if (!form.meeting_url.trim()) {
-      toast.error(t("meetingUrl") + " is required");
+      toast.error(t("meetingUrlRequired"));
       return;
     }
     const payload = {

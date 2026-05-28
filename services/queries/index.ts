@@ -10,3 +10,6 @@ export * from "./gdpr.queries";
 export * from "./reviews.queries";
 export * from "./tags.queries";
 export * from "./public-jobs.queries";
+export * from "./team.queries";
+export * from "./organizer.queries";
+export * from "./jobBoard.queries";

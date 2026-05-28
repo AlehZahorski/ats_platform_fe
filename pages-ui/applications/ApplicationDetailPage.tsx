@@ -58,7 +58,7 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
   };
 
   if (isLoading) return <div className="p-6"><div className="h-64 bg-card border border-border rounded-xl animate-pulse" /></div>;
-  if (!app) return <div className="p-6 text-muted-foreground">Application not found</div>;
+  if (!app) return <div className="p-6 text-muted-foreground">{t("notFound")}</div>;
 
   return (
     <div>
@@ -69,7 +69,7 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
             <div className="flex items-start justify-between mb-5">
               <div>
                 <h2 className="font-display text-xl font-bold text-foreground">{app.first_name} {app.last_name}</h2>
-                <p className="text-muted-foreground text-sm mt-0.5">Applied {formatRelative(app.created_at)}</p>
+                <p className="text-muted-foreground text-sm mt-0.5">{t("appliedRelative", { date: formatRelative(app.created_at) })}</p>
               </div>
               {app.stage && (
                 <span className="text-xs px-3 py-1.5 rounded-full font-semibold bg-primary/10 text-primary">{app.stage.name}</span>
@@ -81,7 +81,7 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
               {app.cv_url && (
                 <a href={`http://localhost:8000/${app.cv_url}`} target="_blank" rel="noreferrer"
                   className="flex items-center gap-2 text-sm text-primary hover:underline">
-                  <Download className="w-4 h-4" /> Download CV
+                  <Download className="w-4 h-4" /> {t("downloadCV")}
                 </a>
               )}
             </div>
@@ -89,7 +89,7 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
 
           {(app.answers ?? []).length > 0 && (
             <div className="bg-card border border-border rounded-xl p-6 animate-fade-in-delay-1">
-              <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><FileText className="w-4 h-4" /> Application Answers</h3>
+              <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><FileText className="w-4 h-4" /> {t("applicationAnswers")}</h3>
               <div className="space-y-4">
                 {(app.answers ?? []).map((ans) => (
                   <div key={ans.id} className="border-b border-border pb-3 last:border-0">
@@ -104,9 +104,9 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
           <JobMatchSection applicationId={app.id} candidateProfile={app.candidate_profile} />
 
           <div className="bg-card border border-border rounded-xl p-6 animate-fade-in-delay-2">
-            <h3 className="font-semibold text-foreground mb-4">Notes</h3>
+            <h3 className="font-semibold text-foreground mb-4">{tn("title")}</h3>
             <div className="space-y-3 mb-4">
-              {notes?.length === 0 && <p className="text-muted-foreground text-sm">No notes yet</p>}
+              {notes?.length === 0 && <p className="text-muted-foreground text-sm">{tn("noNotes")}</p>}
               {notes?.map((note) => (
                 <div key={note.id} className="bg-muted/40 rounded-lg p-3">
                   <p className="text-sm text-foreground">{note.content}</p>
@@ -116,7 +116,7 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
             </div>
             <div className="flex gap-2">
               <input value={noteContent} onChange={(e) => setNoteContent(e.target.value)}
-                placeholder="Add a note..." onKeyDown={(e) => e.key === "Enter" && handleAddNote()}
+                placeholder={tn("add")} onKeyDown={(e) => e.key === "Enter" && handleAddNote()}
                 className="flex-1 px-3.5 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
               <button onClick={handleAddNote} disabled={!noteContent.trim()}
                 className="p-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-all">
@@ -128,7 +128,7 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
 
         <div className="space-y-5">
           <div className="bg-card border border-border rounded-xl p-5 animate-fade-in">
-            <h3 className="font-semibold text-foreground mb-3">Pipeline Stage</h3>
+            <h3 className="font-semibold text-foreground mb-3">{t("pipelineStage")}</h3>
             <div className="space-y-2">
               {stages?.map((stage) => (
                 <button key={stage.id} onClick={() => setPendingStageId(stage.id)}
@@ -142,11 +142,11 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
           </div>
 
           <div className="bg-card border border-border rounded-xl p-5 animate-fade-in-delay-1">
-            <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2"><Star className="w-4 h-4 text-primary" /> Candidate Score</h3>
+            <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2"><Star className="w-4 h-4 text-primary" /> {ts("title")}</h3>
             {(["communication", "technical", "culture_fit"] as const).map((key) => (
               <div key={key} className="mb-4">
                 <div className="flex justify-between mb-1.5">
-                  <label className="text-xs font-medium text-foreground capitalize">{key.replace("_", " ")}</label>
+                  <label className="text-xs font-medium text-foreground capitalize">{ts(key as never)}</label>
                   <span className="text-xs text-primary font-bold">{scores[key]}/5</span>
                 </div>
                 <input type="range" min={1} max={5} value={scores[key]}
@@ -156,13 +156,13 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
             ))}
             <button onClick={handleScore}
               className="w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all">
-              Save Score
+              {ts("save")}
             </button>
           </div>
 
           {(app.stage_history ?? []).length > 0 && (
             <div className="bg-card border border-border rounded-xl p-5 animate-fade-in-delay-2">
-              <h3 className="font-semibold text-foreground mb-3">Timeline</h3>
+              <h3 className="font-semibold text-foreground mb-3">{t("timeline")}</h3>
               <div className="space-y-3">
                 {(app.stage_history ?? []).map((h) => (
                   <div key={h.id} className="flex gap-3">

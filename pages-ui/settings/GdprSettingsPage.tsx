@@ -56,7 +56,7 @@ function ConsentModal({ consent, onClose }: { consent?: Consent; onClose: () => 
                 className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Language</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("language")}</label>
               <select value={form.language} onChange={(e) => setForm((f) => ({ ...f, language: e.target.value }))}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                 {LANGUAGES.map((l) => <option key={l} value={l}>{l.toUpperCase()}</option>)}
@@ -66,13 +66,13 @@ function ConsentModal({ consent, onClose }: { consent?: Consent; onClose: () => 
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">{t("content")} *</label>
             <textarea value={form.content} onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))} rows={5}
-              placeholder="I consent to the processing of my personal data for recruitment purposes..."
+              placeholder="I consent to the processing..."
               className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
           </div>
           <div className="flex items-center justify-between py-2 px-3 bg-muted/40 rounded-lg">
             <div>
               <p className="text-sm font-medium text-foreground">{t("required")}</p>
-              <p className="text-xs text-muted-foreground">Candidates must accept this consent</p>
+              <p className="text-xs text-muted-foreground">{t("requiredDesc")}</p>
             </div>
             <button onClick={() => setForm((f) => ({ ...f, required: !f.required }))}
               className={`w-10 h-6 rounded-full transition-all relative ${form.required ? "bg-primary" : "bg-muted-foreground/30"}`}>
@@ -116,10 +116,10 @@ export function GdprSettingsPage() {
   };
 
   const handleCleanup = async () => {
-    if (!confirm("This will anonymize all applications past their data retention date. Continue?")) return;
+    if (!confirm(t("cleanupConfirm"))) return;
     try {
       const result = await cleanupMutation.mutateAsync();
-      toast.success(`Anonymized ${result.anonymized} expired applications`);
+      toast.success(t("cleanupSuccess", { count: result.anonymized }));
     } catch { toast.error(tc("error")); }
   };
 
@@ -130,13 +130,13 @@ export function GdprSettingsPage() {
         <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5 flex items-center justify-between">
           <div>
             <p className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <RotateCcw className="w-4 h-4 text-amber-500" /> Data Retention Cleanup
+              <RotateCcw className="w-4 h-4 text-amber-500" /> {t("cleanupTitle")}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">Anonymize all applications that have passed their data retention date</p>
+            <p className="text-xs text-muted-foreground mt-1">{t("cleanupDesc")}</p>
           </div>
           <button onClick={handleCleanup} disabled={cleanupMutation.isPending}
             className="px-4 py-2 text-sm font-semibold bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:opacity-50 transition-all">
-            {cleanupMutation.isPending ? "Running..." : "Run cleanup"}
+            {cleanupMutation.isPending ? t("cleanupRunning") : t("cleanupRun")}
           </button>
         </div>
 
@@ -169,8 +169,8 @@ export function GdprSettingsPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="font-medium text-foreground text-sm">{consent.name}</p>
                         <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase">{consent.language}</span>
-                        {consent.required && <span className="text-xs bg-destructive/10 text-destructive px-2 py-0.5 rounded-full">Required</span>}
-                        {!consent.is_active && <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Inactive</span>}
+                        {consent.required && <span className="text-xs bg-destructive/10 text-destructive px-2 py-0.5 rounded-full">{t("required")}</span>}
+                        {!consent.is_active && <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">{t("inactive")}</span>}
                       </div>
                       <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{consent.content}</p>
                     </div>

@@ -198,8 +198,8 @@ export function PublicJobsPage() {
                               {locationLabel && <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{locationLabel}</span>}
                             </div>
                           </div>
-                          {(job.role_summary || job.description) && (
-                            <p className="max-w-3xl text-sm leading-6 text-muted-foreground">{job.role_summary || job.description}</p>
+                          {job.role_summary && (
+                            <p className="max-w-3xl text-sm leading-6 text-muted-foreground">{job.role_summary}</p>
                           )}
                           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                             {salaryLabel && <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5"><Wallet className="h-3.5 w-3.5" />{salaryLabel}</span>}

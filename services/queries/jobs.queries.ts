@@ -1,6 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { jobsApi } from "@/services/api/jobs";
-import type { Job } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  jobsApi,
+  type JobPayload,
+  type MitigationActionPatch,
+  type MitigationActionPayload,
+  type RiskItemPatch,
+  type RiskItemPayload,
+} from "@/services/api/jobs";
 
 export const jobKeys = {
   all: ["jobs"] as const,
@@ -8,6 +14,8 @@ export const jobKeys = {
   detail: (id: string) => ["jobs", "detail", id] as const,
   publicList: (params?: object) => ["jobs", "public-list", params] as const,
 };
+
+// ── Queries ────────────────────────────────────────────────────────────
 
 export function useJobs(params?: { status?: string }) {
   return useQuery({
@@ -31,10 +39,20 @@ export function usePublicJobs(params?: { q?: string }) {
   });
 }
 
+// ── Job CRUD mutations ─────────────────────────────────────────────────
+
 export function useCreateJob() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: import("@/services/api/jobs").JobPayload) => jobsApi.create(data).then((r) => r.data),
+    mutationFn: (data: JobPayload) => jobsApi.create(data).then((r) => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
+  });
+}
+
+export function useCloneJob() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => jobsApi.clone(id).then((r) => r.data),
     onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
   });
 }
@@ -42,7 +60,7 @@ export function useCreateJob() {
 export function useUpdateJob() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<import("@/services/api/jobs").JobPayload> }) =>
+    mutationFn: ({ id, data }: { id: string; data: Partial<JobPayload> }) =>
       jobsApi.update(id, data).then((r) => r.data),
     onSuccess: (_, { id }) => {
       qc.invalidateQueries({ queryKey: jobKeys.all });
@@ -71,14 +89,84 @@ export function useAssignTemplate() {
   });
 }
 
+// ── LLM mutations ──────────────────────────────────────────────────────
+
 export function useAnalyzeJob() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => jobsApi.analyze(id).then((r) => r.data),
+    onSuccess: (_, id) => qc.invalidateQueries({ queryKey: jobKeys.detail(id) }),
+  });
+}
+
+export function useAssessRisk() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => jobsApi.assessRisk(id).then((r) => r.data),
+    onSuccess: (_, id) => qc.invalidateQueries({ queryKey: jobKeys.detail(id) }),
   });
 }
 
 export function useJobSuggest() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => jobsApi.suggest(id).then((r) => r.data),
+    // Refresh job detail so `suggest_used_at` propagates and the CTA hides.
+    onSuccess: (_, id) => qc.invalidateQueries({ queryKey: jobKeys.detail(id) }),
+  });
+}
+
+// ── Risk items CRUD ────────────────────────────────────────────────────
+
+export function useAddRiskItem(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: RiskItemPayload) => jobsApi.addRiskItem(jobId, data).then((r) => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.detail(jobId) }),
+  });
+}
+
+export function useUpdateRiskItem(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ riskId, data }: { riskId: string; data: RiskItemPatch }) =>
+      jobsApi.updateRiskItem(jobId, riskId, data).then((r) => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.detail(jobId) }),
+  });
+}
+
+export function useDeleteRiskItem(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (riskId: string) => jobsApi.deleteRiskItem(jobId, riskId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.detail(jobId) }),
+  });
+}
+
+// ── Mitigation actions CRUD ────────────────────────────────────────────
+
+export function useAddMitigation(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: MitigationActionPayload) =>
+      jobsApi.addMitigation(jobId, data).then((r) => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.detail(jobId) }),
+  });
+}
+
+export function useUpdateMitigation(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ actionId, data }: { actionId: string; data: MitigationActionPatch }) =>
+      jobsApi.updateMitigation(jobId, actionId, data).then((r) => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.detail(jobId) }),
+  });
+}
+
+export function useDeleteMitigation(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (actionId: string) => jobsApi.deleteMitigation(jobId, actionId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.detail(jobId) }),
   });
 }

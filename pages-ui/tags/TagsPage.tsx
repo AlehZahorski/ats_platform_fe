@@ -72,7 +72,7 @@ export function TagsPage() {
     const name = newTag.trim();
     if (!name) return;
     if (tags?.some((tag) => tag.name.toLowerCase() === name.toLowerCase())) {
-      toast.error("Tag already exists"); return;
+      toast.error(t("alreadyExists")); return;
     }
     try {
       await createMutation.mutateAsync(name);
@@ -89,7 +89,7 @@ export function TagsPage() {
       <div className="p-6 space-y-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           <div className="bg-card border border-border rounded-xl p-4">
-            <p className="text-xs text-muted-foreground">Total tags</p>
+            <p className="text-xs text-muted-foreground">{t("total")}</p>
             <p className="text-2xl font-bold text-foreground mt-1">{tags?.length ?? 0}</p>
           </div>
         </div>
@@ -112,7 +112,7 @@ export function TagsPage() {
           </div>
           {newTag.trim() && (
             <div className="mt-3 flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Preview:</span>
+              <span className="text-xs text-muted-foreground">{t("preview")}</span>
               <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${getTagColor(newTag)}`}>
                 <Hash className="w-3 h-3" /> {newTag.trim()}
               </span>
@@ -124,7 +124,7 @@ export function TagsPage() {
           <div className="flex items-center justify-between">
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={tc("search")}
               className="w-full max-w-xs px-3.5 py-2 rounded-lg border border-input bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-            <span className="text-sm text-muted-foreground">{filtered?.length ?? 0} tags</span>
+            <span className="text-sm text-muted-foreground">{t("count", { count: filtered?.length ?? 0 })}</span>
           </div>
 
           {isLoading ? (
@@ -135,7 +135,7 @@ export function TagsPage() {
             <div className="text-center py-16 bg-card border border-border rounded-xl">
               <TagIcon className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
               <p className="text-foreground font-medium">{search ? tc("noResults") : t("noTags")}</p>
-              {!search && <p className="text-muted-foreground text-sm mt-1">Create your first tag to start organizing candidates</p>}
+              {!search && <p className="text-muted-foreground text-sm mt-1">{t("createFirst")}</p>}
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">

@@ -12,6 +12,7 @@ import { signupSchema, type SignupFormData } from "../schemas/auth.schema";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Button } from "@/shared/ui/button";
+import { Logo } from "@/shared/ui/Logo";
 
 export function SignupForm() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export function SignupForm() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
-          <img src="/logo-wakanta.png" alt="wakanta.pl" className="h-20 w-auto object-contain mx-auto" />
+          <Logo className="h-20 w-auto mx-auto" />
           <p className="text-muted-foreground mt-2 text-sm">{t("setUpWorkspace")}</p>
         </div>
 

@@ -54,7 +54,7 @@ function RuleModal({ rule, onClose }: { rule?: AutomationRule; onClose: () => vo
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">{t("name")} *</label>
             <input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              placeholder="e.g. Send confirmation on apply"
+              placeholder={t("namePlaceholder")}
               className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
           </div>
           <div>
@@ -67,7 +67,7 @@ function RuleModal({ rule, onClose }: { rule?: AutomationRule; onClose: () => vo
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">{t("triggerValue")}</label>
               <select value={form.trigger_value} onChange={(e) => setForm((f) => ({ ...f, trigger_value: e.target.value }))} className={selectClass}>
-                <option value="">Any stage</option>
+                <option value="">{t("anyStage")}</option>
                 {stages?.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
@@ -75,7 +75,7 @@ function RuleModal({ rule, onClose }: { rule?: AutomationRule; onClose: () => vo
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">{t("template")} *</label>
             <select value={form.template_id} onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))} className={selectClass}>
-              <option value="">Select template...</option>
+              <option value="">{t("selectTemplate")}</option>
               {templates?.map((tpl) => <option key={tpl.id} value={tpl.id}>{tpl.name} ({tpl.language.toUpperCase()})</option>)}
             </select>
           </div>
@@ -123,7 +123,7 @@ export function AutomationsPage() {
       <Topbar title={t("title")} />
       <div className="p-6 space-y-5">
         <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">{rules?.length ?? 0} rules</p>
+          <p className="text-muted-foreground text-sm">{t("rulesCount", { count: rules?.length ?? 0 })}</p>
           <button onClick={() => setShowCreate(true)}
             className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all">
             <Plus className="w-4 h-4" /> {t("new")}

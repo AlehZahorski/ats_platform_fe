@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import { useAddField } from "@/services/queries";
@@ -18,6 +19,8 @@ interface AddFieldModalProps {
 }
 
 export function AddFieldModal({ templateId, onClose, nextOrder }: AddFieldModalProps) {
+  const t = useTranslations("forms");
+  const tc = useTranslations("common");
   const addField = useAddField(templateId);
   const [label, setLabel] = useState("");
   const [fieldType, setFieldType] = useState<FieldType>("text");
@@ -27,7 +30,7 @@ export function AddFieldModal({ templateId, onClose, nextOrder }: AddFieldModalP
   const needsOptions = fieldType === "select" || fieldType === "multiselect";
 
   const handleAdd = async () => {
-    if (!label.trim()) { toast.error("Field label is required"); return; }
+    if (!label.trim()) { toast.error(t("labelRequired")); return; }
     const options = needsOptions
       ? optionsText.split("\n").map((o) => o.trim()).filter(Boolean)
       : undefined;
@@ -40,10 +43,10 @@ export function AddFieldModal({ templateId, onClose, nextOrder }: AddFieldModalP
         options: options?.length ? options : null,
         order_index: nextOrder,
       });
-      toast.success("Field added");
+      toast.success(t("fieldAdded"));
       onClose();
     } catch {
-      toast.error("Failed to add field");
+      toast.error(t("failedAdd"));
     }
   };
 
@@ -51,7 +54,7 @@ export function AddFieldModal({ templateId, onClose, nextOrder }: AddFieldModalP
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-card border border-border rounded-xl w-full max-w-md shadow-2xl animate-fade-in">
         <div className="flex items-center justify-between p-5 border-b border-border">
-          <h3 className="font-display font-semibold text-foreground">Add Field</h3>
+          <h3 className="font-display font-semibold text-foreground">{t("addField")}</h3>
           <button
             onClick={onClose}
             className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all"
@@ -62,7 +65,7 @@ export function AddFieldModal({ templateId, onClose, nextOrder }: AddFieldModalP
 
         <div className="p-5 space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="field-label">Field Label *</Label>
+            <Label htmlFor="field-label">{t("fieldLabel")} *</Label>
             <Input
               id="field-label"
               value={label}
@@ -73,7 +76,7 @@ export function AddFieldModal({ templateId, onClose, nextOrder }: AddFieldModalP
           </div>
 
           <div className="space-y-1.5">
-            <Label>Field Type</Label>
+            <Label>{t("fieldType")}</Label>
             <div className="grid grid-cols-2 gap-2">
               {FIELD_TYPES.map(({ type, label: typeLabel, icon: Icon }) => (
                 <button
@@ -95,7 +98,7 @@ export function AddFieldModal({ templateId, onClose, nextOrder }: AddFieldModalP
           {needsOptions && (
             <div className="space-y-1.5">
               <Label>
-                Options <span className="text-muted-foreground font-normal">(one per line)</span>
+                {t("options")} <span className="text-muted-foreground font-normal">({t("optionsDesc")})</span>
               </Label>
               <Textarea
                 value={optionsText}
@@ -108,8 +111,8 @@ export function AddFieldModal({ templateId, onClose, nextOrder }: AddFieldModalP
 
           <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/40">
             <div>
-              <p className="text-sm font-medium text-foreground">Required field</p>
-              <p className="text-xs text-muted-foreground">Candidates must fill this in</p>
+              <p className="text-sm font-medium text-foreground">{t("required")}</p>
+              <p className="text-xs text-muted-foreground">{t("requiredDesc")}</p>
             </div>
             <button
               onClick={() => setRequired(!required)}
@@ -126,10 +129,10 @@ export function AddFieldModal({ templateId, onClose, nextOrder }: AddFieldModalP
             disabled={!label.trim() || addField.isPending}
             className="flex-1"
           >
-            {addField.isPending ? "Adding..." : "Add Field"}
+            {addField.isPending ? t("adding") : t("addField")}
           </Button>
           <Button variant="outline" onClick={onClose} className="px-4">
-            Cancel
+            {tc("cancel")}
           </Button>
         </div>
       </div>

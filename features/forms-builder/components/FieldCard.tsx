@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { GripVertical, Trash2, Type } from "lucide-react";
 import { toast } from "sonner";
 import { useDeleteField } from "@/services/queries";
@@ -13,6 +14,7 @@ interface FieldCardProps {
 }
 
 export function FieldCard({ field, templateId, index }: FieldCardProps) {
+  const t = useTranslations("forms");
   const deleteField = useDeleteField(templateId);
   const typeConfig = FIELD_TYPES.find((t) => t.type === field.field_type);
   const Icon = typeConfig?.icon ?? Type;
@@ -21,9 +23,9 @@ export function FieldCard({ field, templateId, index }: FieldCardProps) {
   const handleDelete = async () => {
     try {
       await deleteField.mutateAsync(field.id);
-      toast.success("Field removed");
+      toast.success(t("fieldRemoved"));
     } catch {
-      toast.error("Failed to remove field");
+      toast.error(t("failedRemove"));
     }
   };
 
@@ -50,7 +52,7 @@ export function FieldCard({ field, templateId, index }: FieldCardProps) {
             {typeConfig?.label ?? field.field_type}
           </span>
           {field.options && field.options.length > 0 && (
-            <span className="text-xs text-muted-foreground">· {field.options.length} options</span>
+            <span className="text-xs text-muted-foreground">· {field.options.length} {t("options").toLowerCase()}</span>
           )}
         </div>
       </div>

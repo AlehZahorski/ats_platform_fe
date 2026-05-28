@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Plus, Briefcase, MapPin, Trash2, Pencil } from "lucide-react";
+import { Plus, Briefcase, MapPin, Trash2, Pencil, Copy } from "lucide-react";
 import { Topbar } from "@/shared/layout/Topbar";
-import { useJobs, useDeleteJob } from "@/services/queries";
+import { useJobs, useDeleteJob, useCloneJob } from "@/services/queries";
 import { formatRelative } from "@/shared/utils/format";
 import { ROUTES } from "@/config/routes";
 
@@ -13,8 +14,10 @@ export function JobsPage() {
   const t = useTranslations("jobs");
   const tc = useTranslations("common");
 
+  const router = useRouter();
   const { data, isLoading } = useJobs();
   const deleteJob = useDeleteJob();
+  const cloneJob = useCloneJob();
 
   const handleDelete = async (id: string) => {
     if (!confirm(t("deleteConfirm"))) return;
@@ -22,6 +25,16 @@ export function JobsPage() {
       await deleteJob.mutateAsync(id);
       toast.success(t("deleted"));
     } catch { toast.error(t("deleteFailed")); }
+  };
+
+  const handleClone = async (id: string) => {
+    try {
+      const cloned = await cloneJob.mutateAsync(id);
+      toast.success("Oferta sklonowana — sprawdź szczegóły");
+      router.push(`/dashboard/jobs/${cloned.id}`);
+    } catch {
+      toast.error("Nie udało się sklonować oferty");
+    }
   };
 
   return (
@@ -80,10 +93,18 @@ export function JobsPage() {
                 </div>
                 <div className="flex items-center gap-2 ml-4">
                   <Link href={`/dashboard/jobs/${job.id}`}
-                    className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all">
+                    className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all"
+                    title="Edytuj">
                     <Pencil className="w-4 h-4" />
                   </Link>
+                  <button onClick={() => handleClone(job.id)}
+                    disabled={cloneJob.isPending}
+                    title="Sklonuj ofertę"
+                    className="p-2 text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10 rounded-lg transition-all disabled:opacity-50">
+                    <Copy className="w-4 h-4" />
+                  </button>
                   <button onClick={() => handleDelete(job.id)}
+                    title="Usuń ofertę"
                     className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all">
                     <Trash2 className="w-4 h-4" />
                   </button>

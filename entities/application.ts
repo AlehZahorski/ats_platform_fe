@@ -170,7 +170,7 @@ export interface CandidateJobMatch {
   reasoning: string | null;
   strengths_match: string[] | null;
   gaps: string[] | null;
-  recommendation: "hire" | "consider" | "reject" | null;
+  recommendation: "top_candidate" | "consider" | "not_a_match" | null;
   llm_model: string | null;
   created_at: string;
 }

@@ -23,9 +23,9 @@
     --accent-foreground: 220 20% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --sidebar: 220 20% 12%;
-    --sidebar-foreground: 220 14% 88%;
-    --sidebar-border: 220 16% 20%;
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 220 20% 20%;
+    --sidebar-border: 220 14% 88%;
     --radius: 0.5rem;
   }
 
@@ -87,3 +87,7 @@
 .ProseMirror p { @apply leading-relaxed; }
 .ProseMirror strong { @apply font-semibold; }
 .ProseMirror em { @apply italic; }
+
+/* Hide scrollbars on horizontal-scroll chip rows etc. — purely cosmetic. */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

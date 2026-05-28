@@ -1,0 +1,19 @@
+# =============================================================================
+# Frontend — Next.js 15 (development image with hot reload)
+# Source code is mounted as a volume from the host (see docker-compose.dev.yml).
+# =============================================================================
+FROM node:20-alpine
+
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+ENV NEXT_TELEMETRY_DISABLED=1
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Source is mounted at runtime via volume; node_modules stays in the image
+# (named volume in compose prevents host node_modules from shadowing it).
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]

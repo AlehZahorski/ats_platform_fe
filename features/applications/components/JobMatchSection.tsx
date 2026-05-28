@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useCvParseStatus, useJobMatches } from "@/services/queries";
 import type { CandidateJobMatch, CandidateProfile } from "@/types";
 import {
@@ -9,15 +10,8 @@ import {
 
 // ─── Pipeline progress ────────────────────────────────────────────────────────
 
-const STEPS = [
-  { key: "queued",     label: "Pobieranie tekstu z CV" },
-  { key: "extracting", label: "Analiza struktury CV" },
-  { key: "parsing",    label: "Analiza AI kandydata" },
-  { key: "matching",   label: "Dopasowanie do oferty" },
-  { key: "done",       label: "Wyniki gotowe" },
-] as const;
-
-type StepKey = (typeof STEPS)[number]["key"];
+const STEP_KEYS = ["queued", "extracting", "parsing", "matching", "done"] as const;
+type StepKey = (typeof STEP_KEYS)[number];
 
 function resolveActiveStep(
   parseStatus: string | undefined,
@@ -27,21 +21,21 @@ function resolveActiveStep(
   if (parseStatus === "extracting") return "extracting";
   if (parseStatus === "parsing" || parseStatus === "review_required") return "parsing";
   if (parseStatus === "failed") return "failed";
-  // completed
   return hasMatches ? "done" : "matching";
 }
 
 function PipelineProgress({ activeStep }: { activeStep: StepKey | "failed" }) {
-  const activeIndex = STEPS.findIndex((s) => s.key === activeStep);
+  const t = useTranslations("cvParsing");
+  const activeIndex = STEP_KEYS.findIndex((k) => k === activeStep);
 
   return (
     <div className="space-y-2">
-      {STEPS.map((step, i) => {
+      {STEP_KEYS.map((key, i) => {
         const done = activeIndex > i;
         const active = activeIndex === i;
         return (
           <div
-            key={step.key}
+            key={key}
             className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm transition-colors ${
               done ? "bg-green-500/10 text-green-600" :
               active ? "bg-primary/10 text-primary" :
@@ -57,7 +51,7 @@ function PipelineProgress({ activeStep }: { activeStep: StepKey | "failed" }) {
                 <span className="w-2 h-2 rounded-full bg-current opacity-40" />
               )}
             </span>
-            <span className="font-medium">{i + 1}. {step.label}</span>
+            <span className="font-medium">{i + 1}. {t(`steps.${key}` as never)}</span>
           </div>
         );
       })}
@@ -95,17 +89,18 @@ function ScoreRing({ score, label, color }: { score: number; label: string; colo
 // ─── Recommendation badge ─────────────────────────────────────────────────────
 
 function RecommendationBadge({ recommendation }: { recommendation: CandidateJobMatch["recommendation"] }) {
+  const t = useTranslations("cvParsing");
   if (!recommendation) return null;
   const config = {
-    hire:     { label: "Zatrudnij", icon: CheckCircle, className: "bg-green-500/10 text-green-600 border-green-500/20" },
-    consider: { label: "Rozważ",    icon: AlertCircle, className: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
-    reject:   { label: "Odrzuć",    icon: XCircle,     className: "bg-red-500/10 text-red-600 border-red-500/20" },
+    top_candidate: { icon: CheckCircle, className: "bg-green-500/10 text-green-600 border-green-500/20" },
+    consider:      { icon: AlertCircle, className: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
+    not_a_match:   { icon: XCircle,     className: "bg-red-500/10 text-red-600 border-red-500/20" },
   };
-  const { label, icon: Icon, className } = config[recommendation];
+  const { icon: Icon, className } = config[recommendation];
   return (
     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold border ${className}`}>
       <Icon className="w-4 h-4" />
-      {label}
+      {t(`matching.recommendation.${recommendation}` as never)}
     </span>
   );
 }
@@ -113,6 +108,7 @@ function RecommendationBadge({ recommendation }: { recommendation: CandidateJobM
 // ─── Candidate portrait (cultural) ───────────────────────────────────────────
 
 function CandidatePortrait({ profile }: { profile: CandidateProfile }) {
+  const t = useTranslations("cvParsing");
   const hasContent =
     profile.executive_summary ||
     (profile.hobbies && profile.hobbies.length > 0) ||
@@ -125,7 +121,7 @@ function CandidatePortrait({ profile }: { profile: CandidateProfile }) {
     <div className="rounded-xl border border-primary/10 bg-primary/5 p-5 space-y-4">
       <p className="text-xs font-semibold text-primary uppercase tracking-wide flex items-center gap-1.5">
         <User className="w-3.5 h-3.5" />
-        Obraz kandydata
+        {t("matching.candidate")}
       </p>
 
       {profile.executive_summary && (
@@ -134,7 +130,7 @@ function CandidatePortrait({ profile }: { profile: CandidateProfile }) {
 
       {profile.hobbies && profile.hobbies.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Hobby i zainteresowania</p>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">{t("matching.hobbies")}</p>
           <div className="flex flex-wrap gap-1">
             {profile.hobbies.map((h, i) => (
               <span key={i} className="px-2 py-0.5 rounded-full text-xs bg-blue-500/10 text-blue-600 border border-blue-500/20">{h}</span>
@@ -147,19 +143,19 @@ function CandidatePortrait({ profile }: { profile: CandidateProfile }) {
         <div className="grid gap-2 sm:grid-cols-2 text-xs">
           {profile.personality_signals.communication_style && (
             <div className="rounded-lg bg-muted/40 px-3 py-2">
-              <span className="text-muted-foreground">Styl komunikacji: </span>
+              <span className="text-muted-foreground">{t("matching.commStyle")} </span>
               <span className="text-foreground font-medium">{profile.personality_signals.communication_style}</span>
             </div>
           )}
           {profile.personality_signals.leadership_indicators && (
             <div className="rounded-lg bg-muted/40 px-3 py-2">
-              <span className="text-muted-foreground">Przywództwo: </span>
+              <span className="text-muted-foreground">{t("matching.leadership")} </span>
               <span className="text-foreground font-medium">{profile.personality_signals.leadership_indicators}</span>
             </div>
           )}
           {profile.personality_signals.growth_mindset && (
             <div className="rounded-lg bg-muted/40 px-3 py-2 sm:col-span-2">
-              <span className="text-muted-foreground">Nastawienie na rozwój: </span>
+              <span className="text-muted-foreground">{t("matching.growthMindset")} </span>
               <span className="text-foreground font-medium">{profile.personality_signals.growth_mindset}</span>
             </div>
           )}
@@ -168,7 +164,7 @@ function CandidatePortrait({ profile }: { profile: CandidateProfile }) {
 
       {profile.culture_fit_notes && (
         <div className="rounded-lg bg-muted/30 px-3 py-2">
-          <p className="text-xs text-muted-foreground mb-0.5 font-semibold">Dopasowanie kulturowe</p>
+          <p className="text-xs text-muted-foreground mb-0.5 font-semibold">{t("matching.cultureFit")}</p>
           <p className="text-xs text-foreground leading-relaxed">{profile.culture_fit_notes}</p>
         </div>
       )}
@@ -179,6 +175,7 @@ function CandidatePortrait({ profile }: { profile: CandidateProfile }) {
 // ─── Match card ───────────────────────────────────────────────────────────────
 
 function MatchCard({ match, profile }: { match: CandidateJobMatch; profile: CandidateProfile | null }) {
+  const t = useTranslations("cvParsing");
   const techColor = match.match_score !== null
     ? match.match_score >= 75 ? "#22c55e" : match.match_score >= 50 ? "#f59e0b" : "#ef4444"
     : "#94a3b8";
@@ -188,34 +185,30 @@ function MatchCard({ match, profile }: { match: CandidateJobMatch; profile: Cand
 
   return (
     <div className="space-y-4">
-      {/* Candidate portrait */}
       {profile && <CandidatePortrait profile={profile} />}
 
-      {/* Scores + recommendation */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-5">
           {match.match_score !== null && (
-            <ScoreRing score={match.match_score} label="Techniczne" color={techColor} />
+            <ScoreRing score={match.match_score} label={t("matching.technical")} color={techColor} />
           )}
           {match.fit_score !== null && (
-            <ScoreRing score={match.fit_score} label="Kulturowe" color={fitColor} />
+            <ScoreRing score={match.fit_score} label={t("matching.cultural")} color={fitColor} />
           )}
         </div>
         <RecommendationBadge recommendation={match.recommendation} />
       </div>
 
-      {/* Reasoning */}
       {match.reasoning && (
         <p className="text-sm text-muted-foreground leading-relaxed">{match.reasoning}</p>
       )}
 
-      {/* Strengths and gaps */}
       <div className="grid gap-3 sm:grid-cols-2">
         {match.strengths_match && match.strengths_match.length > 0 && (
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-green-600">
               <TrendingUp className="w-3.5 h-3.5" />
-              Co pasuje
+              {t("matching.strengths")}
             </div>
             <ul className="space-y-1">
               {match.strengths_match.map((s, i) => (
@@ -231,7 +224,7 @@ function MatchCard({ match, profile }: { match: CandidateJobMatch; profile: Cand
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-600">
               <AlertCircle className="w-3.5 h-3.5" />
-              Braki
+              {t("matching.gaps")}
             </div>
             <ul className="space-y-1">
               {match.gaps.map((g, i) => (
@@ -256,9 +249,9 @@ interface JobMatchSectionProps {
 }
 
 export function JobMatchSection({ applicationId, candidateProfile }: JobMatchSectionProps) {
+  const t = useTranslations("cvParsing");
   const cvParse = useCvParseStatus(applicationId, true);
   const parseStatus = cvParse.data?.status ?? (candidateProfile ? "completed" : undefined);
-  const parseIsActive = parseStatus && ["queued", "extracting", "parsing"].includes(parseStatus);
   const parseCompleted = parseStatus === "completed";
 
   const { data: matches } = useJobMatches(applicationId, parseCompleted);
@@ -275,7 +268,7 @@ export function JobMatchSection({ applicationId, candidateProfile }: JobMatchSec
       <div className="flex items-center justify-between gap-3 mb-4">
         <h3 className="font-semibold text-foreground flex items-center gap-2">
           <Heart className="w-4 h-4 text-primary" />
-          Dopasowanie do oferty względem CV
+          {t("matching.title")}
         </h3>
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 shrink-0">
           <span>✦</span>
@@ -286,7 +279,7 @@ export function JobMatchSection({ applicationId, candidateProfile }: JobMatchSec
       {activeStep === "failed" ? (
         <div className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive flex items-center gap-3">
           <RefreshCcw className="w-4 h-4 shrink-0" />
-          <span>Analiza CV nie powiodła się. Spróbuj ponownie.</span>
+          <span>{t("matching.failed")}</span>
         </div>
       ) : isProcessing ? (
         <PipelineProgress activeStep={activeStep} />

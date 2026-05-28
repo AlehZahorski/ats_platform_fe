@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CheckCircle, Briefcase, MapPin, Building2 } from "lucide-react";
+import { ArrowLeft, CheckCircle, Briefcase, MapPin, Building2 } from "lucide-react";
 import { usePublicJob } from "@/services/queries/public-jobs.queries";
 import { useApplyForm } from "@/features/applications/hooks/useApplyForm";
 import { ApplyForm } from "@/features/applications/components/ApplyForm";
@@ -84,12 +85,6 @@ function JobOfferDetail({ job }: { job: PublicJobDetail }) {
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("jobOffer.sections.roleSummary")}</p>
           <p className="mt-1 leading-relaxed">{job.role_summary}</p>
-        </div>
-      )}
-      {job.role_purpose && (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("jobOffer.sections.rolePurpose")}</p>
-          <p className="mt-1 leading-relaxed">{job.role_purpose}</p>
         </div>
       )}
       {(job.salary_min || job.salary_max || job.work_mode || job.contract_type) && (
@@ -211,9 +206,22 @@ export function ApplyPage({ jobId }: ApplyPageProps) {
   });
   const locationLabel = getJobLocationLabel({ location: job.location, workMode: workModeLabel, remoteConstraints: job.remote_constraints });
 
+  // Build a back link that preserves the open detail so the user lands on the
+  // same job they came from (state lives in `?job=<id>` on the board).
+  const backHref = `${ROUTES.public.jobs}?job=${jobId}`;
+
   return (
     <div className="min-h-screen bg-background py-10 px-4">
       <div className="mx-auto max-w-6xl">
+        {/* Back to board */}
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+          Wróć do ofert
+        </Link>
+
         <div className="mb-8 text-center animate-fade-in">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
             <Briefcase className="h-6 w-6 text-primary" />
@@ -231,8 +239,8 @@ export function ApplyPage({ jobId }: ApplyPageProps) {
               </span>
             )}
           </div>
-          {job.description && (
-            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">{job.description}</p>
+          {job.role_summary && (
+            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">{job.role_summary}</p>
           )}
         </div>
 
