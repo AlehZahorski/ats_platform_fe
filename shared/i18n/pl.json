@@ -1,4 +1,15 @@
 {
+  "a11y": {
+    "skipToMain": "Przejdź do treści głównej",
+    "mainNavigation": "Nawigacja główna",
+    "topbar": "Pasek górny",
+    "userMenu": "Menu użytkownika",
+    "notifications": "Powiadomienia",
+    "changeAvatar": "Zmień avatar",
+    "closeDialog": "Zamknij okno",
+    "edit": "Edytuj",
+    "delete": "Usuń"
+  },
   "nav": {
     "dashboard": "Panel",
     "jobs": "Oferty pracy",

@@ -91,3 +91,18 @@
 /* Hide scrollbars on horizontal-scroll chip rows etc. — purely cosmetic. */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* A11Y-013 (audit_accessibility): honor user motion preference.
+   WCAG 2.3.3 / vestibular-disorder mitigation. Keep tiny non-zero duration so
+   transitionend events still fire and React state machines (sonner, radix
+   animations) don't get stuck. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

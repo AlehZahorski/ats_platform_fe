@@ -41,6 +41,9 @@ export function LoginForm() {
 
         <div className="bg-card border border-border rounded-xl p-8 shadow-lg">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            {/* A11Y-004 (audit_accessibility): wire aria-invalid + aria-describedby
+                so the SR announces the error when focus is on the field, and
+                aria-required so it announces "required" from the label. */}
             <div className="space-y-1.5">
               <Label htmlFor="email">{t("email")}</Label>
               <Input
@@ -48,8 +51,12 @@ export function LoginForm() {
                 {...register("email")}
                 type="email"
                 placeholder="you@company.com"
+                aria-required="true"
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "email-error" : undefined}
+                autoComplete="email"
               />
-              {errors.email && <p className="text-destructive text-xs">{errors.email.message}</p>}
+              {errors.email && <p id="email-error" className="text-destructive text-xs">{errors.email.message}</p>}
             </div>
 
             <div className="space-y-1.5">
@@ -59,8 +66,12 @@ export function LoginForm() {
                 {...register("password")}
                 type="password"
                 placeholder="••••••••"
+                aria-required="true"
+                aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? "password-error" : undefined}
+                autoComplete="current-password"
               />
-              {errors.password && <p className="text-destructive text-xs">{errors.password.message}</p>}
+              {errors.password && <p id="password-error" className="text-destructive text-xs">{errors.password.message}</p>}
             </div>
 
             <Button type="submit" disabled={isSubmitting} className="w-full">

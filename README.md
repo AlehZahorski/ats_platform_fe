@@ -23,58 +23,61 @@ Production-ready Next.js frontend for the TalentMatch Applicant Tracking System.
 
 ## Project Structure
 
+<!-- audit_documentation F-12: previous tree was mojibake (CP-1252 → UTF-8
+     double-decode of box-drawing chars). Restored with plain ASCII so the
+     diagram survives any encoding round-trip. -->
 ```
 frontend/
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ app/
-Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ (auth)/
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ login/             # Login page
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ signup/            # Signup page
-Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ (dashboard)/
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ dashboard/
-Ă˘â€ťâ€š   Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ page.tsx       # Dashboard home
-Ă˘â€ťâ€š   Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ jobs/          # Jobs list + job detail
-Ă˘â€ťâ€š   Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ applications/  # Applications list + detail
-Ă˘â€ťâ€š   Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ pipeline/      # Kanban pipeline board
-Ă˘â€ťâ€š   Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ forms/         # Form template builder
-Ă˘â€ťâ€š   Ă˘â€ťâ€š       Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ settings/      # Workspace settings
-Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ (public)/
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ apply/[jobId]/     # Public candidate application page
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ track/[token]/     # Public application tracking page
-Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ layout.tsx             # Root layout
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ components/
-Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ layout/
-Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ Sidebar.tsx        # Dashboard sidebar navigation
-Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ Topbar.tsx         # Dashboard topbar + theme toggle
-Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ Providers.tsx      # React Query + theme providers
-Ă˘â€ťâ€š       Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ ThemeProvider.tsx  # next-themes wrapper
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ services/
-Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ api/                   # Axios API client + per-module services
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ client.ts          # Axios instance + token refresh interceptor
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ auth.ts
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ jobs.ts
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ applications.ts
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ pipeline.ts
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ tags.ts
-Ă˘â€ťâ€š   Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ forms.ts
-Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ queries/               # React Query hooks
-Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ auth.queries.ts
-Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ jobs.queries.ts
-Ă˘â€ťâ€š       Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ applications.queries.ts
-Ă˘â€ťâ€š       Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ pipeline.queries.ts
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ types/
-Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ index.ts               # TypeScript interfaces
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ lib/
-Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ utils.ts               # cn(), formatDate(), getInitials()
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ i18n/
-Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ en.json                # English translations
-Ă˘â€ťâ€š   Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ pl.json                # Polish translations
-Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ request.ts             # next-intl server config
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ styles/
-Ă˘â€ťâ€š   Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ globals.css            # Tailwind + CSS variables (dark/light theme)
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ .env.example               # Environment variable template
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ next.config.mjs            # Next.js configuration
-Ă˘â€ťĹ›Ă˘â€ťâ‚¬Ă˘â€ťâ‚¬ tailwind.config.ts         # Tailwind configuration
-Ă˘â€ťâ€ťĂ˘â€ťâ‚¬Ă˘â€ťâ‚¬ tsconfig.json              # TypeScript configuration
+|-- app/
+|   |-- (auth)/
+|   |   |-- login/             # Login page
+|   |   `-- signup/            # Signup page
+|   |-- (dashboard)/
+|   |   `-- dashboard/
+|   |       |-- page.tsx       # Dashboard home
+|   |       |-- jobs/          # Jobs list + job detail
+|   |       |-- applications/  # Applications list + detail
+|   |       |-- pipeline/      # Kanban pipeline board
+|   |       |-- forms/         # Form template builder
+|   |       `-- settings/      # Workspace settings
+|   |-- (public)/
+|   |   |-- apply/[jobId]/     # Public candidate application page
+|   |   `-- track/[token]/     # Public application tracking page
+|   `-- layout.tsx             # Root layout
+|-- components/
+|   `-- layout/
+|       |-- Sidebar.tsx        # Dashboard sidebar navigation
+|       |-- Topbar.tsx         # Dashboard topbar + theme toggle
+|       |-- Providers.tsx      # React Query + theme providers
+|       `-- ThemeProvider.tsx  # next-themes wrapper
+|-- services/
+|   |-- api/                   # Axios API client + per-module services
+|   |   |-- client.ts          # Axios instance + token refresh interceptor
+|   |   |-- auth.ts
+|   |   |-- jobs.ts
+|   |   |-- applications.ts
+|   |   |-- pipeline.ts
+|   |   |-- tags.ts
+|   |   `-- forms.ts
+|   `-- queries/               # React Query hooks
+|       |-- auth.queries.ts
+|       |-- jobs.queries.ts
+|       |-- applications.queries.ts
+|       `-- pipeline.queries.ts
+|-- types/
+|   `-- index.ts               # TypeScript interfaces
+|-- lib/
+|   `-- utils.ts               # cn(), formatDate(), getInitials()
+|-- i18n/
+|   |-- en.json                # English translations
+|   |-- pl.json                # Polish translations
+|   `-- request.ts             # next-intl server config
+|-- styles/
+|   `-- globals.css            # Tailwind + CSS variables (dark/light theme)
+|-- .env.example               # Environment variable template
+|-- next.config.mjs            # Next.js configuration
+|-- tailwind.config.ts         # Tailwind configuration
+`-- tsconfig.json              # TypeScript configuration
 ```
 
 ---

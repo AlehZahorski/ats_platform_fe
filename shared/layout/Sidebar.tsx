@@ -46,6 +46,7 @@ const ownerOnlySettingsItems = [
 export function Sidebar() {
   const pathname = usePathname();
   const t = useTranslations("nav");
+  const tA11y = useTranslations("a11y");
   const logout = useLogout();
   const router = useRouter();
   const { data: me } = useMe();
@@ -70,7 +71,7 @@ export function Sidebar() {
             : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-foreground/5"
         )}
       >
-        <Icon className="w-4 h-4 shrink-0" />
+        <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
         {t(key as never)}
       </Link>
     );
@@ -84,7 +85,9 @@ export function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+      {/* A11Y-006 (audit_accessibility): label the landmark so SR rotor
+          distinguishes this <nav> from Topbar / Public nav. */}
+      <nav aria-label={tA11y("mainNavigation")} className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {navItems.map(renderItem)}
 
         {/* Settings group */}
@@ -104,7 +107,11 @@ export function Sidebar() {
             type="button"
             onClick={() => setAvatarOpen(true)}
             className="flex items-center gap-3 px-2 py-2 w-full rounded-lg hover:bg-sidebar-foreground/5 transition-colors"
-            title="Zmień avatar"
+            // A11Y-010 (audit_accessibility): `title` alone is unreliable for
+            // SR; pair it with aria-label so the action ("Change avatar") is
+            // announced together with the user's name.
+            title={tA11y("changeAvatar")}
+            aria-label={`${tA11y("changeAvatar")} — ${nameFromEmail(me.email)}`}
           >
             <UserAvatar user={me} size={36} />
             <div className="flex-1 min-w-0 text-left">
@@ -117,7 +124,7 @@ export function Sidebar() {
           onClick={handleLogout}
           className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-foreground/5 transition-all"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-4 h-4" aria-hidden="true" />
           {t("logout")}
         </button>
       </div>

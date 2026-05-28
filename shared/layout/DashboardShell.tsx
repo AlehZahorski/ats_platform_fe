@@ -32,7 +32,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
-      <main className="flex-1 min-w-0">{children}</main>
+      {/* A11Y-003 (audit_accessibility): id is the skip-link target from
+          RootLayout. tabIndex={-1} lets us focus it programmatically when the
+          skip link fires. WCAG 2.4.1 Bypass Blocks. */}
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0 outline-none">{children}</main>
     </div>
   );
 }

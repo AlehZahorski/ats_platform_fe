@@ -92,21 +92,26 @@ export function JobsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 ml-4">
+                  {/* A11Y-024 (audit_accessibility): icon-only controls need
+                      aria-label — `title` alone isn't reliable for SR users. */}
                   <Link href={`/dashboard/jobs/${job.id}`}
                     className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all"
+                    aria-label="Edytuj ofertę"
                     title="Edytuj">
-                    <Pencil className="w-4 h-4" />
+                    <Pencil className="w-4 h-4" aria-hidden="true" />
                   </Link>
                   <button onClick={() => handleClone(job.id)}
                     disabled={cloneJob.isPending}
+                    aria-label="Sklonuj ofertę"
                     title="Sklonuj ofertę"
                     className="p-2 text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10 rounded-lg transition-all disabled:opacity-50">
-                    <Copy className="w-4 h-4" />
+                    <Copy className="w-4 h-4" aria-hidden="true" />
                   </button>
                   <button onClick={() => handleDelete(job.id)}
+                    aria-label="Usuń ofertę"
                     title="Usuń ofertę"
                     className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all">
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
               </div>

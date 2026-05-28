@@ -57,32 +57,68 @@ export function ApplyForm({
             <p className="mt-0.5 text-xs text-muted-foreground">{t("requiredHint")}</p>
           </div>
 
+          {/* A11Y-004 (audit_accessibility): pair each <label> with htmlFor and
+              the <input> with id + aria-required so SR announces "required"
+              consistently. The visible asterisk is also marked aria-hidden so
+              SR doesn't read "star". autoComplete improves UX for everyone. */}
           <form onSubmit={onSubmit} className="space-y-5 p-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">
-                  {t("firstName")} <span className="text-destructive">*</span>
+                <label htmlFor="apply-first-name" className="mb-1.5 block text-sm font-medium text-foreground">
+                  {t("firstName")} <span aria-hidden="true" className="text-destructive">*</span>
                 </label>
-                <input required value={coreForm.first_name} onChange={(e) => onCoreFormChange({ first_name: e.target.value })} className={inputClass} />
+                <input
+                  id="apply-first-name"
+                  required
+                  aria-required="true"
+                  autoComplete="given-name"
+                  value={coreForm.first_name}
+                  onChange={(e) => onCoreFormChange({ first_name: e.target.value })}
+                  className={inputClass}
+                />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">
-                  {t("lastName")} <span className="text-destructive">*</span>
+                <label htmlFor="apply-last-name" className="mb-1.5 block text-sm font-medium text-foreground">
+                  {t("lastName")} <span aria-hidden="true" className="text-destructive">*</span>
                 </label>
-                <input required value={coreForm.last_name} onChange={(e) => onCoreFormChange({ last_name: e.target.value })} className={inputClass} />
+                <input
+                  id="apply-last-name"
+                  required
+                  aria-required="true"
+                  autoComplete="family-name"
+                  value={coreForm.last_name}
+                  onChange={(e) => onCoreFormChange({ last_name: e.target.value })}
+                  className={inputClass}
+                />
               </div>
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
-                {t("email")} <span className="text-destructive">*</span>
+              <label htmlFor="apply-email" className="mb-1.5 block text-sm font-medium text-foreground">
+                {t("email")} <span aria-hidden="true" className="text-destructive">*</span>
               </label>
-              <input required type="email" value={coreForm.email} onChange={(e) => onCoreFormChange({ email: e.target.value })} className={inputClass} />
+              <input
+                id="apply-email"
+                required
+                aria-required="true"
+                autoComplete="email"
+                type="email"
+                value={coreForm.email}
+                onChange={(e) => onCoreFormChange({ email: e.target.value })}
+                className={inputClass}
+              />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">{t("phone")}</label>
-              <input type="tel" value={coreForm.phone} onChange={(e) => onCoreFormChange({ phone: e.target.value })} className={inputClass} />
+              <label htmlFor="apply-phone" className="mb-1.5 block text-sm font-medium text-foreground">{t("phone")}</label>
+              <input
+                id="apply-phone"
+                autoComplete="tel"
+                type="tel"
+                value={coreForm.phone}
+                onChange={(e) => onCoreFormChange({ phone: e.target.value })}
+                className={inputClass}
+              />
             </div>
 
             {sortedFields.length > 0 && (
