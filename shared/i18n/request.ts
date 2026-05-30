@@ -2,7 +2,8 @@ import { getRequestConfig } from "next-intl/server";
 import { cookies } from "next/headers";
 
 const SUPPORTED_LOCALES = ["en", "pl"];
-const DEFAULT_LOCALE = "en";
+// audit_seo F-05: matches `routing.ts` — Polish content + .pl domain.
+const DEFAULT_LOCALE = "pl";
 
 export default getRequestConfig(async () => {
   const cookieStore = await cookies();

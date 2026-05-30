@@ -14,11 +14,20 @@ interface Props<T extends string> {
   options: ChipOption<T>[];
   onChange: (v: T) => void;
   className?: string;
+  /** Pulsing amber outline when the (required) group has no selection yet. */
+  highlight?: boolean;
 }
 
-export function ChipGroup<T extends string>({ value, options, onChange, className }: Props<T>) {
+export function ChipGroup<T extends string>({ value, options, onChange, className, highlight }: Props<T>) {
   return (
-    <div className={cn("grid gap-2", className)} style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
+    <div
+      className={cn(
+        "grid gap-2",
+        highlight && "rounded-lg ring-2 ring-amber-400/50 animate-pulse p-1.5 -m-1.5",
+        className,
+      )}
+      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+    >
       {options.map((opt) => {
         const Icon = opt.icon;
         const active = value === opt.value;

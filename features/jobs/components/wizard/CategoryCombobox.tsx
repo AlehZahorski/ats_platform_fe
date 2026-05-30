@@ -12,9 +12,11 @@ interface Props {
   value: string;                  // category code or ""
   onChange: (code: string) => void;
   placeholder?: string;
+  /** Pulsing amber outline when the (required) category is not yet chosen. */
+  highlight?: boolean;
 }
 
-export function CategoryCombobox({ value, onChange, placeholder }: Props) {
+export function CategoryCombobox({ value, onChange, placeholder, highlight }: Props) {
   const tCat = useTranslations("jobs.categories");
   const tGroup = useTranslations("jobs.categoryGroups");
   const [open, setOpen] = useState(false);
@@ -48,7 +50,8 @@ export function CategoryCombobox({ value, onChange, placeholder }: Props) {
           className={cn(
             "w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-sm",
             "flex items-center justify-between gap-2 hover:border-amber-400/40 transition-colors",
-            "focus:outline-none focus:ring-2 focus:ring-amber-400/40"
+            "focus:outline-none focus:ring-2 focus:ring-amber-400/40",
+            highlight && "border-amber-500 ring-2 ring-amber-400/50 animate-pulse"
           )}
         >
           {selected ? (

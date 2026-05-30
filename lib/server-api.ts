@@ -12,6 +12,7 @@
  * missing/unavailable so generateMetadata can fall back to a safe
  * default instead of breaking the page render.
  */
+import { cache } from "react";
 import type { ArticleDetail } from "@/entities/article";
 import type { CompanyPublicDetail } from "@/entities/company";
 
@@ -41,9 +42,14 @@ async function safeGetJson<T>(url: string, revalidate = DEFAULT_REVALIDATE): Pro
 // Articles
 // ─────────────────────────────────────────────────────────────────────
 
-export function getArticleBySlug(slug: string): Promise<ArticleDetail | null> {
+// audit_szybkosci: every public detail page calls `getXxxBySlug` twice on
+// the server (once from `generateMetadata`, once from `Page`). Wrapping in
+// React.cache() dedupes those calls inside a single request scope — the
+// second call is an in-memory hit, no second HTTP round-trip. Independent
+// requests still go through `fetch()` and respect `next.revalidate=300`.
+export const getArticleBySlug = cache((slug: string): Promise<ArticleDetail | null> => {
   return safeGetJson<ArticleDetail>(`${API}/articles/public/${encodeURIComponent(slug)}`);
-}
+});
 
 interface ArticleSlugRow {
   slug:         string;
@@ -68,9 +74,10 @@ export async function listAllArticleSlugs(): Promise<ArticleSlugRow[]> {
 // Companies
 // ─────────────────────────────────────────────────────────────────────
 
-export function getCompanyBySlug(slug: string): Promise<CompanyPublicDetail | null> {
+export const getCompanyBySlug = cache((slug: string): Promise<CompanyPublicDetail | null> => {
+  // audit_szybkosci: dedupe via React.cache() — see comment on getArticleBySlug.
   return safeGetJson<CompanyPublicDetail>(`${API}/companies/public/${encodeURIComponent(slug)}`);
-}
+});
 
 interface CompanySlugList {
   items: { slug: string | null; name: string }[];

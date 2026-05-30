@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Bookmark, Filter, Search, ShieldCheck } from "lucide-react";
+import { Bookmark, Filter, Info, Search, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { JobBoardFilters } from "./lib/filters";
 import { toggleArr, isFilterActive } from "./lib/filters";
@@ -13,6 +13,13 @@ import { useCandidateMe, candidateKeys } from "@/services/queries/jobBoard.queri
 import { candidatesApi } from "@/services/api/jobBoard";
 import { ROUTES } from "@/config/routes";
 import { CategoryFilter } from "./CategoryFilter";
+import {
+  SENIORITY_LADDERS,
+  groupsFromCategories,
+  applicableLadderKeys,
+  applicableQualifications,
+  anyGroupHasShifts,
+} from "./lib/categoryFilterRules";
 
 interface Props {
   filters: JobBoardFilters;
@@ -42,17 +49,10 @@ const SHIFT_SYSTEMS = [
   { value: "equivalent", label: "Równoważny" },
 ];
 
-// Seniority is split into ladders that match real industries — IT lists
-// differ from corporate which differ from production. Showing them grouped
-// helps candidates pick the right scale for their target sector.
-const SENIORITY_LADDERS: { label: string; values: string[] }[] = [
-  { label: "IT / Tech",          values: ["intern", "junior", "mid", "senior", "expert", "lead"] },
-  { label: "Korporacja / Biuro", values: ["specialist", "senior_specialist", "coordinator", "manager", "director", "executive"] },
-  { label: "Produkcja",          values: ["operator", "team_leader", "foreman", "production_manager"] },
-  { label: "Medycyna",           values: ["resident", "attending", "consultant", "head_of_department"] },
-  { label: "Edukacja akademicka", values: ["assistant", "lecturer", "professor"] },
-  { label: "Praca fizyczna",     values: ["helper", "worker"] },
-];
+// Seniority ladders + the group-to-ladder mapping now live in
+// `./lib/categoryFilterRules.ts` so the sidebar can show only the ladders
+// that match the selected category groups (e.g. IT ladder for "tech",
+// medical ladder for "healthcare"). See that file for the full rules.
 
 // Most-used qualifications across our 290 categories. Shown as a flat checkbox
 // list — small enough that an accordion would be over-engineered.
@@ -90,6 +90,77 @@ export function FilterSidebar({ filters, onChange }: Props) {
   const [saving, setSaving] = useState(false);
   const [showAllQuals, setShowAllQuals] = useState(false);
 
+  // ─────────────────────────────────────────────────────────────────
+  // Category-aware filter visibility. Derive the set of category groups
+  // the user has selected; that drives which seniority ladders, which
+  // qualifications and whether the shift-system section are shown.
+  //
+  // When nothing is selected, those three sections are hidden entirely
+  // — the alternative (showing 30+ filters at once) is what makes the
+  // first impression of the page feel like a tax form.
+  // ─────────────────────────────────────────────────────────────────
+  const selectedGroups = useMemo(
+    () => groupsFromCategories(filters.category),
+    [filters.category],
+  );
+  const ladderKeys = useMemo(
+    () => applicableLadderKeys(selectedGroups),
+    [selectedGroups],
+  );
+  const qualSet = useMemo(
+    () => applicableQualifications(selectedGroups),
+    [selectedGroups],
+  );
+  const showShiftFilter = selectedGroups.length > 0 && anyGroupHasShifts(selectedGroups);
+  const visibleLadders = useMemo(
+    () => SENIORITY_LADDERS.filter((l) => ladderKeys.has(l.key)),
+    [ladderKeys],
+  );
+  const showSeniorityFilter = visibleLadders.length > 0;
+  const showQualificationsFilter = selectedGroups.length > 0;
+
+  // When the category selection changes, scrub any seniority / qualification /
+  // shift-system values that no longer apply. Otherwise the URL would keep
+  // dead `seniority=junior` after switching to a manufacturing category.
+  useEffect(() => {
+    if (selectedGroups.length === 0) {
+      // No categories — drop all category-derived filter values.
+      if (filters.seniority || filters.qualification || filters.shift_system) {
+        onChange({
+          ...filters,
+          seniority: undefined,
+          qualification: undefined,
+          shift_system: undefined,
+        });
+      }
+      return;
+    }
+    let next = filters;
+    let dirty = false;
+
+    if (filters.seniority) {
+      const visibleSeniorityValues = new Set(visibleLadders.flatMap((l) => l.values));
+      const keep = filters.seniority.filter((v) => visibleSeniorityValues.has(v));
+      if (keep.length !== filters.seniority.length) {
+        next = { ...next, seniority: keep.length > 0 ? keep : undefined };
+        dirty = true;
+      }
+    }
+    if (filters.qualification) {
+      const keep = filters.qualification.filter((v) => qualSet.has(v));
+      if (keep.length !== filters.qualification.length) {
+        next = { ...next, qualification: keep.length > 0 ? keep : undefined };
+        dirty = true;
+      }
+    }
+    if (filters.shift_system && !showShiftFilter) {
+      next = { ...next, shift_system: undefined };
+      dirty = true;
+    }
+    if (dirty) onChange(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedGroups.join("|")]);
+
   const handleSaveSearch = async () => {
     if (!isFilterActive(filters)) {
       toast.info("Najpierw zastosuj filtry, żeby zapisać wyszukiwanie");
@@ -113,7 +184,13 @@ export function FilterSidebar({ filters, onChange }: Props) {
     }
   };
 
-  const visibleQuals = showAllQuals ? POPULAR_QUALIFICATIONS : POPULAR_QUALIFICATIONS.slice(0, 8);
+  // Qualifications visible to the user — first narrowed by category-group
+  // rules, then collapsed to the first 8 unless they click "Pokaż więcej".
+  const filteredQuals = useMemo(
+    () => POPULAR_QUALIFICATIONS.filter((q) => qualSet.has(q.value)),
+    [qualSet],
+  );
+  const visibleQuals = showAllQuals ? filteredQuals : filteredQuals.slice(0, 8);
 
   return (
     <aside className="space-y-5 pr-2">
@@ -204,83 +281,106 @@ export function FilterSidebar({ filters, onChange }: Props) {
         onToggle={(value) => onChange({ ...filters, employment_size: toggleArr(filters.employment_size, value) })}
       />
 
-      {/* Seniority — grouped */}
-      <div>
-        <div className="text-xs font-semibold mb-2">Poziom stanowiska</div>
-        <div className="space-y-2.5">
-          {SENIORITY_LADDERS.map((ladder) => (
-            <div key={ladder.label}>
-              <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">
-                {ladder.label}
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {ladder.values.map((v) => {
-                  const checked = filters.seniority?.includes(v) ?? false;
-                  return (
-                    <button
-                      key={v}
-                      type="button"
-                      onClick={() => onChange({ ...filters, seniority: toggleArr(filters.seniority, v) })}
-                      className={cn(
-                        "px-2 py-1 rounded-full border text-xs transition-colors",
-                        checked
-                          ? "border-amber-400 bg-amber-400/10 text-amber-400"
-                          : "border-border text-muted-foreground hover:bg-accent/40"
-                      )}
-                    >
-                      {tSen(v as never)}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+      {/* audit (UX): contextual hint shown when no category is selected.
+          Tells the user explicitly that more filters appear once they pick
+          a category — otherwise they could think the page is missing
+          features. */}
+      {selectedGroups.length === 0 && (
+        <div className="rounded-lg border border-dashed border-border bg-muted/30 p-3 flex items-start gap-2 text-xs text-muted-foreground">
+          <Info className="w-3.5 h-3.5 mt-0.5 shrink-0 text-amber-400" aria-hidden="true" />
+          <span>
+            Wybierz <strong className="text-foreground">kategorię zawodową</strong>,
+            żeby zobaczyć dopasowane filtry: poziom stanowiska, uprawnienia
+            i — gdzie ma to sens — system pracy zmianowej.
+          </span>
         </div>
-      </div>
+      )}
 
-      {/* Shift system */}
-      <ChipGroup
-        label="System pracy zmianowej"
-        options={SHIFT_SYSTEMS}
-        selected={filters.shift_system}
-        onToggle={(value) => onChange({ ...filters, shift_system: toggleArr(filters.shift_system, value) })}
-      />
-
-      {/* Qualifications */}
-      <div>
-        <div className="text-xs font-semibold mb-2">Uprawnienia i certyfikaty</div>
-        <div className="space-y-1">
-          {visibleQuals.map((q) => {
-            const checked = filters.qualification?.includes(q.value) ?? false;
-            return (
-              <label
-                key={q.value}
-                className={cn(
-                  "flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-sm",
-                  checked ? "bg-amber-400/10 text-foreground" : "hover:bg-accent/40"
-                )}
-              >
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={() => onChange({ ...filters, qualification: toggleArr(filters.qualification, q.value) })}
-                  className="w-3.5 h-3.5 rounded border-border accent-amber-400"
-                />
-                <span>{q.label}</span>
-              </label>
-            );
-          })}
+      {/* Seniority — grouped, only ladders relevant to selected category groups */}
+      {showSeniorityFilter && (
+        <div>
+          <div className="text-xs font-semibold mb-2">Poziom stanowiska</div>
+          <div className="space-y-2.5">
+            {visibleLadders.map((ladder) => (
+              <div key={ladder.key}>
+                <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">
+                  {ladder.label}
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {ladder.values.map((v) => {
+                    const checked = filters.seniority?.includes(v) ?? false;
+                    return (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => onChange({ ...filters, seniority: toggleArr(filters.seniority, v) })}
+                        className={cn(
+                          "px-2 py-1 rounded-full border text-xs transition-colors",
+                          checked
+                            ? "border-amber-400 bg-amber-400/10 text-amber-400"
+                            : "border-border text-muted-foreground hover:bg-accent/40"
+                        )}
+                      >
+                        {tSen(v as never)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        {POPULAR_QUALIFICATIONS.length > 8 && (
-          <button
-            type="button"
-            onClick={() => setShowAllQuals((s) => !s)}
-            className="mt-1 text-xs text-amber-400 hover:text-amber-300"
-          >
-            {showAllQuals ? "Zwiń" : `Pokaż więcej (${POPULAR_QUALIFICATIONS.length - 8})`}
-          </button>
-        )}
-      </div>
+      )}
+
+      {/* Shift system — only when at least one selected category group
+          actually runs shift work (e.g. manufacturing, healthcare). */}
+      {showShiftFilter && (
+        <ChipGroup
+          label="System pracy zmianowej"
+          options={SHIFT_SYSTEMS}
+          selected={filters.shift_system}
+          onToggle={(value) => onChange({ ...filters, shift_system: toggleArr(filters.shift_system, value) })}
+        />
+      )}
+
+      {/* Qualifications — narrowed to the certs that recruiters actually
+          request inside the selected category groups. */}
+      {showQualificationsFilter && filteredQuals.length > 0 && (
+        <div>
+          <div className="text-xs font-semibold mb-2">Uprawnienia i certyfikaty</div>
+          <div className="space-y-1">
+            {visibleQuals.map((q) => {
+              const checked = filters.qualification?.includes(q.value) ?? false;
+              return (
+                <label
+                  key={q.value}
+                  className={cn(
+                    "flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-sm",
+                    checked ? "bg-amber-400/10 text-foreground" : "hover:bg-accent/40"
+                  )}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => onChange({ ...filters, qualification: toggleArr(filters.qualification, q.value) })}
+                    className="w-3.5 h-3.5 rounded border-border accent-amber-400"
+                  />
+                  <span>{q.label}</span>
+                </label>
+              );
+            })}
+          </div>
+          {filteredQuals.length > 8 && (
+            <button
+              type="button"
+              onClick={() => setShowAllQuals((s) => !s)}
+              className="mt-1 text-xs text-amber-400 hover:text-amber-300"
+            >
+              {showAllQuals ? "Zwiń" : `Pokaż więcej (${filteredQuals.length - 8})`}
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Salary range */}
       <SalaryRange

@@ -1,5 +1,10 @@
 import apiClient from "./client";
-import type { Admin, AdminArticle, AdminArticleList } from "@/entities/admin";
+import type {
+  Admin,
+  AdminArticle,
+  AdminArticleList,
+  AdminUsageReport,
+} from "@/entities/admin";
 
 
 // ── Auth ─────────────────────────────────────────────────────────────
@@ -9,6 +14,14 @@ export const adminAuthApi = {
   logout: () => apiClient.post("/admin/auth/logout"),
   refresh: () => apiClient.post<Admin>("/admin/auth/refresh"),
   me: () => apiClient.get<Admin>("/admin/auth/me"),
+};
+
+
+// ── AI usage analytics ───────────────────────────────────────────────
+export const adminUsageApi = {
+  // days = 0 → all-time report.
+  get: (days: number) =>
+    apiClient.get<AdminUsageReport>("/admin/usage", { params: { days } }),
 };
 
 

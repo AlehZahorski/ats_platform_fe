@@ -69,6 +69,17 @@ export function useUpdateJob() {
   });
 }
 
+export function usePublishJob() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => jobsApi.publish(id).then((r) => r.data),
+    onSuccess: (_, id) => {
+      qc.invalidateQueries({ queryKey: jobKeys.all });
+      qc.invalidateQueries({ queryKey: jobKeys.detail(id) });
+    },
+  });
+}
+
 export function useDeleteJob() {
   const qc = useQueryClient();
   return useMutation({

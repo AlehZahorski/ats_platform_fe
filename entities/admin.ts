@@ -24,3 +24,64 @@ export interface AdminArticleList {
   items: AdminArticle[];
   total: number;
 }
+
+// ── AI usage analytics (F-23) ───────────────────────────────────────────────
+// Mirrors app/modules/admins/usage_schemas.py. Field names match the ORM
+// (input_tokens / output_tokens / llm_model); total_tokens is server-derived.
+
+export interface UsageOverview {
+  total_calls: number;
+  total_input_tokens: number;
+  total_output_tokens: number;
+  total_tokens: number;
+  total_cost_usd: number;
+  companies_using: number;
+  period_days: number | null;
+}
+
+export interface CompanyUsageRow {
+  company_id: string;
+  company_name: string;
+  calls: number;
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+  cost_usd: number;
+  last_used_at: string | null;
+}
+
+export interface OperationUsageRow {
+  operation: string;
+  calls: number;
+  total_tokens: number;
+  cost_usd: number;
+}
+
+export interface ModelUsageRow {
+  llm_model: string | null;
+  calls: number;
+  total_tokens: number;
+  cost_usd: number;
+}
+
+export interface RecentUsageRow {
+  id: string;
+  company_id: string;
+  company_name: string;
+  operation: string;
+  llm_model: string | null;
+  prompt_name: string | null;
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+  cost_usd: number;
+  created_at: string;
+}
+
+export interface AdminUsageReport {
+  overview: UsageOverview;
+  by_company: CompanyUsageRow[];
+  by_operation: OperationUsageRow[];
+  by_model: ModelUsageRow[];
+  recent: RecentUsageRow[];
+}

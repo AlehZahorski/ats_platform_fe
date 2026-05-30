@@ -31,8 +31,26 @@ export const apiClient = axios.create({
   },
 });
 
-// Track if we're already refreshing to prevent loops
+// audit_frontend_code: the previous interceptor rejected parallel 401s while
+// a refresh was in flight, which translated to "your first request triggered
+// a refresh, the next four bounced to /login". We now queue waiters: the
+// first 401 owns the refresh, every other 401 parks a `(resolve, reject)`
+// pair until the refresh resolves and is then replayed.
 let isRefreshing = false;
+let refreshWaiters: Array<{
+  resolve: (value: unknown) => void;
+  reject: (reason?: unknown) => void;
+}> = [];
+
+function drainRefreshWaiters(error: unknown) {
+  const waiters = refreshWaiters;
+  refreshWaiters = [];
+  if (error) {
+    for (const w of waiters) w.reject(error);
+  } else {
+    for (const w of waiters) w.resolve(undefined);
+  }
+}
 
 // Endpoints that should never trigger a redirect to /login (HR side) on 401.
 // /candidates/* — candidate side has its own /konto/zaloguj page, never redirect HR /login here.
@@ -75,19 +93,31 @@ apiClient.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
+      originalRequest._retry = true;
+
       if (isRefreshing) {
-        return Promise.reject(error);
+        // Another concurrent 401 is already refreshing — wait for it to
+        // finish, then replay this request once. No second /auth/refresh.
+        return new Promise((resolve, reject) => {
+          refreshWaiters.push({
+            resolve: () => {
+              apiClient.request(originalRequest).then(resolve, reject);
+            },
+            reject,
+          });
+        });
       }
 
-      originalRequest._retry = true;
       isRefreshing = true;
 
       try {
         await apiClient.post("/auth/refresh");
         isRefreshing = false;
+        drainRefreshWaiters(null);
         return apiClient.request(originalRequest);
-      } catch {
+      } catch (refreshErr) {
         isRefreshing = false;
+        drainRefreshWaiters(refreshErr);
         // Only redirect if we're in the browser, NOT on a public/candidate page,
         // and not already on a login/signup page.
         if (

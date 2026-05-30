@@ -121,6 +121,10 @@ export const jobsApi = {
   update: (id: string, data: Partial<JobPayload>) =>
     apiClient.patch<Job>(`/jobs/${id}`, data),
 
+  // Explicit publish — strict server-side gate. Returns 422 with
+  // `{ detail: { message, issues } }` when the offer is not ready.
+  publish: (id: string) => apiClient.post<Job>(`/jobs/${id}/publish`),
+
   delete: (id: string) => apiClient.delete(`/jobs/${id}`),
 
   assignTemplate: (id: string, template_id: string | null) =>

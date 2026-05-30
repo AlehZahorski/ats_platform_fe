@@ -21,10 +21,18 @@ const SECTION_HINT: Record<string, string> = {
   location: "podstawy",
   work_mode: "podstawy",
   contract_type: "podstawy",
+  seniority: "podstawy",
   role_summary: "zakres",
+  role_purpose: "zakres",
+  responsibilities: "zakres",
+  team_context: "zakres",
   must_haves: "wymagania",
+  nice_to_haves: "wymagania",
+  tech_stack: "wymagania",
   salary: "widelki",
   benefits: "widelki",
+  value_proposition: "widelki",
+  hiring_process: "widelki",
 };
 
 export function PublishChecklistModal({ open, onClose, onConfirm, state, onJumpTo, isPublishing }: Props) {

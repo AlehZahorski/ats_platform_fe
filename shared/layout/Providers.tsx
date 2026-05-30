@@ -21,7 +21,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () => new QueryClient({
       defaultOptions: {
-        queries: { staleTime: 60 * 1000, retry: 1 },
+        queries: {
+          staleTime: 60 * 1000,
+          // audit_performance F-06: 10-minute garbage collection so React
+          // Query frees memory it no longer needs after the user navigates
+          // away.
+          gcTime: 10 * 60 * 1000,
+          retry: 1,
+          // audit_performance F-06: a quick alt-tab should not fire a re-fetch
+          // storm against the API. Individual queries that legitimately need
+          // it (pipeline, CV-parse polling) opt in explicitly.
+          refetchOnWindowFocus: false,
+        },
       },
     })
   );

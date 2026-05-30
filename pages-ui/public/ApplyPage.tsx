@@ -3,19 +3,33 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, CheckCircle, Briefcase, MapPin, Building2 } from "lucide-react";
+import { ArrowLeft, Briefcase, Building2, CheckCircle, MapPin } from "lucide-react";
 import { usePublicJob } from "@/services/queries/public-jobs.queries";
 import { useApplyForm } from "@/features/applications/hooks/useApplyForm";
 import { ApplyForm } from "@/features/applications/components/ApplyForm";
 import type { PublicJobDetail } from "@/entities/job";
 import { ROUTES } from "@/config/routes";
+import { CandidateJobOfferView } from "./CandidateJobOfferView";
 
+// Helpers used by the standalone hero above the apply grid. The shared
+// `CandidateJobOfferView` renderer (used inside the grid) has its own
+// internal versions — the duplication is intentional and kept local because
+// the candidate apply page deliberately renders a bigger, more prominent
+// hero than the embedded view does.
 function translateEnum(value: string | null, map: Record<string, string>) {
   if (!value) return null;
   return map[value] ?? value;
 }
 
-function getJobLocationLabel({ location, workMode, remoteConstraints }: { location: string | null; workMode: string | null; remoteConstraints: string | null }) {
+function getJobLocationLabel({
+  location,
+  workMode,
+  remoteConstraints,
+}: {
+  location: string | null;
+  workMode: string | null;
+  remoteConstraints: string | null;
+}) {
   if (location) return location;
   if (workMode && remoteConstraints) return `${workMode} • ${remoteConstraints}`;
   if (remoteConstraints) return remoteConstraints;
@@ -45,123 +59,49 @@ function SuccessScreen({ jobTitle, token }: { jobTitle: string; token: string })
   );
 }
 
+// `JobOfferDetail` and its 100+ lines of inline rendering moved into
+// `CandidateJobOfferView` so the editor preview renders 1:1 the same view.
+// The component below is intentionally kept as a thin shim until every
+// internal caller is migrated.
 function JobOfferDetail({ job }: { job: PublicJobDetail }) {
-  const t = useTranslations("apply");
-  const salaryPeriod = translateEnum(job.salary_period, {
-    hour: t("jobOffer.values.salaryPeriod.hour"),
-    month: t("jobOffer.values.salaryPeriod.month"),
-    year: t("jobOffer.values.salaryPeriod.year"),
-  });
-  const workMode = translateEnum(job.work_mode, {
-    remote: t("jobOffer.values.workMode.remote"),
-    hybrid: t("jobOffer.values.workMode.hybrid"),
-    onsite: t("jobOffer.values.workMode.onsite"),
-  });
-  const contractType = translateEnum(job.contract_type, {
-    employment: t("jobOffer.values.contractType.employment"),
-    b2b: t("jobOffer.values.contractType.b2b"),
-    contract: t("jobOffer.values.contractType.contract"),
-    internship: t("jobOffer.values.contractType.internship"),
-    temporary: t("jobOffer.values.contractType.temporary"),
-  });
-  const seniority = translateEnum(job.seniority, {
-    junior: t("jobOffer.values.seniority.junior"),
-    mid: t("jobOffer.values.seniority.mid"),
-    senior: t("jobOffer.values.seniority.senior"),
-    lead: t("jobOffer.values.seniority.lead"),
-  });
-  const offerSections = [
-    { title: t("jobOffer.sections.responsibilities"), html: job.responsibilities },
-    { title: t("jobOffer.sections.mustHaves"), html: job.must_haves },
-    { title: t("jobOffer.sections.niceToHaves"), html: job.nice_to_haves },
-    { title: t("jobOffer.sections.techStack"), html: job.tech_stack },
-    { title: t("jobOffer.sections.benefits"), html: job.benefits },
-    { title: t("jobOffer.sections.hiringProcess"), html: job.hiring_process },
-  ];
-
-  return (
-    <div className="grid gap-4 rounded-xl border border-border bg-card p-6 text-sm text-foreground shadow-sm">
-      {job.role_summary && (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("jobOffer.sections.roleSummary")}</p>
-          <p className="mt-1 leading-relaxed">{job.role_summary}</p>
-        </div>
-      )}
-      {(job.salary_min || job.salary_max || job.work_mode || job.contract_type) && (
-        <div className="grid gap-3 md:grid-cols-2">
-          {(job.salary_min || job.salary_max) && (
-            <div className="rounded-lg bg-muted/30 p-3">
-              <p className="text-xs text-muted-foreground">{t("jobOffer.cards.salary")}</p>
-              <p className="mt-1 font-medium">
-                {job.salary_min ?? "?"} - {job.salary_max ?? "?"} {job.salary_currency ?? ""} / {salaryPeriod ?? ""}
-              </p>
-            </div>
-          )}
-          {job.work_mode && (
-            <div className="rounded-lg bg-muted/30 p-3">
-              <p className="text-xs text-muted-foreground">{t("jobOffer.cards.workMode")}</p>
-              <p className="mt-1 font-medium">{workMode}{job.remote_constraints ? ` • ${job.remote_constraints}` : ""}</p>
-            </div>
-          )}
-          {job.contract_type && (
-            <div className="rounded-lg bg-muted/30 p-3">
-              <p className="text-xs text-muted-foreground">{t("jobOffer.cards.contract")}</p>
-              <p className="mt-1 font-medium">{contractType}</p>
-            </div>
-          )}
-          {(job.seniority || job.experience_min_years || job.experience_max_years) && (
-            <div className="rounded-lg bg-muted/30 p-3">
-              <p className="text-xs text-muted-foreground">{t("jobOffer.cards.experienceLevel")}</p>
-              <p className="mt-1 font-medium">
-                {seniority ?? t("jobOffer.values.roleFallback")}
-                {(job.experience_min_years || job.experience_max_years) &&
-                  ` • ${job.experience_min_years ?? "?"}-${job.experience_max_years ?? "?"} ${t("jobOffer.values.years")}`}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-      {offerSections.map((section) =>
-        section.html ? (
-          <div key={section.title}>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{section.title}</p>
-            <div
-              className="mt-2 text-sm text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1 [&_p]:leading-relaxed [&_strong]:font-semibold"
-              dangerouslySetInnerHTML={{ __html: section.html }}
-            />
-          </div>
-        ) : null
-      )}
-      {job.domain_context && (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("jobOffer.sections.domainContext")}</p>
-          <p className="mt-1 leading-relaxed">{job.domain_context}</p>
-        </div>
-      )}
-      {job.team_context && (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("jobOffer.sections.teamContext")}</p>
-          <p className="mt-1 leading-relaxed">{job.team_context}</p>
-        </div>
-      )}
-      {job.success_profile && (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("jobOffer.sections.successProfile")}</p>
-          <p className="mt-1 leading-relaxed">{job.success_profile}</p>
-        </div>
-      )}
-      {job.value_proposition && (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("jobOffer.sections.valueProposition")}</p>
-          <div
-            className="mt-2 text-sm text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1 [&_p]:leading-relaxed [&_strong]:font-semibold"
-            dangerouslySetInnerHTML={{ __html: job.value_proposition }}
-          />
-        </div>
-      )}
-    </div>
-  );
+  return <CandidateJobOfferView job={mapPublicJobToViewModel(job)} showHero={false} />;
 }
+
+/**
+ * Project the wide `PublicJobDetail` API type down to the narrow
+ * `CandidateJobViewModel` consumed by the shared offer renderer.
+ * Keeping the projection here means the renderer never has to know
+ * about API-only fields like `id`, `slug`, `published_at`, etc.
+ */
+function mapPublicJobToViewModel(job: PublicJobDetail) {
+  return {
+    title: job.title,
+    department: job.department,
+    location: job.location,
+    work_mode: job.work_mode,
+    remote_constraints: job.remote_constraints,
+    contract_type: job.contract_type,
+    seniority: job.seniority,
+    experience_min_years: job.experience_min_years,
+    experience_max_years: job.experience_max_years,
+    salary_min: job.salary_min,
+    salary_max: job.salary_max,
+    salary_currency: job.salary_currency,
+    salary_period: job.salary_period,
+    role_summary: job.role_summary,
+    responsibilities: job.responsibilities,
+    must_haves: job.must_haves,
+    nice_to_haves: job.nice_to_haves,
+    tech_stack: job.tech_stack,
+    benefits: job.benefits,
+    hiring_process: job.hiring_process,
+    value_proposition: job.value_proposition,
+    domain_context: job.domain_context,
+    team_context: job.team_context,
+    success_profile: job.success_profile,
+  };
+}
+
 
 interface ApplyPageProps {
   jobId: string;

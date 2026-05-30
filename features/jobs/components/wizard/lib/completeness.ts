@@ -2,56 +2,30 @@ import type { JobEditorState } from "../../../types/job-editor.types";
 
 export type SectionStatus = "empty" | "needs-attention" | "complete";
 
-// Deterministic length thresholds for now. Will be swapped to LLM analysis later.
-const WEAK = 5;
-const OK = 30;
-
-function textScore(value: string): SectionStatus {
-  const len = value.trim().length;
-  if (len < WEAK) return "empty";
-  if (len < OK) return "needs-attention";
-  return "complete";
-}
-
-function allPresent(...values: Array<string | number | null | undefined>): boolean {
-  return values.every((v) => {
-    if (v === null || v === undefined) return false;
-    if (typeof v === "string") return v.trim().length > 0;
-    return true;
-  });
+// Section status is derived directly from per-section progress so the stepper
+// badge ("Kompletne"/"Wymaga uwagi") can never disagree with the publish
+// checklist — a section is only "complete" when every required field it owns
+// is filled.
+function statusFromProgress(progress: number): SectionStatus {
+  if (progress >= 100) return "complete";
+  if (progress <= 0) return "empty";
+  return "needs-attention";
 }
 
 export function podstawyStatus(state: JobEditorState): SectionStatus {
-  // All required dropdowns/strings present → complete; some missing → needs-attention; none → empty.
-  const filled = [
-    state.title,
-    state.location,
-    state.work_mode,
-    state.contract_type,
-    state.seniority,
-  ].filter((v) => (typeof v === "string" ? v.trim().length > 0 : v !== null)).length;
-
-  if (filled === 0) return "empty";
-  if (filled < 5) return "needs-attention";
-  return "complete";
+  return statusFromProgress(podstawyProgress(state).progress);
 }
 
 export function zakresRoliStatus(state: JobEditorState): SectionStatus {
-  const combined = `${state.role_summary} ${state.responsibilities}`.trim();
-  return textScore(combined);
+  return statusFromProgress(zakresRoliProgress(state).progress);
 }
 
 export function wymaganiaStatus(state: JobEditorState): SectionStatus {
-  const combined = `${state.must_haves} ${state.tech_stack}`.trim();
-  return textScore(combined);
+  return statusFromProgress(wymaganiaProgress(state).progress);
 }
 
 export function widelkiStatus(state: JobEditorState): SectionStatus {
-  const hasSalary = state.salary_min !== null && state.salary_max !== null;
-  const hasBenefits = state.benefits.trim().length >= WEAK;
-  if (!hasSalary && !hasBenefits) return "empty";
-  if (hasSalary && hasBenefits) return "complete";
-  return "needs-attention";
+  return statusFromProgress(widelkiProgress(state).progress);
 }
 
 export function publikacjaStatus(state: JobEditorState): SectionStatus {
@@ -93,6 +67,7 @@ export function podstawyProgress(state: JobEditorState): ProgressResult {
     { ok: state.location.trim().length > 0,     label: "Lokalizacja" },
     { ok: !!state.work_mode,                     label: "Tryb pracy" },
     { ok: !!state.contract_type,                 label: "Rodzaj umowy" },
+    { ok: !!state.seniority,                      label: "Poziom stanowiska" },
   ];
   const passed = checks.filter((c) => c.ok).length;
   return { progress: ratio(passed, checks.length), missing: checks.filter((c) => !c.ok).map((c) => c.label) };
@@ -100,32 +75,38 @@ export function podstawyProgress(state: JobEditorState): ProgressResult {
 
 export function zakresRoliProgress(state: JobEditorState): ProgressResult {
   const missing: string[] = [];
-  const summaryLen = state.role_summary.trim().length;
-  const respLen = state.responsibilities.trim().length;
-  if (summaryLen < 50) missing.push("Opis roli (min. 50 znaków)");
-  if (respLen < 30) missing.push("Obowiązki");
-  const total = 2;
+  if (state.role_summary.trim().length < 50) missing.push("Opis roli (min. 50 znaków)");
+  if (state.role_purpose.trim().length === 0) missing.push("Cel roli");
+  if (state.responsibilities.trim().length < 30) missing.push("Obowiązki");
+  if (state.team_context.trim().length === 0) missing.push("Kontekst zespołu");
+  const total = 4;
   const passed = total - missing.length;
   return { progress: ratio(passed, total), missing };
 }
 
 export function wymaganiaProgress(state: JobEditorState): ProgressResult {
   const missing: string[] = [];
-  if (state.must_haves.trim().length < 5) missing.push("Wymagania");
-  // tech_stack is soft / optional depending on category — don't penalize
-  const total = 1;
+  if (state.must_haves.trim().length < 5) missing.push("Wymagane umiejętności");
+  if (state.nice_to_haves.trim().length === 0) missing.push("Mile widziane");
+  if (state.tech_stack.trim().length === 0) missing.push("Stack / narzędzia");
+  const total = 3;
   const passed = total - missing.length;
   return { progress: ratio(passed, total), missing };
 }
 
 export function widelkiProgress(state: JobEditorState): ProgressResult {
   const missing: string[] = [];
-  const hasSalary = state.salary_min !== null && state.salary_max !== null;
+  const hasFullSalary =
+    state.salary_min !== null &&
+    state.salary_max !== null &&
+    state.salary_currency.trim().length > 0 &&
+    !!state.salary_period;
   const undisclosed = state.salary_min === null && state.salary_max === null;
-  const hasBenefits = state.benefits.trim().length > 0;
-  if (!hasSalary && !undisclosed) missing.push("Widełki lub status nieujawnione");
-  if (!hasBenefits) missing.push("Benefity (zalecane)");
-  const total = 2;
+  if (!hasFullSalary && !undisclosed) missing.push("Widełki lub status nieujawnione");
+  if (state.benefits.trim().length === 0) missing.push("Benefity");
+  if (state.value_proposition.trim().length === 0) missing.push("Propozycja wartości");
+  if (state.hiring_process.trim().length === 0) missing.push("Proces rekrutacji");
+  const total = 4;
   const passed = total - missing.length;
   return { progress: ratio(passed, total), missing };
 }

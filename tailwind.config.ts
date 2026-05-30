@@ -2,13 +2,13 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
+  // audit_frontend_code: dropped `./pages/**` (Pages Router — not used),
+  // `./widgets/**` (directory does not exist) and `./components/**` (was an
+  // empty leftover folder that the audit flagged for deletion).
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./features/**/*.{js,ts,jsx,tsx,mdx}",
     "./shared/**/*.{js,ts,jsx,tsx,mdx}",
-    "./widgets/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages-ui/**/*.{js,ts,jsx,tsx,mdx}",
     "./entities/**/*.{js,ts,jsx,tsx,mdx}",
   ],

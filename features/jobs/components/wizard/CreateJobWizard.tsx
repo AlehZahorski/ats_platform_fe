@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Eye, LoaderCircle, MoreVertical, Sparkles, Wand2 } from "lucide-react";
+import { Check, ExternalLink, Eye, LoaderCircle, MoreVertical, Save, Sparkles, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/config/routes";
 import { useJobEditor } from "../../hooks/useJobEditor";
 import type { EditorMode } from "../../types/job-editor.types";
 
@@ -101,6 +102,8 @@ export function CreateJobWizard({ mode, jobId: initialJobId }: Props) {
         hasChanges={editor.hasChanges}
         canPublish={!!jobId && state.title.trim().length > 0}
         onPublish={() => setPublishOpen(true)}
+        onSave={editor.saveDraft}
+        publicHref={jobId ? `${ROUTES.public.jobs}?job=${jobId}` : null}
         showAiButton={!!jobId}
         onOpenAi={() => setAiOpen(true)}
       />
@@ -269,6 +272,9 @@ interface HeaderProps {
   hasChanges: boolean;
   canPublish: boolean;
   onPublish: () => void;
+  onSave: () => void;
+  /** Public offer URL on the job board, or null when the job isn't saved yet. */
+  publicHref: string | null;
   showAiButton?: boolean;
   onOpenAi?: () => void;
 }
@@ -281,6 +287,8 @@ function WizardHeader({
   hasChanges,
   canPublish,
   onPublish,
+  onSave,
+  publicHref,
   showAiButton,
   onOpenAi,
 }: HeaderProps) {
@@ -347,11 +355,34 @@ function WizardHeader({
           )}
           <button
             type="button"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-border text-sm font-medium hover:bg-accent/40 transition-colors"
+            onClick={onSave}
+            disabled={isSaving}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            <Eye className="w-4 h-4" />
-            Podgląd oferty
+            {isSaving ? <LoaderCircle className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            Zapisz
           </button>
+          {status === "open" && publicHref ? (
+            <a
+              href={publicHref}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-border text-sm font-medium hover:bg-accent/40 transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Przejdź do oferty
+            </a>
+          ) : (
+            <button
+              type="button"
+              disabled
+              title="Opublikuj ofertę, aby otworzyć ją na tablicy ofert"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-border text-sm font-medium opacity-50 cursor-not-allowed"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Przejdź do oferty
+            </button>
+          )}
           <button
             type="button"
             onClick={onPublish}
@@ -360,12 +391,9 @@ function WizardHeader({
           >
             Opublikuj ofertę
           </button>
-          <button
-            type="button"
-            className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-accent/40"
-          >
-            <MoreVertical className="w-4 h-4" />
-          </button>
+          {/* Dead-end "kebab" menu removed — no onClick, no dropdown wired,
+              clicks were silent. Re-add when there are real actions to put
+              here (Duplicate, Archive, Export PDF, Share link). */}
         </div>
       </div>
     </div>

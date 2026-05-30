@@ -5,6 +5,7 @@ import { Lock, AlertCircle } from "lucide-react";
 import type { JobEditorState } from "../../../types/job-editor.types";
 import type { SalaryPeriod } from "@/types";
 import { cn } from "@/lib/utils";
+import { pulseIfEmpty, PULSE_EMPTY_CLASS } from "../lib/fieldHighlight";
 
 const inputClass =
   "w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/40";
@@ -116,7 +117,11 @@ export function WidelkiStep({ state, patch }: Props) {
                 onChange={(e) =>
                   patch({ salary_min: e.target.value === "" ? null : Number(e.target.value) })
                 }
-                className={cn(inputClass, rangeInvalid && "border-rose-500/60 ring-rose-500/20")}
+                className={cn(
+                  inputClass,
+                  rangeInvalid && "border-rose-500/60 ring-rose-500/20",
+                  state.salary_min === null && PULSE_EMPTY_CLASS,
+                )}
               />
             </div>
             <div>
@@ -128,7 +133,11 @@ export function WidelkiStep({ state, patch }: Props) {
                 onChange={(e) =>
                   patch({ salary_max: e.target.value === "" ? null : Number(e.target.value) })
                 }
-                className={cn(inputClass, rangeInvalid && "border-rose-500/60 ring-rose-500/20")}
+                className={cn(
+                  inputClass,
+                  rangeInvalid && "border-rose-500/60 ring-rose-500/20",
+                  state.salary_max === null && PULSE_EMPTY_CLASS,
+                )}
               />
             </div>
             <div>
@@ -172,17 +181,41 @@ export function WidelkiStep({ state, patch }: Props) {
 
       {/* Benefits */}
       <div>
-        <label className="block text-xs font-semibold mb-1.5">Benefity</label>
+        <label className="block text-xs font-semibold mb-1.5">Benefity *</label>
         <textarea
           value={state.benefits}
           onChange={(e) => patch({ benefits: e.target.value })}
           rows={5}
           placeholder="Każdy benefit w nowej linii (np. Prywatna opieka medyczna, Karta sportowa…)"
-          className={`${inputClass} resize-none`}
+          className={`${inputClass} resize-none${pulseIfEmpty(!state.benefits.trim())}`}
         />
         <p className="text-xs text-muted-foreground mt-1">
           Linia = jeden benefit. Pojawia się jako lista z ikonami na ofercie.
         </p>
+      </div>
+
+      {/* Value proposition */}
+      <div>
+        <label className="block text-xs font-semibold mb-1.5">Dlaczego warto (propozycja wartości) *</label>
+        <textarea
+          value={state.value_proposition}
+          onChange={(e) => patch({ value_proposition: e.target.value })}
+          rows={3}
+          placeholder="Co wyróżnia tę ofertę i firmę? Dlaczego kandydat ma wybrać właśnie Was…"
+          className={`${inputClass} resize-none${pulseIfEmpty(!state.value_proposition.trim())}`}
+        />
+      </div>
+
+      {/* Hiring process */}
+      <div>
+        <label className="block text-xs font-semibold mb-1.5">Proces rekrutacji *</label>
+        <textarea
+          value={state.hiring_process}
+          onChange={(e) => patch({ hiring_process: e.target.value })}
+          rows={3}
+          placeholder="Etapy rekrutacji, jeden na linię (np. Rozmowa HR, Zadanie rekrutacyjne, Rozmowa techniczna…)"
+          className={`${inputClass} resize-none${pulseIfEmpty(!state.hiring_process.trim())}`}
+        />
       </div>
     </div>
   );

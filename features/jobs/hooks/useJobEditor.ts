@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { ROUTES } from "@/config/routes";
-import { useCreateJob, useJob, useUpdateJob } from "@/services/queries";
+import { useCreateJob, useJob, usePublishJob, useUpdateJob } from "@/services/queries";
 import type { Job } from "@/types";
 
 import { useJobAutosave } from "./useJobAutosave";
@@ -48,6 +48,7 @@ export function useJobEditor({ mode, jobId: initialJobId }: UseJobEditorParams):
   const { data: loadedJob, isLoading } = useJob(initialJobId ?? "");
   const createMutation = useCreateJob();
   const updateMutation = useUpdateJob();
+  const publishMutation = usePublishJob();
 
   const [state, setState] = useState<JobEditorState>(emptyState);
   const [jobId, setJobId] = useState<string | null>(initialJobId ?? null);
@@ -129,15 +130,39 @@ export function useJobEditor({ mode, jobId: initialJobId }: UseJobEditorParams):
   }, [persist]);
 
   const publish = useCallback(async () => {
-    const result = await persist({ status: "open" });
-    if (result) {
-      toast.success(t("wizard.published"));
-      router.push(ROUTES.jobs);
-    } else if (!result && jobId) {
-      // persist returned null for a reason other than missing title
+    // 1. Persist the current edits first (as-is, WITHOUT forcing status →
+    //    open). This guarantees the strict server-side validator runs against
+    //    the latest content, and avoids the old "autosave PATCH silently
+    //    demotes to draft but UI says published" bug.
+    const saved = await persist();
+    if (!saved) {
+      // persist() only returns null on a missing title (create mode) or a
+      // save error — the save-error toast already fired inside persist().
       toast.error(t("wizard.publishFailed"));
+      return;
     }
-  }, [persist, jobId, router, t]);
+
+    // 2. Explicit publish — strict gate. A 422 means "not ready" and carries
+    //    the list of missing fields. We never report success on failure.
+    try {
+      await publishMutation.mutateAsync(saved.id);
+    } catch (err) {
+      const detail = (
+        err as { response?: { data?: { detail?: { issues?: string[]; message?: string } } } }
+      )?.response?.data?.detail;
+      const issues = detail?.issues;
+      if (Array.isArray(issues) && issues.length > 0) {
+        toast.error(t("wizard.publishIssues", { issues: issues.join(" · ") }));
+      } else {
+        toast.error(detail?.message ?? t("wizard.publishFailed"));
+      }
+      return;
+    }
+
+    // 3. Success — the offer is now "open" on the server.
+    toast.success(t("wizard.published"));
+    router.push(ROUTES.jobs);
+  }, [persist, publishMutation, router, t]);
 
   return {
     job: loadedJob ?? null,
@@ -146,7 +171,7 @@ export function useJobEditor({ mode, jobId: initialJobId }: UseJobEditorParams):
     isLoading: mode === "edit" && isLoading && !hydrated,
     jobId,
     lastSavedAt,
-    isSaving: createMutation.isPending || updateMutation.isPending,
+    isSaving: createMutation.isPending || updateMutation.isPending || publishMutation.isPending,
     hasChanges: dirty,
     saveDraft,
     publish,

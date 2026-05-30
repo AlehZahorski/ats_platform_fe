@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   adminAuthApi,
   adminArticlesApi,
+  adminUsageApi,
   type AdminArticlesParams,
   type AdminArticleCreatePayload,
   type AdminArticleUpdatePayload,
@@ -28,6 +29,7 @@ function hasAdminSessionFlag(): boolean {
 
 export const adminKeys = {
   me: ["admin", "me"] as const,
+  usage: (days: number) => ["admin", "usage", days] as const,
   articlesList: (params: AdminArticlesParams) => ["admin", "articles", "list", params] as const,
   articleDetail: (id: string) => ["admin", "articles", "detail", id] as const,
 };
@@ -41,6 +43,16 @@ export function useAdminMe() {
     enabled: hasAdminSessionFlag(),
     retry: false,
     staleTime: 60_000,
+  });
+}
+
+
+// ── AI usage analytics ───────────────────────────────────────────────
+export function useAdminUsage(days: number) {
+  return useQuery({
+    queryKey: adminKeys.usage(days),
+    queryFn: () => adminUsageApi.get(days).then((r) => r.data),
+    enabled: hasAdminSessionFlag(),
   });
 }
 

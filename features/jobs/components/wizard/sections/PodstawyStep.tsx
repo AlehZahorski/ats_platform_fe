@@ -7,6 +7,7 @@ import type { ContractType, Seniority, WorkMode } from "@/types";
 import { ChipGroup } from "../ChipGroup";
 import { CategoryCombobox } from "../CategoryCombobox";
 import { getCategoryConfig, type SeniorityKey, type WorkMode as WorkModeKey } from "../../../lib/categories";
+import { pulseIfEmpty } from "../lib/fieldHighlight";
 
 const inputClass =
   "w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/40";
@@ -88,7 +89,12 @@ export function PodstawyStep({ state, patch }: Props) {
     icon: WORK_MODE_ICONS[m],
   }));
 
-  const seniorityOptions = (config?.seniority_set ?? []).map((s) => ({
+  // Seniority is a hard publish requirement, so it must be fillable for EVERY
+  // category — including those whose config defines no ladder (e.g. school
+  // teachers). Fall back to a generic junior→lead ladder in that case.
+  const DEFAULT_SENIORITY: SeniorityKey[] = ["junior", "mid", "senior", "lead"];
+  const seniorityLadder = config?.seniority_set?.length ? config.seniority_set : DEFAULT_SENIORITY;
+  const seniorityOptions = seniorityLadder.map((s) => ({
     value: s,
     label: tSen(s as never),
   }));
@@ -114,12 +120,12 @@ export function PodstawyStep({ state, patch }: Props) {
             value={state.title}
             onChange={(e) => patch({ title: e.target.value })}
             placeholder="np. Starszy Backend Developer / Pracownik produkcji / Nauczyciel"
-            className={inputClass}
+            className={`${inputClass}${pulseIfEmpty(!state.title.trim())}`}
           />
         </div>
         <div>
           <label className="block text-xs font-semibold mb-1.5">Kategoria *</label>
-          <CategoryCombobox value={state.category} onChange={onCategoryChange} />
+          <CategoryCombobox value={state.category} onChange={onCategoryChange} highlight={!state.category} />
         </div>
       </div>
 
@@ -140,7 +146,7 @@ export function PodstawyStep({ state, patch }: Props) {
             value={state.location}
             onChange={(e) => patch({ location: e.target.value })}
             placeholder="np. Wrocław, Polska"
-            className={inputClass}
+            className={`${inputClass}${pulseIfEmpty(!state.location.trim() && !state.remote_constraints.trim())}`}
           />
         </div>
       </div>
@@ -162,6 +168,7 @@ export function PodstawyStep({ state, patch }: Props) {
                 value={state.work_mode}
                 options={workModeOptions}
                 onChange={(v) => patch({ work_mode: v as WorkMode | null })}
+                highlight={!state.work_mode}
               />
             </div>
           )}
@@ -175,7 +182,7 @@ export function PodstawyStep({ state, patch }: Props) {
                 onChange={(e) =>
                   patch({ contract_type: (e.target.value || null) as ContractType | null })
                 }
-                className={inputClass}
+                className={`${inputClass}${pulseIfEmpty(!state.contract_type)}`}
               >
                 <option value="">Wybierz…</option>
                 {CONTRACTS.map((c) => (
@@ -202,14 +209,15 @@ export function PodstawyStep({ state, patch }: Props) {
             </div>
           </div>
 
-          {/* Seniority — only if config provides options */}
+          {/* Seniority — required for publication; always rendered */}
           {seniorityOptions.length > 0 && (
             <div>
-              <label className="block text-xs font-semibold mb-1.5">Poziom stanowiska</label>
+              <label className="block text-xs font-semibold mb-1.5">Poziom stanowiska *</label>
               <ChipGroup
                 value={state.seniority}
                 options={seniorityOptions}
                 onChange={(v) => patch({ seniority: v as Seniority | null })}
+                highlight={!state.seniority}
               />
             </div>
           )}

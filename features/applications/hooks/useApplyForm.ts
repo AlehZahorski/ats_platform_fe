@@ -49,7 +49,16 @@ export function useApplyForm(jobId: string, job: PublicJobDetail | undefined) {
     return true;
   };
 
+  // audit_ux_ui: client-side guard for the CV size limit. Matches the
+  // backend cap (10 MB by default) so the candidate hears about an
+  // oversized upload before paying the round-trip.
+  const MAX_CV_BYTES = 10 * 1024 * 1024;
+
   const submitApplication = async (ignoreDuplicateWarning = false) => {
+    if (cvFile && cvFile.size > MAX_CV_BYTES) {
+      toast.error(t("cvTooLarge"));
+      return;
+    }
     setIsSubmitting(true);
     try {
       const formData = new FormData();

@@ -109,9 +109,9 @@ export function JobDetailPanel({ jobId, saved, onToggleSaved }: Props) {
             >
               Aplikuj teraz
             </Link>
-            <button className="p-2 rounded-full hover:bg-accent/40 text-muted-foreground">
-              <MoreVertical className="w-4 h-4" />
-            </button>
+            {/* Dead-end "kebab" menu removed — no onClick, no aria-label,
+                no menu wired up. Reinstate when we actually have items
+                like "Share", "Copy link", "Report ad". */}
           </div>
         </div>
 
