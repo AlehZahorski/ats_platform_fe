@@ -25,8 +25,10 @@ export type SeniorityKey =
   | "operator" | "team_leader" | "foreman" | "production_manager"
   // Healthcare ranks
   | "resident" | "attending" | "consultant" | "head_of_department"
-  // Education ranks
+  // Education ranks (academic)
   | "assistant" | "lecturer" | "professor"
+  // Polish school-teacher promotion grades (stopnie awansu zawodowego)
+  | "teacher_trainee" | "teacher_appointed" | "teacher_chartered"
   // Generic physical labor (no rank)
   | "helper" | "worker";
 
@@ -43,6 +45,7 @@ export interface CategoryDef {
   group: GroupCode;
   work_modes: WorkMode[];
   seniority_set: SeniorityKey[];      // empty array = hide seniority chips entirely
+  seniority_label?: string;           // overrides the default "Poziom stanowiska" field label
   shows_shift: boolean;
   shows_tech_stack: boolean;
   qualifications: QualificationCode[];
@@ -58,6 +61,9 @@ const PRODUCTION_LADDER: SeniorityKey[] = ["operator", "team_leader", "foreman",
 const PHYSICAL_LADDER: SeniorityKey[] = ["helper", "worker", "team_leader", "foreman"];
 const HEALTHCARE_LADDER: SeniorityKey[] = ["resident", "attending", "consultant", "head_of_department"];
 const EDU_LADDER: SeniorityKey[] = ["assistant", "lecturer", "professor"];
+// School teachers in Poland advance through the official promotion ladder
+// (stopnie awansu zawodowego), not a corporate junior→lead one.
+const TEACHER_LADDER: SeniorityKey[] = ["teacher_trainee", "teacher_appointed", "teacher_chartered"];
 const NO_LADDER: SeniorityKey[] = [];
 
 // ────────────────────────────────────────────────────────────────────────
@@ -310,6 +316,16 @@ const healthcare: CategoryDef[] = [
 // ────────────────────────────────────────────────────────────────────────
 // Education (14)
 // ────────────────────────────────────────────────────────────────────────
+// Three distinct experience ladders within Education:
+//   • school teachers → Polish promotion grades (stopnie awansu zawodowego)
+//   • academic staff  → academic ranks (asystent → wykładowca → profesor)
+//   • everyone else (trainers, tutors, nanny, librarian) → generic experience
+const SCHOOL_TEACHERS = new Set([
+  "edu_preschool_teacher", "edu_primary_teacher", "edu_secondary_teacher",
+  "edu_sped_teacher", "edu_music_teacher", "edu_school_counselor",
+]);
+const ACADEMIC_STAFF = new Set(["edu_university_lecturer", "edu_professor_researcher"]);
+
 const education: CategoryDef[] = [
   "edu_preschool_teacher", "edu_primary_teacher", "edu_secondary_teacher",
   "edu_sped_teacher", "edu_university_lecturer", "edu_professor_researcher",
@@ -318,7 +334,12 @@ const education: CategoryDef[] = [
   "edu_childcare_nanny", "edu_librarian",
 ].map((code) => ({
   code, group: "education", work_modes: ON_SITE_ONLY,
-  seniority_set: code.includes("university") || code.includes("professor") ? EDU_LADDER : NO_LADDER,
+  seniority_set: SCHOOL_TEACHERS.has(code) ? TEACHER_LADDER
+    : ACADEMIC_STAFF.has(code) ? EDU_LADDER
+    : NO_LADDER,
+  seniority_label: SCHOOL_TEACHERS.has(code) ? "Stopień awansu zawodowego"
+    : ACADEMIC_STAFF.has(code) ? "Stopień / tytuł naukowy"
+    : undefined,
   shows_shift: false, shows_tech_stack: false,
   qualifications: code.includes("teacher") || code.includes("lecturer") || code.includes("professor")
     ? ["teaching_credential"]

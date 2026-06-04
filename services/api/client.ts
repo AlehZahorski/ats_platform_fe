@@ -66,12 +66,15 @@ const PUBLIC_ENDPOINTS = [
   "/companies/public",
   "/articles/public",
   "/articles/newsletter",
+  // Investor presentation gate — a wrong access code returns 401 and must
+  // surface as a form error, never a refresh + redirect to /login.
+  "/presentation/",
 ];
 
 // Routes (browser pathnames) where we must NEVER redirect to the HR /login on 401.
 // Covers the candidate-facing public site plus the separate /admin panel — both
 // have their own login flows and own redirect guards.
-const PUBLIC_PATH_PREFIXES = ["/jobs", "/firmy", "/poradnik", "/firmy-pisza", "/o-nas", "/konto", "/apply", "/track", "/admin"];
+const PUBLIC_PATH_PREFIXES = ["/jobs", "/firmy", "/poradnik", "/firmy-pisza", "/o-nas", "/konto", "/apply", "/track", "/admin", "/prezentacja"];
 
 function isOnPublicSite(): boolean {
   if (typeof window === "undefined") return false;

@@ -56,8 +56,12 @@ export function PublikacjaStep({ state, patch, jobId, currentTemplateId }: Props
 
   const origin =
     typeof window !== "undefined" ? window.location.origin : "https://wakanta.pl";
-  const slugPath = state.slug || (jobId ?? "...");
-  const publicUrl = `${origin}/jobs/${slugPath}`;
+  // Canonical, SEO-friendly public offer URL: /praca/<slug>-<uuid>. Matches
+  // the indexed page and the sitemap entry.
+  const offerPath = jobId
+    ? ROUTES.public.job(jobId, state.slug || slugify(state.title))
+    : ROUTES.public.jobs;
+  const publicUrl = `${origin}${offerPath}`;
 
   const handleAssign = async (templateId: string) => {
     if (!jobId) return;
@@ -183,12 +187,12 @@ export function PublikacjaStep({ state, patch, jobId, currentTemplateId }: Props
         <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4">
           <div className="text-sm font-medium text-emerald-500 mb-1">Link do publicznej oferty</div>
           <a
-            href={`/jobs/${jobId}`}
+            href={offerPath}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1.5 text-sm text-foreground hover:underline"
           >
-            {typeof window !== "undefined" ? `${window.location.origin}/jobs/${jobId}` : `/jobs/${jobId}`}
+            {publicUrl}
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>

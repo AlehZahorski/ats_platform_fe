@@ -15,6 +15,7 @@ import { LivePreview, LivePreviewDialog } from "./LivePreview";
 import { AiAnalysisModal } from "./AiAnalysisModal";
 import { PublishChecklistModal } from "./PublishChecklistModal";
 import { JobImportModal } from "./JobImportModal";
+import { slugify } from "../../lib/slugify";
 
 import { PodstawyStep, podstawySummary } from "./sections/PodstawyStep";
 import { ZakresRoliStep, zakresRoliSummary } from "./sections/ZakresRoliStep";
@@ -103,7 +104,7 @@ export function CreateJobWizard({ mode, jobId: initialJobId }: Props) {
         canPublish={!!jobId && state.title.trim().length > 0}
         onPublish={() => setPublishOpen(true)}
         onSave={editor.saveDraft}
-        publicHref={jobId ? `${ROUTES.public.jobs}?job=${jobId}` : null}
+        publicHref={jobId ? ROUTES.public.job(jobId, state.slug || slugify(state.title)) : null}
         showAiButton={!!jobId}
         onOpenAi={() => setAiOpen(true)}
       />

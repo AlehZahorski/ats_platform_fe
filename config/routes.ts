@@ -25,7 +25,13 @@ export const ROUTES = {
   public: {
     home: "/",
     jobs: "/jobs",
-    job: (id: string) => `/jobs/${id}`,
+    // Job board with a specific offer pre-selected (?job=<id>). Used by the
+    // recruiter dashboard's "open offer" links and the saved-jobs deep links.
+    jobOnBoard: (id: string) => `/jobs?job=${id}`,
+    // Canonical, SEO-friendly public offer URL: /praca/<slug>-<uuid>.
+    // Slug is cosmetic; the trailing UUID is what the page resolves by.
+    job: (id: string, slug?: string | null) =>
+      `/praca/${slug ? `${slug}-${id}` : id}`,
     companies: "/firmy",
     guide: "/poradnik",
     about: "/o-nas",

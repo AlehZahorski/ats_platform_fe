@@ -45,6 +45,9 @@ export const reportKeys = {
   timeToHire: (days: number) => ["reports", "time-to-hire", days] as const,
   pipeline: (days: number) => ["reports", "pipeline", days] as const,
   sources: (days: number) => ["reports", "sources", days] as const,
+  overview: (days: number) => ["reports", "overview", days] as const,
+  overTime: (days: number) => ["reports", "over-time", days] as const,
+  byJob: (days: number) => ["reports", "by-job", days] as const,
 };
 
 export function useTimeToHireReport(days: number) {
@@ -65,5 +68,26 @@ export function useSourcesReport(days: number) {
   return useQuery({
     queryKey: reportKeys.sources(days),
     queryFn: () => reportsApi.sources(days).then((r) => r.data),
+  });
+}
+
+export function useOverviewReport(days: number) {
+  return useQuery({
+    queryKey: reportKeys.overview(days),
+    queryFn: () => reportsApi.overview(days).then((r) => r.data),
+  });
+}
+
+export function useApplicationsOverTime(days: number) {
+  return useQuery({
+    queryKey: reportKeys.overTime(days),
+    queryFn: () => reportsApi.applicationsOverTime(days).then((r) => r.data),
+  });
+}
+
+export function useApplicationsByJob(days: number) {
+  return useQuery({
+    queryKey: reportKeys.byJob(days),
+    queryFn: () => reportsApi.byJob(days).then((r) => r.data),
   });
 }

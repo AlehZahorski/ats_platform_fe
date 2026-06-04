@@ -5,7 +5,7 @@ import * as Popover from "@radix-ui/react-popover";
 import { useTranslations } from "next-intl";
 import { ChevronDown, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CATEGORY_GROUPS, GROUP_MAP } from "../../lib/category-groups";
+import { CATEGORY_GROUPS, GROUP_MAP, type CategoryGroup } from "../../lib/category-groups";
 import { CATEGORIES, categoriesByGroup, getCategoryConfig } from "../../lib/categories";
 
 interface Props {
@@ -71,7 +71,7 @@ export function CategoryCombobox({ value, onChange, placeholder, highlight }: Pr
         <Popover.Content
           align="start"
           sideOffset={4}
-          className="z-50 w-[var(--radix-popover-trigger-width)] min-w-[420px] max-h-[480px] overflow-hidden rounded-lg border border-border bg-popover shadow-xl"
+          className="z-50 w-[var(--radix-popover-trigger-width)] min-w-[420px] max-h-[480px] overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl ring-1 ring-black/5"
         >
           {/* Search box */}
           <div className="p-2 border-b border-border">
@@ -106,8 +106,9 @@ export function CategoryCombobox({ value, onChange, placeholder, highlight }: Pr
               ) : (
                 <div className="p-1">
                   {filtered.map((c) => {
-                    const groupDef = GROUP_MAP[c.group];
-                    const Icon = groupDef.icon;
+                    const groupDef = (GROUP_MAP as Record<string, CategoryGroup>)[c.group];
+                    const Icon = groupDef?.icon ?? null;
+                    if (!Icon) return null;
                     return (
                       <button
                         key={c.code}
@@ -140,7 +141,9 @@ export function CategoryCombobox({ value, onChange, placeholder, highlight }: Pr
 }
 
 function SelectedGroupIcon({ groupCode }: { groupCode: string }) {
-  const def = GROUP_MAP[groupCode as never];
+  // GROUP_MAP is keyed by the GroupCode union; the incoming code is a plain
+  // string (category.group), so index defensively and bail if unknown.
+  const def = (GROUP_MAP as Record<string, CategoryGroup>)[groupCode];
   if (!def) return null;
   const Icon = def.icon;
   return <Icon className="w-4 h-4 shrink-0 text-muted-foreground" />;

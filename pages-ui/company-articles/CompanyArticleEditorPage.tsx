@@ -82,7 +82,7 @@ export function CompanyArticleEditorPage({ articleId }: Props) {
   // typing for the common case (you're writing your own piece).
   useEffect(() => {
     if (isNew && me && !draft.author_name) {
-      setDraft((d) => ({ ...d, author_name: me.full_name || me.email || "" }));
+      setDraft((d) => ({ ...d, author_name: me.email || "" }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [me, isNew]);

@@ -17,30 +17,53 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/config/routes";
 import { AvatarPicker } from "@/pages-ui/organizer/components/AvatarPicker";
 
-const navItems = [
-  { key: "dashboard",    href: ROUTES.dashboard,    icon: LayoutDashboard },
-  { key: "jobs",         href: ROUTES.jobs,         icon: Briefcase },
-  { key: "applications", href: ROUTES.applications, icon: Users },
-  { key: "forms",        href: ROUTES.forms,        icon: FileText },
-  { key: "pipeline",     href: ROUTES.pipeline,     icon: GitBranch },
-  { key: "tags",         href: ROUTES.tags,         icon: Tag },
-  { key: "organizer",    href: ROUTES.organizer,    icon: CalendarDays },
-  { key: "reports",      href: ROUTES.reports,      icon: BarChart2 },
-  // Content marketing for the company — articles published on /firmy-pisza
-  { key: "articles",     href: ROUTES.articles,     icon: Newspaper },
-];
+// "Panel" sits above the grouped sections — it's the home/overview entry.
+const homeItem = { key: "dashboard", href: ROUTES.dashboard, icon: LayoutDashboard };
 
-const settingsItems = [
-  { key: "emailTemplates", href: ROUTES.settings.emailTemplates, icon: Mail },
-  { key: "automations",    href: ROUTES.settings.automations,    icon: Zap },
-  { key: "gdpr",           href: ROUTES.settings.gdpr,           icon: Shield },
-];
-
-const ownerOnlySettingsItems = [
-  // Owner edits the public /firmy profile. Recruiters shouldn't be able
-  // to rewrite the brand-facing content; they get the rest of the panel.
-  { key: "companyProfile", href: ROUTES.settings.companyProfile, icon: Building2 },
-  { key: "team", href: ROUTES.settings.team, icon: UsersRound },
+// Sidebar navigation grouped by domain. `groupKey` resolves to a section
+// header via `nav.groups.*`. `ownerOnly` items are hidden from non-owners
+// (recruiters mustn't edit brand profile or manage the team).
+const navGroups: {
+  groupKey: string;
+  items: { key: string; href: string; icon: React.ElementType; ownerOnly?: boolean }[];
+}[] = [
+  {
+    groupKey: "recruitment",
+    items: [
+      { key: "jobs",         href: ROUTES.jobs,         icon: Briefcase },
+      { key: "applications", href: ROUTES.applications, icon: Users },
+      { key: "pipeline",     href: ROUTES.pipeline,     icon: GitBranch },
+      { key: "tags",         href: ROUTES.tags,         icon: Tag },
+    ],
+  },
+  {
+    groupKey: "candidates",
+    items: [
+      { key: "forms",          href: ROUTES.forms,                   icon: FileText },
+      { key: "emailTemplates", href: ROUTES.settings.emailTemplates, icon: Mail },
+      { key: "automations",    href: ROUTES.settings.automations,    icon: Zap },
+    ],
+  },
+  {
+    groupKey: "work",
+    items: [
+      { key: "organizer", href: ROUTES.organizer, icon: CalendarDays },
+      { key: "reports",   href: ROUTES.reports,   icon: BarChart2 },
+    ],
+  },
+  {
+    groupKey: "content",
+    // Content marketing for the company — articles published on /firmy-pisza
+    items: [{ key: "articles", href: ROUTES.articles, icon: Newspaper }],
+  },
+  {
+    groupKey: "admin",
+    items: [
+      { key: "gdpr",           href: ROUTES.settings.gdpr,           icon: Shield },
+      { key: "companyProfile", href: ROUTES.settings.companyProfile, icon: Building2, ownerOnly: true },
+      { key: "team",           href: ROUTES.settings.team,           icon: UsersRound, ownerOnly: true },
+    ],
+  },
 ];
 
 export function Sidebar() {
@@ -88,16 +111,23 @@ export function Sidebar() {
       {/* A11Y-006 (audit_accessibility): label the landmark so SR rotor
           distinguishes this <nav> from Topbar / Public nav. */}
       <nav aria-label={tA11y("mainNavigation")} className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map(renderItem)}
+        {/* Home / overview — always first, ungrouped */}
+        {renderItem(homeItem)}
 
-        {/* Settings group */}
-        <div className="pt-3 mt-3 border-t border-sidebar-border/50">
-          <p className="px-3 pb-1.5 text-xs font-semibold text-sidebar-foreground/40 uppercase tracking-wide">
-            {t("settings")}
-          </p>
-          {settingsItems.map(renderItem)}
-          {isOwner && ownerOnlySettingsItems.map(renderItem)}
-        </div>
+        {navGroups.map((group) => {
+          // Drop owner-only entries for non-owners; skip the whole group if
+          // nothing remains (keeps the header from rendering over an empty list).
+          const visible = group.items.filter((item) => isOwner || !item.ownerOnly);
+          if (visible.length === 0) return null;
+          return (
+            <div key={group.groupKey} className="pt-3 mt-3 border-t border-sidebar-border/50">
+              <p className="px-3 pb-1.5 text-xs font-semibold text-sidebar-foreground/40 uppercase tracking-wide">
+                {t(`groups.${group.groupKey}` as never)}
+              </p>
+              {visible.map(renderItem)}
+            </div>
+          );
+        })}
       </nav>
 
       {/* Account */}

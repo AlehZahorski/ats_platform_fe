@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, FileText, LogOut, ShieldAlert, BarChart3 } from "lucide-react";
+import { LayoutDashboard, FileText, LogOut, ShieldAlert, BarChart3, Handshake } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAdminLogout, useAdminMe } from "@/services/queries/admin.queries";
 
@@ -16,6 +16,7 @@ const NAV: NavItem[] = [
   { label: "Panel",     href: "/admin",          icon: LayoutDashboard },
   { label: "Artykuły",  href: "/admin/articles", icon: FileText },
   { label: "Zużycie AI", href: "/admin/usage",   icon: BarChart3 },
+  { label: "Partnerzy", href: "/admin/partners", icon: Handshake },
 ];
 
 export function AdminSidebar() {

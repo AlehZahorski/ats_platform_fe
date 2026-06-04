@@ -15,6 +15,7 @@
 import { cache } from "react";
 import type { ArticleDetail } from "@/entities/article";
 import type { CompanyPublicDetail } from "@/entities/company";
+import type { PublicJobDetail } from "@/entities/job";
 
 const BACKEND = process.env.BACKEND_INTERNAL_URL || "http://localhost:8000";
 const API = `${BACKEND}/api/v1`;
@@ -89,6 +90,38 @@ export async function listAllCompanySlugs(): Promise<{ slug: string }[]> {
   return (data?.items ?? [])
     .filter((c): c is { slug: string; name: string } => !!c.slug)
     .map((c) => ({ slug: c.slug }));
+}
+
+
+// ─────────────────────────────────────────────────────────────────────
+// Jobs
+// ─────────────────────────────────────────────────────────────────────
+
+// Slug is only unique per-company, so the public job URL carries the job
+// UUID as the last path segment: /praca/<slug>-<uuid>. We look the job up
+// by that id (the slug is purely cosmetic / SEO).
+export const getPublicJobById = cache((id: string): Promise<PublicJobDetail | null> => {
+  return safeGetJson<PublicJobDetail>(`${API}/jobs/public/${encodeURIComponent(id)}`);
+});
+
+interface PublicJobSlugRow {
+  id: string;
+  slug: string | null;
+  title: string;
+  created_at: string;
+}
+
+interface PublicJobSlugList {
+  items: PublicJobSlugRow[];
+  total: number;
+}
+
+export async function listAllPublicJobs(): Promise<PublicJobSlugRow[]> {
+  // Sitemap caller — open jobs only (the /public endpoint already filters to
+  // status=open). 200 is the backend's hard page cap; bump to a paginated
+  // walk if the board ever exceeds that.
+  const data = await safeGetJson<PublicJobSlugList>(`${API}/jobs/public?limit=200`);
+  return data?.items ?? [];
 }
 
 

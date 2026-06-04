@@ -27,7 +27,14 @@
     "logout": "Wyloguj się",
     "gdpr": "RODO",
     "team": "Zespół",
-    "companyProfile": "Profil firmy"
+    "companyProfile": "Profil firmy",
+    "groups": {
+      "recruitment": "Rekrutacja",
+      "candidates": "Kandydaci / komunikacja",
+      "work": "Organizacja pracy",
+      "content": "Zasoby / treści",
+      "admin": "Administracja"
+    }
   },
   "auth": {
     "login": "Zaloguj się",
@@ -58,11 +65,20 @@
     "openJobs": "Aktywne oferty",
     "totalApplications": "Wszystkie aplikacje",
     "activePipeline": "Aktywny pipeline",
-    "hiredThisMonth": "Zatrudnieni w tym miesiącu",
+    "hiredThisMonth": "Zatrudnieni",
     "recentJobs": "Ostatnie oferty pracy",
     "noJobs": "Brak ofert. Utwórz pierwsze ogłoszenie.",
     "myTasks": "Moje zadania",
-    "noTasks": "Brak oczekujących zadań"
+    "noTasks": "Brak oczekujących zadań",
+    "needsAction": "Wymaga działania",
+    "newApplications": "Nowe aplikacje",
+    "openTasks": "Zadania do zrobienia",
+    "noNewApplications": "Brak nowych aplikacji.",
+    "noOpenTasks": "Brak otwartych zadań.",
+    "viewAll": "Zobacz wszystkie",
+    "noDueDate": "Bez terminu",
+    "overdue": "Po terminie",
+    "appliedFor": "aplikuje na"
   },
   "jobs": {
     "title": "Oferty pracy",
@@ -514,6 +530,9 @@
       "assistant": "Asystent",
       "lecturer": "Wykładowca",
       "professor": "Profesor",
+      "teacher_trainee": "Nauczyciel początkujący",
+      "teacher_appointed": "Nauczyciel mianowany",
+      "teacher_chartered": "Nauczyciel dyplomowany",
       "helper": "Pomocnik",
       "worker": "Pracownik"
     },
@@ -1072,7 +1091,22 @@
     "last60": "Ostatnie 60 dni",
     "last90": "Ostatnie 90 dni",
     "candidates": "kandydatów",
-    "conversion": "Współczynnik konwersji"
+    "conversion": "Współczynnik konwersji",
+    "overview": "Podsumowanie",
+    "totalApplications": "Wszystkie aplikacje",
+    "totalHired": "Zatrudnieni",
+    "hireRate": "Wskaźnik zatrudnień",
+    "avgTimeToHire": "Śr. czas zatrudnienia",
+    "activeJobs": "Aktywne oferty",
+    "applicationsOverTime": "Aplikacje w czasie",
+    "applicationsByJob": "Aplikacje wg ofert",
+    "conversionFunnel": "Lejek konwersji",
+    "applications": "aplikacje",
+    "days": "dni",
+    "avg": "Śr.",
+    "min": "Min",
+    "max": "Maks",
+    "hired": "zatrudnionych"
   },
   "reviews": {
     "title": "Oceny Hiring Managera",

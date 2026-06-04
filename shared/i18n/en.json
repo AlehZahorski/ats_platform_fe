@@ -27,7 +27,14 @@
     "logout": "Sign out",
     "gdpr": "GDPR",
     "team": "Team",
-    "companyProfile": "Company profile"
+    "companyProfile": "Company profile",
+    "groups": {
+      "recruitment": "Recruitment",
+      "candidates": "Candidates / communication",
+      "work": "Work organization",
+      "content": "Resources / content",
+      "admin": "Administration"
+    }
   },
   "auth": {
     "login": "Sign in",
@@ -58,11 +65,20 @@
     "openJobs": "Open Jobs",
     "totalApplications": "Total Applications",
     "activePipeline": "Active Pipeline",
-    "hiredThisMonth": "Hired this month",
+    "hiredThisMonth": "Hired",
     "recentJobs": "Recent Jobs",
     "noJobs": "No jobs yet. Create your first job posting.",
     "myTasks": "My Tasks",
-    "noTasks": "No pending tasks"
+    "noTasks": "No pending tasks",
+    "needsAction": "Needs action",
+    "newApplications": "New applications",
+    "openTasks": "Open tasks",
+    "noNewApplications": "No new applications.",
+    "noOpenTasks": "No open tasks.",
+    "viewAll": "View all",
+    "noDueDate": "No due date",
+    "overdue": "Overdue",
+    "appliedFor": "applied for"
   },
   "jobs": {
     "title": "Jobs",
@@ -1072,7 +1088,22 @@
     "last60": "Last 60 days",
     "last90": "Last 90 days",
     "candidates": "candidates",
-    "conversion": "Conversion rate"
+    "conversion": "Conversion rate",
+    "overview": "Overview",
+    "totalApplications": "Total applications",
+    "totalHired": "Hired",
+    "hireRate": "Hire rate",
+    "avgTimeToHire": "Avg. time to hire",
+    "activeJobs": "Active jobs",
+    "applicationsOverTime": "Applications over time",
+    "applicationsByJob": "Applications by job",
+    "conversionFunnel": "Conversion funnel",
+    "applications": "applications",
+    "days": "days",
+    "avg": "Avg",
+    "min": "Min",
+    "max": "Max",
+    "hired": "hired"
   },
   "reviews": {
     "title": "Hiring Manager Reviews",

@@ -162,9 +162,18 @@ export interface PublicJobList {
   total: number;
 }
 
+export interface PublicJobCompany {
+  id: string;
+  name: string;
+  slug: string | null;
+  logo_url: string | null;
+  is_verified: boolean;
+}
+
 export interface PublicJobDetail {
   id: string;
   title: string;
+  slug: string | null;
   department: string | null;
   location: string | null;
   role_summary: string | null;
@@ -190,5 +199,10 @@ export interface PublicJobDetail {
   salary_period: SalaryPeriod | null;
   contract_type: ContractType | null;
   created_at: string;
+  category?: string | null;
+  shift_system?: string | null;
+  employment_size?: string | null;
+  required_qualifications?: string[];
+  company?: PublicJobCompany | null;
   template: import("./forms").FormTemplate | null;
 }

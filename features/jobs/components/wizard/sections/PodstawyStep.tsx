@@ -212,7 +212,7 @@ export function PodstawyStep({ state, patch }: Props) {
           {/* Seniority — required for publication; always rendered */}
           {seniorityOptions.length > 0 && (
             <div>
-              <label className="block text-xs font-semibold mb-1.5">Poziom stanowiska *</label>
+              <label className="block text-xs font-semibold mb-1.5">{config.seniority_label ?? "Poziom stanowiska"} *</label>
               <ChipGroup
                 value={state.seniority}
                 options={seniorityOptions}
