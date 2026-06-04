@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { listAllArticleSlugs, listAllCompanySlugs, SITE_URL } from "@/lib/server-api";
+import { ROUTES } from "@/config/routes";
+import { listAllArticleSlugs, listAllCompanySlugs, listAllPublicJobs, SITE_URL } from "@/lib/server-api";
 
 /**
  * App Router sitemap — served at /sitemap.xml. Next.js generates the
@@ -21,9 +22,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Pull dynamic content. Each call is no-throw; backend down = static-only sitemap.
-  const [articles, companies] = await Promise.all([
+  const [articles, companies, jobs] = await Promise.all([
     listAllArticleSlugs(),
     listAllCompanySlugs(),
+    listAllPublicJobs(),
   ]);
 
   // Route each article under its canonical type-specific URL so the
@@ -41,5 +43,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...staticPages, ...articleEntries, ...companyEntries];
+  // Individual open offers — the canonical /praca/<slug>-<uuid> URLs. These
+  // pages already ship JobPosting structured data + SSR metadata, so listing
+  // them here is what actually gets them crawled and indexed.
+  const jobEntries: MetadataRoute.Sitemap = jobs.map((j) => ({
+    url: `${SITE_URL}${ROUTES.public.job(j.id, j.slug)}`,
+    lastModified: j.created_at ? new Date(j.created_at) : undefined,
+    changeFrequency: "daily",
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...articleEntries, ...companyEntries, ...jobEntries];
 }
