@@ -129,6 +129,7 @@ export function AdminPartnersListPage() {
 // ── Create form ──────────────────────────────────────────────────────
 function CreateForm({ onClose }: { onClose: () => void }) {
   const [label, setLabel] = useState("");
+  const [deck, setDeck] = useState<"investor" | "partner">("investor");
   const [note, setNote] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
   const [maxViews, setMaxViews] = useState("");
@@ -140,6 +141,7 @@ function CreateForm({ onClose }: { onClose: () => void }) {
     try {
       const created = await create.mutateAsync({
         label: label.trim(),
+        deck,
         note: note.trim() || null,
         expires_at: expiresAt ? new Date(expiresAt).toISOString() : null,
         max_views: maxViews ? Number(maxViews) : null,
@@ -158,6 +160,39 @@ function CreateForm({ onClose }: { onClose: () => void }) {
       className="rounded-xl border border-amber-400/30 bg-card p-5 mb-5 space-y-4"
     >
       <h3 className="text-sm font-semibold">Nowy kod dostępu</h3>
+
+      {/* Deck picker — decides which presentation the code unlocks. */}
+      <Field label="Którą prezentację odblokowuje ten kod? *">
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setDeck("investor")}
+            className={cn(
+              "rounded-lg border p-3 text-left transition-colors",
+              deck === "investor"
+                ? "border-amber-400 bg-amber-400/10"
+                : "border-border bg-background hover:border-amber-400/40",
+            )}
+          >
+            <div className="text-sm font-semibold flex items-center gap-2">💰 Dla inwestora</div>
+            <div className="text-xs text-muted-foreground mt-0.5">Pitch deck — rynek, runda, model biznesowy</div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setDeck("partner")}
+            className={cn(
+              "rounded-lg border p-3 text-left transition-colors",
+              deck === "partner"
+                ? "border-amber-400 bg-amber-400/10"
+                : "border-border bg-background hover:border-amber-400/40",
+            )}
+          >
+            <div className="text-sm font-semibold flex items-center gap-2">🤝 Dla partnera</div>
+            <div className="text-xs text-muted-foreground mt-0.5">Rekrutacja współzałożycieli — role, udziały</div>
+          </button>
+        </div>
+      </Field>
+
       <div className="grid grid-cols-2 gap-4">
         <Field label="Nazwa partnera / inwestora *">
           <input
@@ -239,8 +274,11 @@ function Row({ token }: { token: PartnerToken }) {
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold truncate">{token.label}</span>
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-400">
+              {token.deck === "partner" ? "🤝 partner" : "💰 inwestor"}
+            </span>
             <span
               className={cn(
                 "inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full",

@@ -1,9 +1,12 @@
 // Partner/investor access token — mirror of PartnerTokenRead on the backend.
 // The `token` is the shareable code the admin sends to an investor.
 
+export type DeckKind = "investor" | "partner";
+
 export interface PartnerToken {
   id:             string;
   label:          string;
+  deck:           DeckKind;
   token:          string;
   note:           string | null;
   is_active:      boolean;

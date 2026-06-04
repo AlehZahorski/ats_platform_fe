@@ -4,6 +4,7 @@ import type { PartnerToken, PartnerTokenList } from "@/entities/partner";
 // ── Admin: partner access tokens ─────────────────────────────────────
 export interface PartnerTokenCreatePayload {
   label:       string;
+  deck?:       "investor" | "partner";
   note?:       string | null;
   expires_at?: string | null;
   max_views?:  number | null;
